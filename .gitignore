@@ -1,11 +1,6 @@
 # Ignore everything
-*
-
-# But not these files...
-!.gitignore
-!.swift
-!.storyboard
-# etc...
-
-# ...even if they are in subdirectories
-!*/
+GPKeyTests/
+GPKeyUITests/
+GPkey/Assets.xcassets
+.entitlements
+.xcodeproj
