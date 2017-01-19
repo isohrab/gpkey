@@ -1,6 +1,6 @@
 
-GPKeyTests/*
-GPKeyUITests/*
+GPkeyTests/*
+GPkeyUITests/*
 GPkey/Assets.xcassets/*
 *.entitlements
 *.xcodeproj
