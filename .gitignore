@@ -1,6 +1,6 @@
-# Ignore everything
-GPKeyTests/
-GPKeyUITests/
-GPkey/Assets.xcassets
-.entitlements
-.xcodeproj
+
+GPKeyTests/*
+GPKeyUITests/*
+GPkey/Assets.xcassets/*
+*.entitlements
+*.xcodeproj
