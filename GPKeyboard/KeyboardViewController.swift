@@ -1868,7 +1868,7 @@ class KeyboardViewController: UIInputViewController {
         
     }
     
-    // special shift function for sings (){}[] «»
+    // special shift function for (){}[] «»
     func signButtonTouched(_ sender: UIButton)
     {
         let proxy = textDocumentProxy as UITextDocumentProxy
@@ -2021,15 +2021,19 @@ class KeyboardViewController: UIInputViewController {
         if char != "x" {
             btn.setTitle(String(char), for: UIControlState())
         }
-        // I set Tag to -1 for detecting button when backround touched!
+        // I set Tag to -1 for detecting button when background touched!
         btn.tag = -1
         btn.sizeToFit()
+        
         if #available(iOSApplicationExtension 10.0, *) {
             btn.titleLabel?.adjustsFontForContentSizeCategory = true
         } else {
-            // Fallback on earlier versions
+            // fallback....
         }
+        
+        btn.backgroundColor = buttonBackground
         btn.translatesAutoresizingMaskIntoConstraints = false
+        btn.setTitleColor(textColorNormal, for: UIControlState())
         btn.setTitleColor(textColorHighlighted, for: UIControlState.highlighted)
         btn.layer.cornerRadius = 5
         btn.frame = rect
