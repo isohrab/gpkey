@@ -4,6 +4,7 @@
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
+        <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11757"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -27,7 +28,7 @@
                                     <navigationItem title="اضافه کردن کیبورد به آیفون" id="nDw-dj-A7O"/>
                                 </items>
                             </navigationBar>
-                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" textAlignment="justified" translatesAutoresizingMaskIntoConstraints="NO" id="B1t-wu-yfv">
+                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" editable="NO" textAlignment="justified" selectable="NO" translatesAutoresizingMaskIntoConstraints="NO" id="B1t-wu-yfv">
                                 <rect key="frame" x="16" y="79" width="288" height="150"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <constraints>
@@ -178,14 +179,14 @@
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" rowHeight="180" id="JyX-iI-4FC">
                                         <rect key="frame" x="0.0" y="71" width="320" height="180"/>
                                         <autoresizingMask key="autoresizingMask"/>
-                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="JyX-iI-4FC" id="iAR-8N-tXm">
-                                            <rect key="frame" x="0.0" y="0.0" width="320" height="180"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="center" tableViewCell="JyX-iI-4FC" id="iAR-8N-tXm">
+                                            <rect key="frame" x="0.0" y="0.0" width="320" height="179"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <textView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleToFill" editable="NO" textAlignment="justified" selectable="NO" translatesAutoresizingMaskIntoConstraints="NO" id="PbD-Pm-Qb3">
+                                                <textView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleToFill" delaysContentTouches="NO" canCancelContentTouches="NO" bouncesZoom="NO" editable="NO" textAlignment="right" selectable="NO" translatesAutoresizingMaskIntoConstraints="NO" id="PbD-Pm-Qb3">
                                                     <rect key="frame" x="8" y="8" width="304" height="163"/>
                                                     <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                                    <mutableString key="text">در این کیبورد سعی بر آن شده تا حداکثر از لایه استاندارد ISIRI-9147 و استاندارد طراحی شرکت اپل پشتیبانی شود. استفاده از کلید شیفت تعریف جدیدی را در کیبورد فارسی ایجاد کرده که هر کاربری را تشویق به استفاده از کسره ها و تنوین ها میکند. همچنین وجود اِموجی ها در بالای کیبورد امکان یک تجربه منحصربفرد را در شبکه های اجتماعی فراهم میسازد.</mutableString>
+                                                    <string key="text">در این کیبورد سعی بر آن شده تا حداکثر از لایه استاندارد ISIRI-9147 و استاندارد طراحی شرکت اپل پشتیبانی شود. استفاده از کلید شیفت تعریف جدیدی را در کیبورد فارسی ایجاد کرده که هر کاربری را تشویق به استفاده از کسره ها و تنوین ها میکند. همچنین وجود اِموجی ها در بالای کیبورد امکان یک تجربه منحصربفرد را در شبکه های اجتماعی فراهم میسازد.</string>
                                                     <color key="textColor" red="0.23614211309523814" green="0.23614211309523814" blue="0.23614211309523814" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                     <fontDescription key="fontDescription" name="GeezaPro" family="Geeza Pro" pointSize="15"/>
                                                     <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
@@ -208,10 +209,10 @@
                                         <rect key="frame" x="0.0" y="279" width="320" height="134"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="seZ-2U-Hdb" id="p4C-Z8-gmr">
-                                            <rect key="frame" x="0.0" y="0.0" width="320" height="134"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="320" height="133"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="sIj-nT-eJe">
+                                                <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" editable="NO" textAlignment="natural" selectable="NO" translatesAutoresizingMaskIntoConstraints="NO" id="sIj-nT-eJe">
                                                     <rect key="frame" x="8" y="8" width="304" height="117.5"/>
                                                     <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                                     <string key="text">در صورتی که نیاز به پشتیبانی دارید صفحه اختصاصی کیبورد گچ‌پژ را مشاهده فرمایید. ما در این صفحه تمام سوال های پرسیده شده متداول را جواب داده ایم.</string>
@@ -245,10 +246,10 @@
                                         <rect key="frame" x="0.0" y="441" width="320" height="120"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="uN3-B9-keV" id="GFa-aY-uB2">
-                                            <rect key="frame" x="0.0" y="0.0" width="320" height="120"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="320" height="119"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="NTt-Gy-wIt">
+                                                <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" editable="NO" textAlignment="natural" selectable="NO" translatesAutoresizingMaskIntoConstraints="NO" id="NTt-Gy-wIt">
                                                     <rect key="frame" x="8" y="0.0" width="304" height="72"/>
                                                     <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                                     <string key="text">برای اعلام خطا در برنامه (باگ) لطفا توضیحات کامل خود را، از جمله نوع آیفون، ورژن سیستم عامل و نحوه وقوع خطا را به ایمیل زیر ارسال کنید.</string>
@@ -282,7 +283,7 @@
                                         <rect key="frame" x="0.0" y="589" width="320" height="180"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="bpc-IE-oFe" id="Vub-ok-WXZ">
-                                            <rect key="frame" x="0.0" y="0.0" width="320" height="179.5"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="320" height="179"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" editable="NO" text="در این برنامه از آیکون های نون پروجکت استفاده شده است. جهت اطلاعات بیشتر وب سایت این پروژه را مشاهده کنید. " textAlignment="justified" selectable="NO" translatesAutoresizingMaskIntoConstraints="NO" id="1kz-eN-XLd">
@@ -337,6 +338,9 @@
                         </connections>
                     </tableView>
                     <tabBarItem key="tabBarItem" title="کیبورد گچ پژ" image="gpkey" selectedImage="gpkeyActive" id="gbW-ei-Sip"/>
+                    <connections>
+                        <outlet property="table" destination="6Ob-nr-XvT" id="eiy-cl-PkP"/>
+                    </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Txd-5F-dAb" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>

@@ -10,9 +10,11 @@ import UIKit
 
 class AboutVC: UITableViewController {
 
+    @IBOutlet var table: UITableView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        table.allowsSelection = false
 
         
     }
