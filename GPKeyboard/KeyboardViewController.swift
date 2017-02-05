@@ -271,7 +271,7 @@ class KeyboardViewController: UIInputViewController {
                 {
                     b = createButton(rect: r, char: toChar(s: smile, i: i))
                 }
-                b.contentEdgeInsets = UIEdgeInsets(top: 0, left: 2, bottom: 0, right: 0)
+                b.contentEdgeInsets = UIEdgeInsets(top: 0, left: 1, bottom: 0, right: 0)
                 b.addTarget(self, action: #selector(self.buttonTouched(_:)), for: .touchUpInside)
                 b.addTarget(self, action: #selector(self.makeButtonBigger(_:)), for: .touchDown)
                 b.addTarget(self, action: #selector(self.makeButtonNormal(_:)), for: .touchUpOutside)
@@ -540,7 +540,7 @@ class KeyboardViewController: UIInputViewController {
                 {
                     b = createButton(rect: r, char: toChar(s: smile, i: i+11))
                 }
-                b.contentEdgeInsets = UIEdgeInsets(top: 0, left: 2, bottom: 0, right: 0)
+                b.contentEdgeInsets = UIEdgeInsets(top: 0, left: 1, bottom: 0, right: 0)
                 b.addTarget(self, action: #selector(self.buttonTouched(_:)), for: .touchUpInside)
                 b.addTarget(self, action: #selector(self.makeButtonBigger(_:)), for: .touchDown)
                 b.addTarget(self, action: #selector(self.makeButtonNormal(_:)), for: .touchUpOutside)
