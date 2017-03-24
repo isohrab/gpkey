@@ -1951,7 +1951,6 @@ class KeyboardViewController: UIInputViewController {
     // and the number of Layer: 0 = Main Layer , 1= Shift Layer, 2= numbers layer
     func layerManager(layer: Int)
     {
-        print("func layerManager(layer: Int)")
         if UIScreen.main.bounds.size.height > UIScreen.main.bounds.size.width
         {
             switch layer {
@@ -2215,7 +2214,6 @@ class KeyboardViewController: UIInputViewController {
         
     }
     override func didRotate(from fromInterfaceOrientation: UIInterfaceOrientation) {
-        print("override func didRotate(from fromInterfaceOrientation: UIInterfaceOrientation)")
         layerManager(layer: currentLayout)
 
     }
@@ -2263,23 +2261,26 @@ class KeyboardViewController: UIInputViewController {
         
         // and keyboard width in Landscape is equal to screen height
         keyboardWidthLandscape = screenHeight
+        print("screen bounds",UIScreen.main.bounds.size)
         
         switch screenWidth {
         case CGFloat(320):  // iphone 5/5s
             keyboardHeight = 216.0
             keyboardHeightLandscape = 162.0
             break
-        case CGFloat(375):  // iphone 6/6s
+        case CGFloat(375):  // iphone 6/6s/7
             keyboardHeight = 216.0
             keyboardHeightLandscape = 162.0
             break
-        case CGFloat(414): // iphone 6+/6s+
+        case CGFloat(414): // iphone 6+/6s+/7+
             keyboardHeight = 226
             keyboardHeightLandscape = 162
             break
         default:
             // TODO: I should impliment keyboard for iPads too!...
             print("someting else detected!", UIScreen.main.bounds.size)
+            keyboardHeight = 216.0
+            keyboardHeightLandscape = 162.0
             break
         }
         currentLayout = 0
@@ -2292,7 +2293,6 @@ class KeyboardViewController: UIInputViewController {
     }
     
     override func textDidChange(_ textInput: UITextInput?) {
-        print("override func textDidChange(_ textInput: UITextInput?)")
         // The app has just changed the document's contents, the document context has been updated.
         /*let proxy = self.textDocumentProxy
         if proxy.keyboardAppearance == UIKeyboardAppearance.dark {
