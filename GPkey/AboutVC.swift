@@ -12,10 +12,12 @@ class AboutVC: UITableViewController {
 
     @IBOutlet var table: UITableView!
     
+    @IBOutlet weak var comment1: UITextView!
     override func viewDidLoad() {
         super.viewDidLoad()
-        table.allowsSelection = false
-
+        //table.allowsSelection = false
+        
+        comment1.font = UIFont(name: "Parastoo", size: 14)
         
     }
 

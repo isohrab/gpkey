@@ -40,7 +40,7 @@ class ViewController: UIViewController{
      ****************************************/
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+
         SKPaymentQueue.default().add(self)
         
         // define default rect for all views
@@ -67,27 +67,24 @@ class ViewController: UIViewController{
     func initSmiliesLayer() {
         
         // initial emojis On/Off button
-        let b = prefs?.integer(forKey: "emojiState")
-        if b != 0
+        if let b = prefs?.integer(forKey: "emojiState")
         {
-            emojiOnOff = b!
+            if b != 0
+            {
+                emojiOnOff = 1
+                prefs?.set(emojiOnOff, forKey: "emojiState")
+                prefs?.synchronize()
+                emojiSW.setOn(true, animated: false)
+            }
+            
         }
         else
         {
-            emojiOnOff = 1
+            emojiOnOff = 0
             prefs?.set(emojiOnOff, forKey: "emojiState")
             prefs?.synchronize()
-        }
-        
-        if emojiOnOff == 1
-        {
-            emojiSW.setOn(true, animated: false)
-        }
-        else
-        {
             emojiSW.setOn(false, animated: false)
         }
-        
         // setup emoji buttons and description label
         let buttonWidth:CGFloat = (defaultSize.width - (12 * 4)) / 11
         
@@ -241,9 +238,8 @@ class ViewController: UIViewController{
         self.view.addSubview(emojiText)
     }
     
-    // 0: first use! undetecetd
+    // 0: emoji Off
     // 1: emoji On
-    // 2: emoji Off
     @IBAction func emojiSWChanged(_ sender: UISwitch) {
         if sender.isOn
         {
@@ -256,8 +252,8 @@ class ViewController: UIViewController{
         }
         else
         {
-            // the switch changed to Off = 2
-            emojiOnOff = 2
+            // the switch changed to Off = 0
+            emojiOnOff = 0
             prefs?.set(emojiOnOff, forKey: "emojiState")
             prefs?.synchronize()
             print("swich goes Off")
