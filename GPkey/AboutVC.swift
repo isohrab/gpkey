@@ -12,12 +12,20 @@ class AboutVC: UITableViewController {
 
     @IBOutlet var table: UITableView!
     
+    @IBOutlet weak var comment3: UITextView!
+    @IBOutlet weak var comment2: UITextView!
     @IBOutlet weak var comment1: UITextView!
+    @IBOutlet weak var comment4: UITextView!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        //table.allowsSelection = false
+        table.allowsSelection = false
+        table.rowHeight = UITableViewAutomaticDimension
         
         comment1.font = UIFont(name: "Parastoo", size: 14)
+        comment2.font = UIFont(name: "Parastoo", size: 14)
+        comment3.font = UIFont(name: "Parastoo", size: 14)
+        comment4.font = UIFont(name: "Parastoo", size: 14)
         
     }
 

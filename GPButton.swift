@@ -27,15 +27,23 @@ public enum GPButtonType: Int {
 
 class GPButton: UIControl {
 
+    /**      Char Variables      **/
     var label:UILabel?
+    let fontSize: CGFloat = 20
+    let fontSizePopup: CGFloat = 28
+    let fontName = "Parastoo"
+    let fontNameBold = "Parastoo-bold"
+    
+    
     let backLayer = BackLayer()
     var radius:CGFloat = 5.0
     
     // Color variables
     var bgColor = UIColor.white
-    var bgHighlighted = UIColor.lightText
+    var bgHighlighted = UIColor.white
     var utilBackgroundColor = UIColor(red:0.67, green:0.70, blue:0.73, alpha:1.0)
-    var titleTextColor = UIColor.black
+    var charColor = UIColor.black
+    var shadowColor = UIColor(red:0.54, green:0.55, blue:0.56, alpha:1.0)
     var textInsetX:CGFloat = 1
     var textInsetY:CGFloat = 2
     var type:GPButtonType!
@@ -45,7 +53,11 @@ class GPButton: UIControl {
     var lastStamp:Double = 0
     var dx:CGFloat = 0
     var dt:Int = 0
-    var lastLocationX:CGFloat = 0
+    var lastLocation:CGPoint = .zero
+    
+    // popup scale factors
+    var scaleX:CGFloat = 1.4
+    var scaleY:CGFloat = 1.2
     
     // delegate to protocol
     public var delegate: GPButtonEventsDelegate?
@@ -71,12 +83,20 @@ class GPButton: UIControl {
         label = UILabel()
         label?.frame = bounds.insetBy(dx: textInsetX, dy: textInsetY)
         label?.text = " "
-        label?.adjustsFontSizeToFitWidth = true
-        self.label?.font = UIFont(name: "Parastoo", size: 20)
+        //label?.adjustsFontSizeToFitWidth = true
+        if UIAccessibilityIsBoldTextEnabled()
+        {
+            self.label?.font = UIFont(name: fontNameBold, size: fontSize)
+            
+        }
+        else
+        {
+            self.label?.font = UIFont(name: fontName, size: fontSize)
+        }
+        
         label?.textAlignment = .center
-        label?.textColor = titleTextColor
+        label?.textColor = charColor
         label?.minimumScaleFactor = CGFloat(0.1)
-        label?.isUserInteractionEnabled = false
         label?.numberOfLines = 1
         self.addSubview(label!)
         label?.center = self.center
@@ -88,7 +108,7 @@ class GPButton: UIControl {
     {
         self.init(frame: CGRect.zero)
         self.type = type
-        if type != .CHAR && type != .SPACE && type != .HALBSPACE
+        if type != .CHAR && type != .SPACE && type != .HALBSPACE && type != .EMOJI
         {
             bgColor = UIColor(red:0.67, green:0.70, blue:0.73, alpha:1.0)
         }
@@ -105,24 +125,72 @@ class GPButton: UIControl {
         
         // TODO: should I change the values?
         backLayer.frame = bounds.insetBy(dx: 0 , dy: 0)
-        label?.frame = bounds.insetBy(dx: 1, dy: 1)
+        label?.frame = bounds.insetBy(dx: textInsetX, dy: textInsetY)
         backLayer.setNeedsDisplay()
-        
         
         CATransaction.commit()
     }
     
     
-    
+    func Highlighting(state:Bool)
+    {
+        CATransaction.begin()
+        CATransaction.setDisableActions(true)
+        self.backLayer.highlighted = state
+        backLayer.setNeedsDisplay()
+        CATransaction.commit()
+        
+        if self.type! != .CHAR
+        {
+            return
+        }
+        if state
+        {
+            CATransaction.begin()
+            CATransaction.setDisableActions(true)
+            
+            let popupLabelOrigin = bounds.insetBy(dx: -5, dy: -5)
+            self.label?.frame = popupLabelOrigin.offsetBy(dx: 0, dy: -(bounds.height * 1.2)) // TODO: 1.2???
+            if UIAccessibilityIsBoldTextEnabled()
+            {
+                self.label?.font = UIFont(name: fontNameBold, size: fontSizePopup)
+                
+            }
+            else
+            {
+                self.label?.font = UIFont(name: fontName, size: fontSizePopup)
+            }
+            CATransaction.commit()
+        }
+        else
+        {
+            self.label?.frame = bounds.insetBy(dx: textInsetX, dy: textInsetY)
+            if UIAccessibilityIsBoldTextEnabled()
+            {
+                self.label?.font = UIFont(name: fontNameBold, size: fontSize)
+                
+            }
+            else
+            {
+                self.label?.font = UIFont(name: fontName, size: fontSize)
+            }
+        }
+        
+    }
     // touches set
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         sendActions(for: .touchDown)
-        self.backLayer.highlighted = true
-        self.label?.frame = CGRect(x: bounds.minX - (bounds.width * 0.05), y: bounds.minY - (bounds.height * 0.8), width: bounds.width * 1.1, height: bounds.height * 0.6)
+        // highlight the button
+        Highlighting(state: true)
+        
         if let touch = touches.first {
+            if touch.tapCount > 1
+            {
+                sendActions(for: .touchDownRepeat)
+            }
             let location = touch.location(in: self)
             lastStamp = touch.timestamp
-            lastLocationX = location.x
+            lastLocation = location
         }
         dx = 0
         dt = 0
@@ -131,12 +199,32 @@ class GPButton: UIControl {
     
     override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
         if let touch = touches.first {
-            let location = touch.location(in: self)
+            let location = touch.preciseLocation(in: self)
             
+            // impliment touch events
+            let isInside = self.bounds.contains(location)
+            let wasInside = self.bounds.contains(lastLocation)
+            
+            if isInside && wasInside
+            {
+                sendActions(for: .touchDragInside)
+            }
+            else if isInside && !wasInside
+            {
+                sendActions(for: .touchDragEnter)
+            }
+            else if !isInside && wasInside
+            {
+                sendActions(for: .touchDragExit)
+            }
+            else
+            {
+                sendActions(for: .touchDragOutside)
+            }
             // perform cursor movement
             if touch.force / touch.maximumPossibleForce > 0.5
             {
-                calculateCursorMovement(touchXLocation: location.x, touchTimeStamp: touch.timestamp)
+                calculateCursorMovement(touchLoc: location, touchTimeStamp: touch.timestamp)
             }
             
         }
@@ -144,11 +232,9 @@ class GPButton: UIControl {
     }
     
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
-        backLayer.highlighted = false
-        updateLayerFrames()
         if let touch = touches.first {
             let location = touch.preciseLocation(in: self)
-            if backLayer.bounds.contains(location) {
+            if self.bounds.contains(location) {
                 sendActions(for: .touchUpInside)
             }
             else
@@ -157,16 +243,13 @@ class GPButton: UIControl {
             }
         }
         
+        Highlighting(state: false)
     }
     
     override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {
-        
-        backLayer.highlighted = false
-        updateLayerFrames()
-        
         if let touch = touches.first {
             let location = touch.preciseLocation(in: self)
-            if backLayer.bounds.contains(location) {
+            if self.bounds.contains(location) { // TODO: should self.bounds or backLayer.bounds
                 sendActions(for: .touchUpInside)
             }
             else
@@ -175,19 +258,22 @@ class GPButton: UIControl {
             }
         }
         
+        sendActions(for: .touchCancel)
+        
+        Highlighting(state: false)
     }
     
-    private func calculateCursorMovement(touchXLocation: CGFloat, touchTimeStamp: Double) {
+    private func calculateCursorMovement(touchLoc: CGPoint, touchTimeStamp: Double) {
         if lastStamp + 0.1 < touchTimeStamp
         {
-            if abs(touchXLocation + self.center.x) - self.bounds.width < 50
+            if abs(touchLoc.x + self.center.x) - self.bounds.width < 50
             {
                 delegate?.moveCursor(numberOfMovement: 1 * dt)
                 if dt < 10 {
                     dt = dt + 1
                 }
             }
-            else if touchXLocation + self.center.x > 330
+            else if touchLoc.x + self.center.x > 330
             {
                 delegate?.moveCursor(numberOfMovement: -1 * dt)
                 if dt < 10 {
@@ -197,15 +283,16 @@ class GPButton: UIControl {
             else
             {
                 dt = 0
-                dx = touchXLocation - lastLocationX
+                dx = touchLoc.x - lastLocation.x
                 if abs(dx) > 5
                 {
                     let numberOfMovement = Int(dx / 5)
                     delegate?.moveCursor(numberOfMovement: numberOfMovement * -1)
-                    lastLocationX = touchXLocation
+                    lastLocation = touchLoc
                 }
             }
             lastStamp = touchTimeStamp
         }
     }
+    
 }

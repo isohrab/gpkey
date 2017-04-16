@@ -69,11 +69,10 @@ class ViewController: UIViewController{
         // initial emojis On/Off button
         if let b = prefs?.integer(forKey: "emojiState")
         {
-            if b != 0
+            if b != 0   // default is ON
             {
                 emojiOnOff = 1
                 prefs?.set(emojiOnOff, forKey: "emojiState")
-                prefs?.synchronize()
                 emojiSW.setOn(true, animated: false)
             }
             
@@ -82,7 +81,6 @@ class ViewController: UIViewController{
         {
             emojiOnOff = 0
             prefs?.set(emojiOnOff, forKey: "emojiState")
-            prefs?.synchronize()
             emojiSW.setOn(false, animated: false)
         }
         // setup emoji buttons and description label
@@ -411,7 +409,7 @@ extension ViewController: SKProductsRequestDelegate, SKPaymentTransactionObserve
                 present(alert, animated: true, completion: nil)
                 
             case .failed:
-                if let transactionError = transaction.error as? NSError {
+                if let transactionError = transaction.error as NSError? {
                     if transactionError.code != SKError.paymentCancelled.rawValue {
                         let alert = UIAlertController(title: "خطا در خرید", message:transaction.error?.localizedDescription, preferredStyle: .alert)
                         let action = UIAlertAction(title: "OK", style: .cancel, handler: nil)

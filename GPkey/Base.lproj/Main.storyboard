@@ -10,9 +10,6 @@
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <customFonts key="customFonts">
-        <array key="Parastoo-Bold.ttf">
-            <string>Parastoo-Bold</string>
-        </array>
         <array key="Parastoo.ttf">
             <string>Parastoo</string>
         </array>
@@ -188,16 +185,19 @@
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" rowHeight="220" id="JyX-iI-4FC">
                                         <rect key="frame" x="0.0" y="71" width="320" height="220"/>
                                         <autoresizingMask key="autoresizingMask"/>
-                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="center" tableViewCell="JyX-iI-4FC" id="iAR-8N-tXm">
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="JyX-iI-4FC" id="iAR-8N-tXm">
                                             <rect key="frame" x="0.0" y="0.0" width="320" height="219.5"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <textView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleToFill" scrollEnabled="NO" delaysContentTouches="NO" canCancelContentTouches="NO" bouncesZoom="NO" editable="NO" textAlignment="right" selectable="NO" translatesAutoresizingMaskIntoConstraints="NO" id="PbD-Pm-Qb3">
+                                                <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" scrollEnabled="NO" delaysContentTouches="NO" canCancelContentTouches="NO" bouncesZoom="NO" editable="NO" textAlignment="right" selectable="NO" translatesAutoresizingMaskIntoConstraints="NO" id="PbD-Pm-Qb3">
                                                     <rect key="frame" x="8" y="8" width="304" height="203.5"/>
                                                     <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                                    <accessibility key="accessibilityConfiguration">
+                                                        <accessibilityTraits key="traits" staticText="YES" notEnabled="YES"/>
+                                                    </accessibility>
                                                     <string key="text">در این کیبورد سعی بر آن شده تا حداکثر از لایه استاندارد ISIRI-9147 و استاندارد طراحی شرکت اپل پشتیبانی شود. استفاده از کلید شیفت تعریف جدیدی را در کیبورد فارسی ایجاد کرده که هر کاربری را تشویق به استفاده از کسره ها و تنوین ها میکند. همچنین وجود اِموجی ها در بالای کیبورد امکان یک تجربه منحصربفرد را در شبکه های اجتماعی فراهم میسازد.</string>
                                                     <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                                    <fontDescription key="fontDescription" name="Parastoo-Bold" family="Parastoo" pointSize="14"/>
+                                                    <fontDescription key="fontDescription" name="Parastoo" family="Parastoo" pointSize="14"/>
                                                     <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                                                 </textView>
                                             </subviews>
@@ -214,23 +214,26 @@
                             </tableViewSection>
                             <tableViewSection headerTitle="پشتیبانی" id="Ce0-YF-j3b">
                                 <cells>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" rowHeight="134" id="seZ-2U-Hdb">
-                                        <rect key="frame" x="0.0" y="319" width="320" height="134"/>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" rowHeight="150" id="seZ-2U-Hdb">
+                                        <rect key="frame" x="0.0" y="319" width="320" height="150"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="seZ-2U-Hdb" id="p4C-Z8-gmr">
-                                            <rect key="frame" x="0.0" y="0.0" width="320" height="133.5"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="320" height="149.5"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" scrollEnabled="NO" editable="NO" textAlignment="right" selectable="NO" translatesAutoresizingMaskIntoConstraints="NO" id="sIj-nT-eJe">
-                                                    <rect key="frame" x="8" y="8" width="304" height="117.5"/>
+                                                    <rect key="frame" x="8" y="8" width="304" height="133.5"/>
                                                     <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                                    <accessibility key="accessibilityConfiguration">
+                                                        <accessibilityTraits key="traits" staticText="YES" notEnabled="YES"/>
+                                                    </accessibility>
                                                     <string key="text">در صورتی که نیاز به پشتیبانی دارید صفحه اختصاصی کیبورد گچ‌پژ را مشاهده فرمایید. ما در این صفحه تمام سوال های پرسیده شده متداول را جواب داده ایم.</string>
                                                     <fontDescription key="fontDescription" name="Parastoo" family="Parastoo" pointSize="14"/>
                                                     <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                                                 </textView>
                                                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="WkR-3P-H87">
-                                                    <rect key="frame" x="78" y="93" width="164" height="32"/>
-                                                    <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="17"/>
+                                                    <rect key="frame" x="74.5" y="108" width="171" height="39"/>
+                                                    <fontDescription key="fontDescription" name="Parastoo" family="Parastoo" pointSize="15"/>
                                                     <state key="normal" title="مشاهده صفحه کیبورد گچ‌پژ"/>
                                                     <connections>
                                                         <action selector="telegramTaped:" destination="do2-P8-Fjg" eventType="touchUpInside" id="FOv-ir-Z22"/>
@@ -239,7 +242,7 @@
                                             </subviews>
                                             <constraints>
                                                 <constraint firstItem="sIj-nT-eJe" firstAttribute="centerX" secondItem="p4C-Z8-gmr" secondAttribute="centerX" id="TM8-bH-ktK"/>
-                                                <constraint firstItem="WkR-3P-H87" firstAttribute="bottom" secondItem="p4C-Z8-gmr" secondAttribute="bottomMargin" id="Wz0-cC-e2M"/>
+                                                <constraint firstItem="WkR-3P-H87" firstAttribute="bottom" secondItem="p4C-Z8-gmr" secondAttribute="bottomMargin" constant="5.5" id="Wz0-cC-e2M"/>
                                                 <constraint firstItem="sIj-nT-eJe" firstAttribute="centerY" secondItem="p4C-Z8-gmr" secondAttribute="centerY" id="Ybj-vD-gh7"/>
                                                 <constraint firstItem="WkR-3P-H87" firstAttribute="centerX" secondItem="p4C-Z8-gmr" secondAttribute="centerX" id="bPi-10-dKd"/>
                                                 <constraint firstItem="sIj-nT-eJe" firstAttribute="top" secondItem="p4C-Z8-gmr" secondAttribute="topMargin" id="cJE-j4-h7m"/>
@@ -253,7 +256,7 @@
                             <tableViewSection headerTitle="گزارش خطا" id="hiV-Hi-Vj6">
                                 <cells>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" rowHeight="120" id="uN3-B9-keV">
-                                        <rect key="frame" x="0.0" y="481" width="320" height="120"/>
+                                        <rect key="frame" x="0.0" y="497" width="320" height="120"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="uN3-B9-keV" id="GFa-aY-uB2">
                                             <rect key="frame" x="0.0" y="0.0" width="320" height="119.5"/>
@@ -267,7 +270,8 @@
                                                     <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                                                 </textView>
                                                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="j5z-3Y-ECI">
-                                                    <rect key="frame" x="111" y="81" width="98" height="30"/>
+                                                    <rect key="frame" x="105.5" y="72" width="109" height="39"/>
+                                                    <fontDescription key="fontDescription" name="Parastoo" family="Parastoo" pointSize="15"/>
                                                     <state key="normal" title="ارسال گزارش خطا"/>
                                                     <connections>
                                                         <action selector="reportABug:" destination="do2-P8-Fjg" eventType="touchUpInside" id="2co-Oc-34N"/>
@@ -290,7 +294,7 @@
                             <tableViewSection headerTitle="منابع آیکون" id="eTS-bC-pxn">
                                 <cells>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" rowHeight="180" id="bpc-IE-oFe">
-                                        <rect key="frame" x="0.0" y="629" width="320" height="180"/>
+                                        <rect key="frame" x="0.0" y="645" width="320" height="180"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="bpc-IE-oFe" id="Vub-ok-WXZ">
                                             <rect key="frame" x="0.0" y="0.0" width="320" height="179.5"/>
@@ -350,6 +354,9 @@
                     <tabBarItem key="tabBarItem" title="کیبورد گچ پژ" image="gpkey" selectedImage="gpkeyActive" id="gbW-ei-Sip"/>
                     <connections>
                         <outlet property="comment1" destination="PbD-Pm-Qb3" id="pFr-97-WfT"/>
+                        <outlet property="comment2" destination="sIj-nT-eJe" id="D7Q-ac-8EW"/>
+                        <outlet property="comment3" destination="NTt-Gy-wIt" id="FVs-ei-Kk6"/>
+                        <outlet property="comment4" destination="1kz-eN-XLd" id="IGF-C0-c5E"/>
                         <outlet property="table" destination="6Ob-nr-XvT" id="eiy-cl-PkP"/>
                     </connections>
                 </tableViewController>
