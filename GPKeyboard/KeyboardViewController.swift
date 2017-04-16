@@ -14,8 +14,10 @@ import AudioToolbox
 
 class KeyboardViewController: UIInputViewController, GPButtonEventsDelegate {
     
-    var tapSound: SystemSoundID = 1104
-    let topSound: SystemSoundID = 1105
+    // 1396 - 1397 - 1306:char - 1155:delete - 1156:space+number+shift+return
+    let delSound: SystemSoundID = 1155
+    let charSound: SystemSoundID = 1306
+    let utilSound: SystemSoundID = 1156
     let vibSound: SystemSoundID = 1520
     var soundID: Int = 0
     /****************************
@@ -289,6 +291,7 @@ class KeyboardViewController: UIInputViewController, GPButtonEventsDelegate {
                 rowButtons.append(btn)
                 btn.isExclusiveTouch = true
                 btn.addTarget(self, action: #selector(self.buttonTouched(_:)), for: .touchUpInside)
+                btn.addTarget(self, action: #selector(self.buttonTouched(_:)), for: .touchDragInside)
                 mainViewPortrait.addSubview(btn)
             }
             alefbaButtons.append(rowButtons)
@@ -316,12 +319,12 @@ class KeyboardViewController: UIInputViewController, GPButtonEventsDelegate {
         mainViewPortrait.addSubview(numberButton)
         
         let globeButton = GPButton(with: .GLOBE)
-        globeButton.addTarget(self, action: #selector(advanceToNextInputMode), for: .touchUpInside)
-//        if #available(iOSApplicationExtension 10.0, *) {
-//            globeButton.addTarget(self, action: #selector(handleInputModeList(from:with:)), for: .allTouchEvents)
-//        } else {
-//            globeButton.addTarget(self, action: #selector(advanceToNextInputMode), for: .allTouchEvents)
-//        }
+//        globeButton.addTarget(self, action: #selector(advanceToNextInputMode), for: .touchUpInside)
+        if #available(iOSApplicationExtension 10.0, *) {
+            globeButton.addTarget(self, action: #selector(handleInputModeList(from:with:)), for: .touchDown)
+        } else {
+            globeButton.addTarget(self, action: #selector(advanceToNextInputMode), for: .touchDown)
+        }
         globeButton.label?.text = "globe"
         alefbaButtons[emojiState + 3].insert(globeButton, at: 1)
         mainViewPortrait.addSubview(globeButton)
@@ -445,6 +448,7 @@ class KeyboardViewController: UIInputViewController, GPButtonEventsDelegate {
     // delete touching
     func deleteTouchDown(sender: GPButton)
     {
+        playSound(for: delSound)
         let proxy = textDocumentProxy as UITextDocumentProxy
         proxy.deleteBackward()
         deleting = true
@@ -462,10 +466,10 @@ class KeyboardViewController: UIInputViewController, GPButtonEventsDelegate {
             {
                 deleteTimer -= 0.08
             }
-            if (proxy.hasText && proxy.documentContextBeforeInput != nil)
-                {
+            if proxy.hasText && proxy.documentContextBeforeInput != nil
+            {
                 timer = Timer.scheduledTimer(timeInterval: deleteTimer, target: self, selector: #selector(doDeleting), userInfo: nil, repeats: false)
-                playSound(utilToched: true)
+                playSound(for: delSound)
             }
         }
     }
@@ -494,6 +498,7 @@ class KeyboardViewController: UIInputViewController, GPButtonEventsDelegate {
         switch type
         {
         case .SPACE:
+            playSound(for: utilSound)
             proxy.insertText(" ")
             break
         case .GLOBE:
@@ -526,9 +531,11 @@ class KeyboardViewController: UIInputViewController, GPButtonEventsDelegate {
             }
             break
         case .ENTER:
+            playSound(for: utilSound)
             proxy.insertText("\n")
             break
         case .HALBSPACE:
+            playSound(for: utilSound)
             proxy.insertText("\u{200C}")
             shift = false
             currentLayout = 0
@@ -545,6 +552,7 @@ class KeyboardViewController: UIInputViewController, GPButtonEventsDelegate {
     // add character into textfield
     func buttonTouched(_ sender: GPButton)
     {
+        playSound(for: charSound)
         let proxy = textDocumentProxy as UITextDocumentProxy
         guard let char = sender.label?.text else {return}
         proxy.insertText(char)
@@ -553,6 +561,7 @@ class KeyboardViewController: UIInputViewController, GPButtonEventsDelegate {
     // a button in shift layer touched
     func shiftButtonTouched(_ sender: UIButton)
     {
+        playSound(for: utilSound)
         let proxy = textDocumentProxy as UITextDocumentProxy
         proxy.insertText(sender.currentTitle!)
         // return layout to main view
@@ -565,6 +574,7 @@ class KeyboardViewController: UIInputViewController, GPButtonEventsDelegate {
     // special shift function for (){}[] «»
     func signButtonTouched(_ sender: UIButton)
     {
+        playSound(for: charSound)
         let proxy = textDocumentProxy as UITextDocumentProxy
         let char = sender.currentTitle!
         switch char {
@@ -683,7 +693,7 @@ class KeyboardViewController: UIInputViewController, GPButtonEventsDelegate {
         }
     }
 
-    func playSound(utilToched: Bool)
+    func playSound(for type:UInt32)
     {
         // mute mode
         if soundID == 0
@@ -698,14 +708,7 @@ class KeyboardViewController: UIInputViewController, GPButtonEventsDelegate {
             return
         }
         
-        // Sound is ON
-        if utilToched
-        {
-            AudioServicesPlaySystemSound(topSound)
-            return
-        }
-        
-        AudioServicesPlaySystemSound(tapSound)
+        AudioServicesPlaySystemSound(type)
     }
     
     
@@ -738,7 +741,7 @@ class KeyboardViewController: UIInputViewController, GPButtonEventsDelegate {
             case .CHAR:
                 // TODO: popup?!
                 // set user default sound on tap
-                playSound(utilToched: false)
+                playSound(for: charSound)
                 let proxy = textDocumentProxy as UITextDocumentProxy
                 proxy.insertText((button.label?.text)!)
                 break
