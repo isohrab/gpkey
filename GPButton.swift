@@ -37,6 +37,8 @@ class GPButton: UIControl {
     
     let backLayer = BackLayer()
     var radius:CGFloat = 5.0
+    var backLayerInsetX: CGFloat = 0
+    var backLayerInsetY: CGFloat = 0
     
     // Color variables
     var bgColor = UIColor.white
@@ -56,8 +58,16 @@ class GPButton: UIControl {
     var lastLocation:CGPoint = .zero
     
     // popup scale factors
-    var scaleX:CGFloat = 1.4
-    var scaleY:CGFloat = 1.2
+    var scaleX:CGFloat = 0.1
+    var scaleY:CGFloat = 0
+    
+    // Harf variable
+    weak var harf: Harf? {
+        didSet {
+            self.label?.text = harf?.face
+            updateLayerFrames()
+        }
+    }
     
     // delegate to protocol
     public var delegate: GPButtonEventsDelegate?
@@ -83,6 +93,7 @@ class GPButton: UIControl {
         label = UILabel()
         label?.frame = bounds.insetBy(dx: textInsetX, dy: textInsetY)
         label?.text = " "
+        // TODO: should change it?
         //label?.adjustsFontSizeToFitWidth = true
         if UIAccessibilityIsBoldTextEnabled()
         {
@@ -112,6 +123,18 @@ class GPButton: UIControl {
         {
             bgColor = UIColor(red:0.67, green:0.70, blue:0.73, alpha:1.0)
         }
+        if type == .EMOJI
+        {
+            bgColor = UIColor.clear
+            bgHighlighted = UIColor.lightText
+            textInsetX = 0
+            textInsetY = 0
+        }
+        if type == .SPACE || type == .HALBSPACE
+        {
+            bgHighlighted = utilBackgroundColor
+        }
+        updateLayerFrames()
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -132,7 +155,7 @@ class GPButton: UIControl {
     }
     
     
-    func Highlighting(state:Bool)
+    func Highlighting(state:Bool = false)
     {
         CATransaction.begin()
         CATransaction.setDisableActions(true)
@@ -150,7 +173,7 @@ class GPButton: UIControl {
             CATransaction.setDisableActions(true)
             
             let popupLabelOrigin = bounds.insetBy(dx: -5, dy: -5)
-            self.label?.frame = popupLabelOrigin.offsetBy(dx: 0, dy: -(bounds.height * 1.2)) // TODO: 1.2???
+            self.label?.frame = popupLabelOrigin.offsetBy(dx: 0, dy: -bounds.height + 5) // TODO: 1.2???
             if UIAccessibilityIsBoldTextEnabled()
             {
                 self.label?.font = UIFont(name: fontNameBold, size: fontSizePopup)
@@ -243,7 +266,7 @@ class GPButton: UIControl {
             }
         }
         
-        Highlighting(state: false)
+        let _ = Timer.scheduledTimer(timeInterval: 0.065, target: self, selector: #selector(Highlighting(state:)), userInfo: nil, repeats: false)
     }
     
     override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -259,8 +282,8 @@ class GPButton: UIControl {
         }
         
         sendActions(for: .touchCancel)
-        
-        Highlighting(state: false)
+        //highlightTimer = Timer()
+        let _ = Timer.scheduledTimer(timeInterval: 0.065, target: self, selector: #selector(Highlighting(state:)), userInfo: nil, repeats: false)
     }
     
     private func calculateCursorMovement(touchLoc: CGPoint, touchTimeStamp: Double) {

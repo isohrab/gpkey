@@ -19,137 +19,135 @@ class KeyboardViewController: UIInputViewController, GPButtonEventsDelegate {
     let charSound: SystemSoundID = 1306
     let utilSound: SystemSoundID = 1156
     let vibSound: SystemSoundID = 1520
-    var soundID: Int = 0
+    var SoundState: Int = 0
+    
     /****************************
      *   define alphabet value   *
      ****************************/
-    struct Alefba {
-        let Seda: String
-        let value: String
-    }
+    
     
 
     // [layer][row][column]
-    let alphabets :[[[Alefba]]]=[[[
+    let characters :[[[Harf]]]=[[[
         // first layer: first row:
-        Alefba.init(Seda: "zad", value: "ض"),
-        Alefba.init(Seda: "sad", value: "ص"),
-        Alefba.init(Seda: "ghaf", value: "ق"),
-        Alefba.init(Seda: "fe", value: "ف"),
-        Alefba.init(Seda: "ghein", value: "غ"),
-        Alefba.init(Seda: "ein", value: "ع"),
-        Alefba.init(Seda: "ha", value: "ه"),
-        Alefba.init(Seda: "khe", value: "خ"),
-        Alefba.init(Seda: "he", value: "ح"),
-        Alefba.init(Seda: "je", value: "ج"),
-        Alefba.init(Seda: "che", value: "چ")],
+        Harf.init(name: "zad",  face: "ض", output: "ض", returnable: false, spaceReturnable: false),
+        Harf.init(name: "sad",  face: "ص", output: "ص", returnable: false, spaceReturnable: false),
+        Harf.init(name: "ghaf", face: "ق", output: "ق", returnable: false, spaceReturnable: false),
+        Harf.init(name: "fe",   face: "ف", output: "ف", returnable: false, spaceReturnable: false),
+        Harf.init(name: "ghein",face: "غ", output: "غ", returnable: false, spaceReturnable: false),
+        Harf.init(name: "ein",  face: "ع", output: "ع", returnable: false, spaceReturnable: false),
+        Harf.init(name: "ha",   face: "ه", output: "ه", returnable: false, spaceReturnable: false),
+        Harf.init(name: "khe",  face: "خ", output: "خ", returnable: false, spaceReturnable: false),
+        Harf.init(name: "he",   face: "ح", output: "ح", returnable: false, spaceReturnable: false),
+        Harf.init(name: "je",   face: "ج", output: "ج", returnable: false, spaceReturnable: false),
+        Harf.init(name: "che",  face: "چ", output: "چ", returnable: false, spaceReturnable: false)],
                                   
         //first Layer, Second Row:
-        [Alefba.init(Seda: "she", value: "ش"),
-         Alefba.init(Seda: "se", value: "س"),
-         Alefba.init(Seda: "ye", value: "ی"),
-         Alefba.init(Seda: "be", value: "ب"),
-         Alefba.init(Seda: "lam", value: "ل"),
-         Alefba.init(Seda: "alef", value: "ا"),
-         Alefba.init(Seda: "te", value: "ت"),
-         Alefba.init(Seda: "non", value: "ن"),
-         Alefba.init(Seda: "mim", value: "م"),
-         Alefba.init(Seda: "ke", value: "ک"),
-         Alefba.init(Seda: "ge", value: "گ")],
+        [Harf.init(name: "she", face: "ش", output: "ش", returnable: false, spaceReturnable: false),
+         Harf.init(name: "se",  face: "س", output: "س", returnable: false, spaceReturnable: false),
+         Harf.init(name: "ye",  face: "ی", output: "ی", returnable: false, spaceReturnable: false),
+         Harf.init(name: "be",  face: "ب", output: "ب", returnable: false, spaceReturnable: false),
+         Harf.init(name: "lam", face: "ل", output: "ل", returnable: false, spaceReturnable: false),
+         Harf.init(name: "alef",face: "ا", output: "ا", returnable: false, spaceReturnable: false),
+         Harf.init(name: "te",  face: "ت", output: "ت", returnable: false, spaceReturnable: false),
+         Harf.init(name: "non", face: "ن", output: "ن", returnable: false, spaceReturnable: false),
+         Harf.init(name: "mim", face: "م", output: "م", returnable: false, spaceReturnable: false),
+         Harf.init(name: "ke",  face: "ک", output: "ک", returnable: false, spaceReturnable: false),
+         Harf.init(name: "ge",  face: "گ", output: "گ", returnable: false, spaceReturnable: false)],
         
         //first Layer, Third Row:
-        [Alefba.init(Seda: "za", value: "ظ"),
-         Alefba.init(Seda: "ta", value: "ط"),
-         Alefba.init(Seda: "ze", value: "ز"),
-         Alefba.init(Seda: "re", value: "ر"),
-         Alefba.init(Seda: "zal", value: "ذ"),
-         Alefba.init(Seda: "dal", value: "د"),
-         Alefba.init(Seda: "pe", value: "پ"),
-         Alefba.init(Seda: "ve", value: "و")],
+        [Harf.init(name: "za",  face: "ظ", output: "ظ", returnable: false, spaceReturnable: false),
+         Harf.init(name: "ta",  face: "ط", output: "ط", returnable: false, spaceReturnable: false),
+         Harf.init(name: "ze",  face: "ز", output: "ز", returnable: false, spaceReturnable: false),
+         Harf.init(name: "re",  face: "ر", output: "ر", returnable: false, spaceReturnable: false),
+         Harf.init(name: "zal", face: "ذ", output: "ذ", returnable: false, spaceReturnable: false),
+         Harf.init(name: "dal", face: "د", output: "د", returnable: false, spaceReturnable: false),
+         Harf.init(name: "pe",  face: "پ", output: "پ", returnable: false, spaceReturnable: false),
+         Harf.init(name: "ve",  face: "و", output: "و", returnable: false, spaceReturnable: false)],
         
         // first Layer, Fourth Row:
-        [Alefba.init(Seda: "se3noghte", value: "ث"),
-         Alefba.init(Seda: "zhe", value: "ژ")]],
+        [Harf.init(name: "se3noghte",face: "ث", output: "ث", returnable: false, spaceReturnable: false),
+         Harf.init(name: "zhe",      face: "ژ", output: "ژ", returnable: false, spaceReturnable: false)]],
                                  
         // Shift LAYER
         // Second Layer: first Row:
-        [[Alefba.init(Seda: "saken", value: "ْ"),
-          Alefba.init(Seda: "o", value: "ُ"),
-          Alefba.init(Seda: "e", value: "ِ"),
-          Alefba.init(Seda: "a", value: "َ"),
-          Alefba.init(Seda: "an", value: "ً"),
-          Alefba.init(Seda: "parantezL", value: "\u{0028}"),
-          Alefba.init(Seda: "parantezR", value: "\u{0029}"),
-          Alefba.init(Seda: "akoladL", value: "\u{007B}"),
-          Alefba.init(Seda: "akoladR", value: "\u{007D}"),
-          Alefba.init(Seda: "beraketL", value: "\u{005b}"),
-          Alefba.init(Seda: "beraketR", value: "\u{005d}")],
+        [[Harf.init(name: "saken",      face: "ْ",          output: "ْ",        returnable: true, spaceReturnable: false),
+          Harf.init(name: "o",          face: "ُ",          output: "ُ",        returnable: true, spaceReturnable: false),
+          Harf.init(name: "e",          face: "ِ",          output: "ِ",        returnable: true, spaceReturnable: false),
+          Harf.init(name: "a",          face: "َ",          output: "َ",        returnable: true, spaceReturnable: false),
+          Harf.init(name: "an",         face: "ً",          output: "ً",        returnable: true, spaceReturnable: false),
+          Harf.init(name: "parantezL",  face: "\u{0028}",   output: "\u{0029}", returnable: false, spaceReturnable: true),
+          Harf.init(name: "parantezR",  face: "\u{0029}",   output: "\u{0028}", returnable: false, spaceReturnable: true),
+          Harf.init(name: "akoladL",    face: "\u{007B}",   output: "\u{007D}", returnable: false, spaceReturnable: true),
+          Harf.init(name: "akoladR",    face: "\u{007D}",   output: "\u{007B}", returnable: false, spaceReturnable: true),
+          Harf.init(name: "beraketL",   face: "\u{005b}",   output: "\u{005d}", returnable: false, spaceReturnable: true),
+          Harf.init(name: "beraketR",   face: "\u{005d}",   output: "\u{005b}", returnable: false, spaceReturnable: true)],
          
          // second Layer, Second Row:
-            [Alefba.init(Seda: "bullet", value: "•"),
-             Alefba.init(Seda: "underline", value: "_"),
-             Alefba.init(Seda: "yeHamze", value: "ئ"),
-             Alefba.init(Seda: "tashdid", value: "\u{0651}"),
-             Alefba.init(Seda: "hamze", value: "ء"),
-             Alefba.init(Seda: "abakola", value: "آ"),
-             Alefba.init(Seda: "keshidan", value: "ـ"),
-             Alefba.init(Seda: "2fleshL", value: "\u{00ab}"),
-             Alefba.init(Seda: "2fleshR", value: "\u{00bb}"),
-             Alefba.init(Seda: "apostroph", value: "'"),
-             Alefba.init(Seda: "quotation", value: "\"")],
+            [Harf.init(name: "bullet",  face: "•",      output: "•",        returnable: false, spaceReturnable: true),
+             Harf.init(name: "underline",face: "_",     output: "_",        returnable: false, spaceReturnable: true),
+             Harf.init(name: "yeHamze", face: "ئ",      output: "ئ",        returnable: true, spaceReturnable: false),
+             Harf.init(name: "tashdid", face: "\u{0651}", output: "\u{0651}", returnable: true, spaceReturnable: false),
+             Harf.init(name: "hamze",   face: "ء",      output: "ء",        returnable: true, spaceReturnable: false),
+             Harf.init(name: "abakola", face: "آ",      output: "آ",        returnable: true, spaceReturnable: false),
+             Harf.init(name: "keshidan",face: "ـ",      output: "ـ",        returnable: false, spaceReturnable: true),
+             Harf.init(name: "2fleshL", face: "\u{00ab}", output: "\u{00bb}", returnable: false, spaceReturnable: true),
+             Harf.init(name: "2fleshR", face: "\u{00bb}", output: "\u{00ab}", returnable: false, spaceReturnable: true),
+             Harf.init(name: "apostroph",face: "'",     output: "'",        returnable: true, spaceReturnable: false),
+             Harf.init(name: "quotation",face: "\"",    output: "\"",       returnable: false, spaceReturnable: true)],
             
             //second layer, third Row:
-            [Alefba.init(Seda: "noghte", value: "."),
-             Alefba.init(Seda: "virgol", value: "،"),
-             Alefba.init(Seda: "3noghte", value: "\u{2026}"),
-             Alefba.init(Seda: "donoghte", value: ":"),
-             Alefba.init(Seda: "semicolon", value: "؛"),
-             Alefba.init(Seda: "centigrad", value: "°"),
-             Alefba.init(Seda: "soal", value: "؟"),
-             Alefba.init(Seda: "tajob", value: "!")],
+            [Harf.init(name: "noghte",      face: ".",  output: ".",        returnable: false, spaceReturnable: true),
+             Harf.init(name: "virgol",      face: "،", output: "،",         returnable: false, spaceReturnable: true),
+             Harf.init(name: "3noghte",     face: "\u{2026}", output: "\u{2026}", returnable: false, spaceReturnable: true),
+             Harf.init(name: "donoghte",    face: ":",  output: ":",        returnable: false, spaceReturnable: true),
+             Harf.init(name: "semicolon",   face: "؛",  output: "؛",        returnable: false, spaceReturnable: true),
+             Harf.init(name: "centigrad",   face: "°",  output: "°",        returnable: false, spaceReturnable: true),
+             Harf.init(name: "soal",        face: "؟",  output: "؟",        returnable: false, spaceReturnable: true),
+             Harf.init(name: "tajob",       face: "!",  output: "!",        returnable: false, spaceReturnable: true)],
             
             // second layer, fourth Row:
-            [Alefba.init(Seda: "atsign", value: "@"),
-             Alefba.init(Seda: "sharp", value: "#")]],
+            [Harf.init(name: "atsign",      face: "@", output: "@", returnable: false, spaceReturnable: true),
+             Harf.init(name: "sharp",       face: "#", output: "#", returnable: false, spaceReturnable: true)]],
         
         //Number layer
         // first Row:
-        [[Alefba.init(Seda: "yek", value: "۱"),
-          Alefba.init(Seda: "do", value: "۲"),
-          Alefba.init(Seda: "se", value: "۳"),
-          Alefba.init(Seda: "char", value: "۴"),
-          Alefba.init(Seda: "panj", value: "۵"),
-          Alefba.init(Seda: "shesh", value: "۶"),
-          Alefba.init(Seda: "haft", value: "۷"),
-          Alefba.init(Seda: "hasht", value: "۸"),
-          Alefba.init(Seda: "noh", value: "۹"),
-          Alefba.init(Seda: "sefr", value: "۰")],
+        [[Harf.init(name: "yek",face: "۱", output: "۱", returnable: false, spaceReturnable: false),
+          Harf.init(name: "do",face: "۲", output: "۲", returnable: false, spaceReturnable: false),
+          Harf.init(name: "se",face: "۳", output: "۳", returnable: false, spaceReturnable: false),
+          Harf.init(name: "char",face: "۴", output: "۴", returnable: false, spaceReturnable: false),
+          Harf.init(name: "panj",face: "۵", output: "۵", returnable: false, spaceReturnable: false),
+          Harf.init(name: "shesh",face: "۶", output: "۶", returnable: false, spaceReturnable: false),
+          Harf.init(name: "haft",face: "۷", output: "۷", returnable: false, spaceReturnable: false),
+          Harf.init(name: "hasht",face: "۸", output: "۸", returnable: false, spaceReturnable: false),
+          Harf.init(name: "noh",face: "۹", output: "۹", returnable: false, spaceReturnable: false),
+          Harf.init(name: "sefr",face: "۰", output: "۰", returnable: false, spaceReturnable: false)],
          
          //second Row:
-            [Alefba.init(Seda: "mad", value: "~"),
-             Alefba.init(Seda: "bala", value: "^"),
-             Alefba.init(Seda: "dollar", value: "$"),
-             Alefba.init(Seda: "star", value: "*"),
-             Alefba.init(Seda: "darsad", value: "٪"),
-             Alefba.init(Seda: "mosavi", value: "="),
-             Alefba.init(Seda: "mosbat", value: "+"),
-             Alefba.init(Seda: "menha", value: "-"),
-             Alefba.init(Seda: "zarb", value: "×"),
-             Alefba.init(Seda: "taghsim", value: "÷")],
+            [Harf.init(name: "mad",face: "~", output: "~", returnable: false, spaceReturnable: false),
+             Harf.init(name: "bala",face: "^", output: "^", returnable: false, spaceReturnable: false),
+             Harf.init(name: "dollar",face: "$", output: "$", returnable: false, spaceReturnable: false),
+             Harf.init(name: "star",face: "*", output: "*", returnable: false, spaceReturnable: false),
+             Harf.init(name: "darsad",face: "٪", output: "٪", returnable: false, spaceReturnable: false),
+             Harf.init(name: "mosavi",face: "=", output: "=", returnable: false, spaceReturnable: false),
+             Harf.init(name: "mosbat",face: "+", output: "+", returnable: false, spaceReturnable: false),
+             Harf.init(name: "menha", face: "-",output: "-", returnable: false, spaceReturnable: false),
+             Harf.init(name: "zarb",face: "×", output: "×", returnable: false, spaceReturnable: false),
+             Harf.init(name: "taghsim",face: "÷", output: "÷", returnable: false, spaceReturnable: false)],
             
             //third Row:
-            [Alefba.init(Seda: "prime", value: "`"),
-             Alefba.init(Seda: "coma-pool", value: "،"),
-             Alefba.init(Seda: "euro", value: "€"),
-             Alefba.init(Seda: "register", value: "."),
-             Alefba.init(Seda: "Copyright", value: ":"),
-             Alefba.init(Seda: "small", value: "<"),
-             Alefba.init(Seda: "great", value: ">"),
-             Alefba.init(Seda: "pipe", value: "|")],
+            [Harf.init(name: "prime",face: "`", output: "`", returnable: false, spaceReturnable: false),
+             Harf.init(name: "coma-pool",face: "،", output: "،", returnable: false, spaceReturnable: false),
+             Harf.init(name: "euro",face: "€", output: "€", returnable: false, spaceReturnable: false),
+             Harf.init(name: "register",face: ".", output: ".", returnable: false, spaceReturnable: false),
+             Harf.init(name: "Copyright",face: ":", output: ":", returnable: false, spaceReturnable: false),
+             Harf.init(name: "small",face: "<", output: ">", returnable: false, spaceReturnable: false),
+             Harf.init(name: "great",face: ">", output: "<", returnable: false, spaceReturnable: false),
+             Harf.init(name: "pipe",face: "|", output: "|", returnable: false, spaceReturnable: true)],
             
             // fourht row:
-            [Alefba.init(Seda: "slash", value: "/"),
-             Alefba.init(Seda: "backslash", value: "\\")]]]
+            [Harf.init(name: "slash",face: "/", output: "/", returnable: false, spaceReturnable: false),
+             Harf.init(name: "backslash",face: "\\", output: "\\", returnable: false, spaceReturnable: false)]]]
     
     // the smiles are changable in main App
     var smile:[String] =  ["\u{1F600}","\u{1F601}","\u{1F602}","\u{1F60E}","\u{1F60D}","\u{1F618}","\u{0263A}","\u{1F61C}",
@@ -162,24 +160,19 @@ class KeyboardViewController: UIInputViewController, GPButtonEventsDelegate {
      *   - keyboard dimension and points  *
      *                                    *
      *************************************/
-    var keyboardWidth: CGFloat = 0    // should be calculated according to UIScreen
-    var keyboardHeight: CGFloat = 0   // should be calculated according to UIScreen
-    var keyboardHeightLandscape:CGFloat = 0 // should be calculated according to UIScreen
-    var keyboardWidthLandscape:CGFloat = 0  // should be calculated according to UIScreen
-    var gapHorizontal: CGFloat = 2.5    // in iPad screens should be multiply by 2
-    var gapVertical: CGFloat = 4        // in iPad Screen should be multiply by 2
+    
+    var gapHorizontal: CGFloat = 6    // in iPad screens should be multiply by 2
+    var gapVertical: CGFloat = 10        // in iPad Screen should be multiply by 2
     var alefbaButtonWidth: CGFloat = 0  // should be calculated according to UIScreen
-    var alefbaButtonHeight: CGFloat = 0 // should be calculated according to UIScreen
-    var marginRight:CGFloat = 3  // in iPad screen it should be multiply by 2
-    var marginLeft:CGFloat = 3  // in iPad screen it should be multiply by 2
-    var marginBottom:CGFloat = 3  // in iPad screen it should be multiply by 2
+    var allButtonHeight: CGFloat = 0 // should be calculated according to UIScreen
+    var numberButtonWidth: CGFloat = 0  // should be calculated according to UIScreen
+    var emojiButtonWidth: CGFloat = 0
+    var emojiButtonHeight: CGFloat = 0
     var marginTop:CGFloat = 10     // in iPad screen it should be multiply by 2
-    var shift: Bool = false         // show state of shift button
-    var currentLayout: Int = 0
+    var shift: Bool = true         // show state of shift button
     var deleting: Bool = false  // when it is true, continuing deleting characters
     var deleteTimer: TimeInterval = 0.3    // it will accelerate deleting upto 500 milisecond
     var timer:Timer!
-    var aButtonTouched:Bool = false
     
     // colors
     var buttonBackground = UIColor.white    // color of button in noraml state
@@ -193,72 +186,39 @@ class KeyboardViewController: UIInputViewController, GPButtonEventsDelegate {
     var buttonBorderColor = UIColor.gray.cgColor
     var makeButtonBiggerBackground = UIColor(red:0.90, green:0.89, blue:0.89, alpha:1.0)
     
-    /*******    Keyboard layers     *********/
-    var mainViewPortrait: UIView!
-    let shiftViewPortrait: UIView = UIView()
-    let numberViewPortrait: UIView = UIView()
-    var mainViewLandscape: UIView = UIView()
-    let shiftViewLandscape:UIView = UIView()
-    let numberViewLandscape:UIView = UIView()
+    /*******    Layout variabels     *********/
+    var alefbaLayout: UIView!
+    var numberButtons:[[GPButton]]!
     
-    // show alphabet above the touched button
-    var shower:UILabel = UILabel()
-    var lastTouchedButton: UIButton!
+    var numberLayout: UIView!
+    var alefbaButtons:[[GPButton]]!
+    
     
     /*******  user pref variables   ********/
     var emojiState = 0
-    /****************************************
-     *                                       *
-     *   Main function to initial keyboard   *
-     *                                       *
-     ****************************************/
     
-    func initAlefba(){
+    
+    
+    
+    /******************************************
+     *                                        *
+     *   initial Alefba Layout                *
+     *                                        *
+     *****************************************/
+    
+    func initAlefbaLayout(){
         // TODO: background should be checked here
-        mainViewPortrait.backgroundColor = viewBackground
+        alefbaLayout.backgroundColor = viewBackground
         
         // setup tap detection for background view
         let tap = UITapGestureRecognizer(target: self, action: #selector(getCharacterFromNearestButton(_:)))
         tap.numberOfTouchesRequired = 1
         tap.numberOfTapsRequired = 1
-        // TODO: what does is it?!
-        tap.requiresExclusiveTouchType = false
-        mainViewPortrait.addGestureRecognizer(tap)
-        // TODO: UIscreen should check here and assign respectively
-        gapVertical = 10
-        gapHorizontal = 6
+        alefbaLayout.addGestureRecognizer(tap)
         
-        // calculate values that need to put the buttons on the layer based different UIScreens sizes
-        alefbaButtonWidth = (keyboardWidth - (10 * gapHorizontal) - marginLeft - marginRight) / 11
-        // TODO: how should we calculate it?
-        alefbaButtonHeight = alefbaButtonWidth * 1.5
+        alefbaButtons = [[GPButton]]()
         
-        // calculate the heigh of buttons
-        let prefs = UserDefaults(suiteName: "group.me.alirezak.gpkeys")
-        if let val = prefs?.integer(forKey: "emojiState") {
-            emojiState = val
-            
-        }
-        else
-        {
-            emojiState = 0
-        }
-
-        if emojiState == 0
-        {
-            marginTop = 20  // TODO which value is the best
-        }
-        
-        var alefbaButtons = [[GPButton]]()
-        
-        
-        /*****************************************
-         *                                        *
-         *   initial Smily row                    *
-         *                                        *
-         *****************************************/
         // check user setting if he want to use smily. Also
-        print("emojiState:\(emojiState)")
         if emojiState == 1
         {
             var rowButtons = [GPButton]()
@@ -267,32 +227,30 @@ class KeyboardViewController: UIInputViewController, GPButtonEventsDelegate {
                 let btn = GPButton(with: .EMOJI)
                 btn.label?.text = smile[i]
                 rowButtons.append(btn)
-                btn.addTarget(self, action: #selector(self.buttonTouched(_:)), for: .touchUpInside)
-                mainViewPortrait.addSubview(btn)
+                btn.backLayerInsetX = 0
+                btn.backLayerInsetY = 0
+                btn.addTarget(self, action: #selector(self.emojiTouched(_:)), for: .touchUpInside)
+                alefbaLayout.addSubview(btn)
 
             }
             alefbaButtons.append(rowButtons)
         }
         
-        /*****************************************
-         *                                        *
-         *   initial all alfabet button           *
-         *                                        *
-         *****************************************/
         
-        for i in 0..<alphabets[0].count
+        for i in 0..<characters[0].count
         {
             var rowButtons = [GPButton]()
-            for j in 0..<alphabets[0][i].count
+            for j in 0..<characters[0][i].count
             {
                 let btn = GPButton(with: .CHAR)
                 
-                btn.label?.text = alphabets[0][i][j].value
+                btn.harf = characters[0][i][j]
                 rowButtons.append(btn)
+                btn.backLayerInsetX = gapHorizontal / 2
+                btn.backLayerInsetY = gapVertical / 2
                 btn.isExclusiveTouch = true
-                btn.addTarget(self, action: #selector(self.buttonTouched(_:)), for: .touchUpInside)
-                btn.addTarget(self, action: #selector(self.buttonTouched(_:)), for: .touchDragInside)
-                mainViewPortrait.addSubview(btn)
+                btn.addTarget(self, action: #selector(self.charTouched(_:)), for: .touchUpInside)
+                alefbaLayout.addSubview(btn)
             }
             alefbaButtons.append(rowButtons)
         }
@@ -301,147 +259,156 @@ class KeyboardViewController: UIInputViewController, GPButtonEventsDelegate {
         let shiftButton = GPButton(with: .SHIFT)
         shiftButton.addTarget(self, action: #selector(self.utilTouched(sender:)), for: .touchUpInside)
         shiftButton.label?.text = ".؟!"
+        shiftButton.backLayerInsetX = gapHorizontal / 2
+        shiftButton.backLayerInsetY = gapVertical / 2
         alefbaButtons[emojiState + 2].insert(shiftButton, at: 0)
-        mainViewPortrait.addSubview(shiftButton)
+        alefbaLayout.addSubview(shiftButton)
         
         let deleteButton = GPButton(with: .DELETE)
         deleteButton.addTarget(self, action: #selector(self.deleteTouchDown(sender:)), for: .touchDown)
         deleteButton.addTarget(self, action: #selector(self.deleteTouchUp(_:)), for: .touchUpInside)
         deleteButton.addTarget(self, action: #selector(self.deleteTouchUp(_:)), for: .touchUpOutside)
         deleteButton.label?.text = "dele"
+        deleteButton.backLayerInsetX = gapHorizontal / 2
+        deleteButton.backLayerInsetY = gapVertical / 2
         alefbaButtons[emojiState + 2].insert(deleteButton, at: alefbaButtons[emojiState + 2].count)
-        mainViewPortrait.addSubview(deleteButton)
+        alefbaLayout.addSubview(deleteButton)
         
         let numberButton = GPButton(with: .NUMBER)
         numberButton.addTarget(self, action: #selector(self.utilTouched(sender:)), for: .touchUpInside)
         numberButton.label?.text = "۱۲۳"
+        numberButton.backLayerInsetX = gapHorizontal / 2
+        numberButton.backLayerInsetY = gapVertical / 2
         alefbaButtons[emojiState + 3].insert(numberButton, at: 0)
-        mainViewPortrait.addSubview(numberButton)
+        alefbaLayout.addSubview(numberButton)
         
         let globeButton = GPButton(with: .GLOBE)
-//        globeButton.addTarget(self, action: #selector(advanceToNextInputMode), for: .touchUpInside)
-        if #available(iOSApplicationExtension 10.0, *) {
-            globeButton.addTarget(self, action: #selector(handleInputModeList(from:with:)), for: .touchDown)
-        } else {
-            globeButton.addTarget(self, action: #selector(advanceToNextInputMode), for: .touchDown)
-        }
+        globeButton.backLayerInsetX = gapHorizontal / 2
+        globeButton.backLayerInsetY = gapVertical / 2
         globeButton.label?.text = "globe"
         alefbaButtons[emojiState + 3].insert(globeButton, at: 1)
-        mainViewPortrait.addSubview(globeButton)
+        alefbaLayout.addSubview(globeButton)
+        globeButton.addTarget(self, action: #selector(advanceToNextInputMode), for: .touchDown)
         
         let spaceButton = GPButton(with: .SPACE)
         spaceButton.label?.text = "فاصله"
+        spaceButton.backLayerInsetX = gapHorizontal / 2
+        spaceButton.backLayerInsetY = gapVertical / 2
         spaceButton.addTarget(self, action: #selector(self.utilTouched(sender:)), for: .touchUpInside)
         alefbaButtons[emojiState + 3].insert(spaceButton, at: 3)
-        mainViewPortrait.addSubview(spaceButton)
+        alefbaLayout.addSubview(spaceButton)
         
         let enterButton = GPButton(with: .ENTER)
         enterButton.addTarget(self, action: #selector(self.utilTouched(sender:)), for: .touchUpInside)
         enterButton.label?.text = "enter"
+        enterButton.backLayerInsetX = gapHorizontal / 2
+        enterButton.backLayerInsetY = gapVertical / 2
         alefbaButtons[emojiState + 3].insert(enterButton, at: 5)
-        mainViewPortrait.addSubview(enterButton)
-        print("marginTop: \(marginTop)")
-        setConstraints(buttons: alefbaButtons, kbLayout: mainViewPortrait, VSpace: gapVertical, HSpace: gapHorizontal, topSpace: marginTop, rightSpace: marginRight, bottomSpace: marginBottom, leftSpace: marginLeft)
+        alefbaLayout.addSubview(enterButton)
         
-        //self.view.updateConstraints()
-        // make tag to 1: it means we initialized main layer
-        mainViewPortrait.tag = 1
-        // END OF ALEFBA LAYER
+        // calculate constraints
+        setAlefbaConstraints(buttons: alefbaButtons, kbLayout: alefbaLayout, topSpace: marginTop, buttonWidth: alefbaButtonWidth, buttonHeight: allButtonHeight)
         
+        // I do it by hand! because it is different with numberlayout
+        alefbaLayout.addConstraint(NSLayoutConstraint(item: shiftButton, attribute: .width, relatedBy: .equal, toItem: deleteButton, attribute: .width, multiplier: 1, constant: 0))
     }
     
-    func setConstraints(buttons: [[GPButton]], kbLayout: UIView, VSpace: CGFloat, HSpace: CGFloat,
-                        topSpace:CGFloat, rightSpace: CGFloat, bottomSpace: CGFloat, leftSpace: CGFloat)
-    {
+    /******************************************
+     *                                        *
+     *   initial Number Layout                *
+     *                                        *
+     *****************************************/
+    
+    func initNumberLayout(){
+        // TODO: background should be checked here
+        numberLayout.backgroundColor = viewBackground
+    
+        numberButtons = [[GPButton]]()
         
-        var constraints = [NSLayoutConstraint]()
-        constraints.append(NSLayoutConstraint(item: buttons[emojiState][0], attribute: .width, relatedBy: .equal, toItem: nil, attribute: .width, multiplier: 1, constant: alefbaButtonWidth))
-        constraints.append(NSLayoutConstraint(item: buttons[emojiState][0], attribute: .height, relatedBy: .equal, toItem: nil, attribute: .width, multiplier: 1, constant: alefbaButtonHeight))
-
-        for i in 0..<buttons.count
+        // check user setting if he want to use smily. Also
+        if emojiState == 1
         {
-            for j in 0..<buttons[i].count
+            var rowButtons = [GPButton]()
+            for i in 0...10
             {
+                let btn = GPButton(with: .EMOJI)
+                btn.label?.text = smile[i]
+                rowButtons.append(btn)
+                btn.backLayerInsetX = 0
+                btn.backLayerInsetY = 0
+                btn.addTarget(self, action: #selector(self.emojiTouched(_:)), for: .touchUpInside)
+                numberLayout.addSubview(btn)
                 
-                
-                // it is first row, so it should stick to top of the kbLayout
-                if i==0
-                {
-                    constraints.append(NSLayoutConstraint(item: buttons[i][j], attribute: .top, relatedBy: .equal, toItem: kbLayout, attribute: .top, multiplier: 1, constant: topSpace))
-                }
-                
-                // it is first button of i-th row. so it should be stick to left edge
-                if j==0
-                {
-                    constraints.append(NSLayoutConstraint(item: buttons[i][j], attribute: .left, relatedBy: .equal, toItem: kbLayout, attribute: .left, multiplier: 1, constant: leftSpace))
-                }
-                
-                // it is the last row, so it should be sticked to bottom of the kbLayout
-                if i == buttons.count-1
-                {
-                    constraints.append(NSLayoutConstraint(item: buttons[i][j], attribute: .bottom, relatedBy: .equal, toItem: kbLayout, attribute: .bottom, multiplier: 1, constant: bottomSpace * -1))
-                }
-                
-                // it is the last button of i-th row, it should be stick to the right side of kbLayout
-                if j == buttons[i].count-1
-                {
-                    constraints.append(NSLayoutConstraint(item: buttons[i][j], attribute: .right, relatedBy: .equal, toItem: kbLayout, attribute: .right, multiplier: 1, constant: rightSpace * -1))
-                }
-                
-                // set all buttons in i-th row equal to Horizontal gap
-                if j > 0
-                {
-                    constraints.append(NSLayoutConstraint(item: buttons[i][j], attribute: .left, relatedBy: .equal, toItem: buttons[i][j-1], attribute: .right, multiplier: 1, constant: HSpace))
-                }
-
-                if i > 0
-                {
-                    constraints.append(NSLayoutConstraint(item: buttons[i][j], attribute: .top, relatedBy: .equal, toItem: buttons[i-1][j], attribute: .bottom, multiplier: 1, constant: VSpace))
-                }
-                
-                let type = buttons[i][j].type!
-                // all buttons should have same height (except emoji buttons)
-                if type != .EMOJI
-                {
-                    constraints.append(NSLayoutConstraint(item: buttons[i][j], attribute: .height, relatedBy: .equal, toItem: buttons[emojiState][0], attribute: .height, multiplier: 1, constant: 0))
-                }
-                
-                // assign width constraint to buttons according to its characteristic
-                switch type
-                {
-                case .CHAR:
-                    constraints.append(NSLayoutConstraint(item: buttons[i][j], attribute: .width, relatedBy: .equal, toItem: buttons[emojiState][0], attribute: .width, multiplier: 1, constant: 0))
-                    break
-                case .EMOJI:
-                    constraints.append(NSLayoutConstraint(item: buttons[i][j], attribute: .width, relatedBy: .equal, toItem: buttons[emojiState][0], attribute: .width, multiplier: 1, constant: 0))
-                    constraints.append(NSLayoutConstraint(item: buttons[i][j], attribute: .height, relatedBy: .equal, toItem: buttons[emojiState][0], attribute: .width, multiplier: 1, constant: 0))
-                    break
-                case .SHIFT, .DELETE:
-                    constraints.append(NSLayoutConstraint(item: buttons[i][j], attribute: .width, relatedBy: .greaterThanOrEqual, toItem: buttons[emojiState][0], attribute: .width, multiplier: 1.5, constant: 0))
-                    break
-                case .ENTER:
-                    constraints.append(NSLayoutConstraint(item: buttons[i][j], attribute: .width, relatedBy: .equal, toItem: buttons[emojiState][0], attribute: .width, multiplier: 1.75, constant: 0))
-                    break
-                case .SPACE:
-                    constraints.append(NSLayoutConstraint(item: buttons[i][j], attribute: .width, relatedBy: .greaterThanOrEqual, toItem: buttons[emojiState][0], attribute: .width, multiplier: 4, constant: 0))
-                    break
-                case .GLOBE, .NUMBER:
-                    constraints.append(NSLayoutConstraint(item: buttons[i][j], attribute: .width, relatedBy: .equal, toItem: buttons[emojiState][0], attribute: .width, multiplier: 1.25, constant: 0))
-                    break
-                default:
-                    break;
-                }
             }
+            numberButtons.append(rowButtons)
         }
-
-        // set the width of shift and delete button to equal width
-        constraints.append(NSLayoutConstraint(item: buttons[emojiState + 2][0], attribute: .width, relatedBy: .equal, toItem: buttons[emojiState + 2][9], attribute: .width, multiplier: 1, constant: 0))
         
         
-        kbLayout.addConstraints(constraints)
+        
+        for i in 0..<characters[2].count
+        {
+            var rowButtons = [GPButton]()
+            for j in 0..<characters[2][i].count
+            {
+                let btn = GPButton(with: .CHAR)
+                
+                btn.harf = characters[2][i][j]
+                rowButtons.append(btn)
+                btn.backLayerInsetX = gapHorizontal / 2
+                btn.backLayerInsetY = gapVertical / 2
+                btn.isExclusiveTouch = true
+                btn.addTarget(self, action: #selector(self.charTouched(_:)), for: .touchUpInside)
+                numberLayout.addSubview(btn)
+            }
+            numberButtons.append(rowButtons)
+        }
+        // add all util function
+        let deleteButton = GPButton(with: .DELETE)
+        deleteButton.addTarget(self, action: #selector(self.deleteTouchDown(sender:)), for: .touchDown)
+        deleteButton.addTarget(self, action: #selector(self.deleteTouchUp(_:)), for: .touchUpInside)
+        deleteButton.addTarget(self, action: #selector(self.deleteTouchUp(_:)), for: .touchUpOutside)
+        deleteButton.label?.text = "dele"
+        deleteButton.backLayerInsetX = gapHorizontal / 2
+        deleteButton.backLayerInsetY = gapVertical / 2
+        numberButtons[emojiState + 2].insert(deleteButton, at: numberButtons[emojiState + 2].count)
+        numberLayout.addSubview(deleteButton)
+        
+        let numberButton = GPButton(with: .NUMBER)
+        numberButton.addTarget(self, action: #selector(self.utilTouched(sender:)), for: .touchUpInside)
+        numberButton.label?.text = "الفبا"
+        numberButton.backLayerInsetX = gapHorizontal / 2
+        numberButton.backLayerInsetY = gapVertical / 2
+        numberButtons[emojiState + 3].insert(numberButton, at: 0)
+        numberLayout.addSubview(numberButton)
+        
+        let globeButton = GPButton(with: .GLOBE)
+        globeButton.backLayerInsetX = gapHorizontal / 2
+        globeButton.backLayerInsetY = gapVertical / 2
+        globeButton.label?.text = "globe"
+        numberButtons[emojiState + 3].insert(globeButton, at: 1)
+        numberLayout.addSubview(globeButton)
+        globeButton.addTarget(self, action: #selector(advanceToNextInputMode), for: .touchDown)
+        
+        let spaceButton = GPButton(with: .SPACE)
+        spaceButton.label?.text = "نیم‌فاصله"
+        spaceButton.backLayerInsetX = gapHorizontal / 2
+        spaceButton.backLayerInsetY = gapVertical / 2
+        spaceButton.addTarget(self, action: #selector(self.utilTouched(sender:)), for: .touchUpInside)
+        numberButtons[emojiState + 3].insert(spaceButton, at: 3)
+        numberLayout.addSubview(spaceButton)
+        
+        let enterButton = GPButton(with: .ENTER)
+        enterButton.addTarget(self, action: #selector(self.utilTouched(sender:)), for: .touchUpInside)
+        enterButton.label?.text = "enter"
+        enterButton.backLayerInsetX = gapHorizontal / 2
+        enterButton.backLayerInsetY = gapVertical / 2
+        numberButtons[emojiState + 3].insert(enterButton, at: 5)
+        numberLayout.addSubview(enterButton)
+        
+        // Calculate constraint
+        setNumbersConstraints(buttons: numberButtons, kbLayout: numberLayout, topSpace: marginTop, buttonWidth: numberButtonWidth, buttonHeight: allButtonHeight)
+        
     }
-    
-    
     /************************************
     *       DELETE FUNCTION             *
     ************************************/
@@ -466,11 +433,18 @@ class KeyboardViewController: UIInputViewController, GPButtonEventsDelegate {
             {
                 deleteTimer -= 0.08
             }
-            if proxy.hasText && proxy.documentContextBeforeInput != nil
+            if proxy.documentContextBeforeInput != nil
             {
                 timer = Timer.scheduledTimer(timeInterval: deleteTimer, target: self, selector: #selector(doDeleting), userInfo: nil, repeats: false)
                 playSound(for: delSound)
             }
+            else
+            {
+                proxy.deleteBackward()
+                timer = Timer.scheduledTimer(timeInterval: deleteTimer, target: self, selector: #selector(doDeleting), userInfo: nil, repeats: false)
+                
+            }
+            
         }
     }
     // set deleting boolean value to false with this event
@@ -484,11 +458,6 @@ class KeyboardViewController: UIInputViewController, GPButtonEventsDelegate {
     /************************************
      *       UTIL  FUNCTION             *
      ************************************/
-    func toChar(s:String, i:Int) -> Character
-    {
-        let arr = Array(s.characters)
-        return arr[i]
-    }
     
     func utilTouched(sender: GPButton)
     {
@@ -505,29 +474,21 @@ class KeyboardViewController: UIInputViewController, GPButtonEventsDelegate {
             self.advanceToNextInputMode()
             break
         case .SHIFT:
+            playSound(for: utilSound)
+            doShift(shifting: shift)
             shift = !shift
-            if shift
-            {
-                currentLayout = 1
-                layerManager(layer: 1)
-            }
-            else
-            {
-                currentLayout = 0
-                layerManager(layer: 0)
-            }
             break
         case .NUMBER:
-            shift = false
-            if currentLayout == 2    // it means already we are in Number Layer
+            playSound(for: utilSound)
+            if alefbaLayout.layer.opacity == 0
             {
-                currentLayout = 0   // so we shoulf change to Alefba layer
-                layerManager(layer: currentLayout)
+                numberLayout.layer.opacity = 0
+                alefbaLayout.layer.opacity = 1
             }
             else
             {
-                currentLayout = 2
-                layerManager(layer: currentLayout)
+                alefbaLayout.layer.opacity = 0
+                numberLayout.layer.opacity = 1
             }
             break
         case .ENTER:
@@ -537,9 +498,6 @@ class KeyboardViewController: UIInputViewController, GPButtonEventsDelegate {
         case .HALBSPACE:
             playSound(for: utilSound)
             proxy.insertText("\u{200C}")
-            shift = false
-            currentLayout = 0
-            layerManager(layer: currentLayout)
             break
         default:
             break
@@ -547,162 +505,103 @@ class KeyboardViewController: UIInputViewController, GPButtonEventsDelegate {
     }
     
     /************************************
-     *       ALEFBA FUNCTION            *
+     *       SHIFT FUNCTION             *
+     ************************************/
+    func doShift(shifting:Bool)
+    {
+        if shifting
+        {
+            if emojiState == 1
+            {
+                for i in 0...10
+                {
+                    alefbaButtons[0][i].label?.text = smile[i+11]
+                    
+                }
+            }
+            // row 1 and 2
+            for i in 0...1
+            {
+                for j in 0...10
+                {
+                    alefbaButtons[emojiState + i][j].harf = characters[1][i][j]
+                }
+            }
+            
+            // row 3 is include shift and delete button
+            for j in 1...8
+            {
+                alefbaButtons[emojiState + 2][j].harf = characters[1][2][j-1]
+            }
+            // 4th row, the buttons beside the space
+            alefbaButtons[emojiState + 3][2].harf = characters[1][3][0]
+            alefbaButtons[emojiState + 3][4].harf = characters[1][3][1]
+            // half space
+            alefbaButtons[emojiState + 3][3].label?.text = "نیم‌فاصله"
+        }
+        else
+        {
+            if emojiState == 1
+            {
+                for i in 0...10
+                {
+                    alefbaButtons[0][i].label?.text = smile[i]
+                    
+                }
+            }
+            // row 1 and 2
+            for i in 0...1
+            {
+                for j in 0...10
+                {
+                    alefbaButtons[emojiState + i][j].harf = characters[0][i][j]
+                }
+            }
+            
+            // row 3 is include shift and delete button
+            for j in 1...8
+            {
+                alefbaButtons[emojiState + 2][j].harf = characters[0][2][j-1]
+            }
+            // 4th row, the buttons beside the space
+            alefbaButtons[emojiState + 3][2].harf = characters[0][3][0]
+            alefbaButtons[emojiState + 3][4].harf = characters[0][3][1]
+            // half space
+            alefbaButtons[emojiState + 3][3].label?.text = "فاصله"
+        }
+    }
+    
+    /************************************
+     *       OTHER  FUNCTION            *
      ************************************/
     // add character into textfield
-    func buttonTouched(_ sender: GPButton)
+    func charTouched(_ sender: GPButton)
+    {
+        playSound(for: charSound)
+        let proxy = textDocumentProxy as UITextDocumentProxy
+        guard let char = sender.harf?.output else {return}
+        proxy.insertText(char)
+    }
+    
+    func emojiTouched(_ sender: GPButton)
     {
         playSound(for: charSound)
         let proxy = textDocumentProxy as UITextDocumentProxy
         guard let char = sender.label?.text else {return}
         proxy.insertText(char)
     }
-    
-    // a button in shift layer touched
-    func shiftButtonTouched(_ sender: UIButton)
-    {
-        playSound(for: utilSound)
-        let proxy = textDocumentProxy as UITextDocumentProxy
-        proxy.insertText(sender.currentTitle!)
-        // return layout to main view
-        shift = false
-        currentLayout = 0
-        layerManager(layer: currentLayout)
-        
-    }
-    
-    // special shift function for (){}[] «»
-    func signButtonTouched(_ sender: UIButton)
-    {
-        playSound(for: charSound)
-        let proxy = textDocumentProxy as UITextDocumentProxy
-        let char = sender.currentTitle!
-        switch char {
-        case ")":
-            proxy.insertText("(")
-            break
-        case "(":
-            proxy.insertText(")")
-            break
-        case "{":
-            proxy.insertText("}")
-            break
-        case "}":
-            proxy.insertText("{")
-            break
-        case "[":
-            proxy.insertText("]")
-            break
-        case "]":
-            proxy.insertText("[")
-            break
-        case "«":
-            proxy.insertText("»")
-            break
-        case "»":
-            proxy.insertText("«")
-            break
-        default:
-            print("invalid sign character")
-        }
 
-        // return layout to main view
-        shift = false
-        currentLayout = 0
-        layerManager(layer: currentLayout)
-        
-    }
-    
-
-    /************************************
-     *       OTHER  FUNCTION            *
-     ************************************/
-
-    func getDistance(a1:CGFloat, b1:CGFloat, a2:CGFloat, b2:CGFloat) -> CGFloat
-    {
-        let deltaA:CGFloat = a1 - a2
-        let deltaB:CGFloat = b1 - b2
-        return CGFloat(sqrtf(Float((deltaA * deltaA)) + Float((deltaB * deltaB))))
-    }
-    // and the number of Layer: 0 = Main Layer , 1= Shift Layer, 2= numbers layer
-    func layerManager(layer: Int)
-    {
-        if UIScreen.main.bounds.size.height > UIScreen.main.bounds.size.width
-        {
-            switch layer {
-            case 0:
-                mainViewPortrait = UIView()
-                mainViewPortrait.translatesAutoresizingMaskIntoConstraints = false
-                
-                self.view.addSubview(mainViewPortrait)
-                mainViewPortrait.topAnchor.constraint(equalTo: self.view.topAnchor).isActive = true
-                mainViewPortrait.rightAnchor.constraint(equalTo: self.view.rightAnchor).isActive = true
-                mainViewPortrait.bottomAnchor.constraint(equalTo: self.view.bottomAnchor).isActive = true
-                mainViewPortrait.leftAnchor.constraint(equalTo: self.view.leftAnchor).isActive = true
-                initAlefba()
-
-                break
-            case 1:
-                if shiftViewPortrait.tag == 0
-                {
-                    //initShift()
-                }
-                self.view = shiftViewPortrait
-                break
-            case 2:
-                if numberViewPortrait.tag == 0
-                {
-                    //initNumber()
-                }
-                self.view = numberViewPortrait
-                break
-            default:
-                print("strange sitation in layer landscape \"mode\" manager")
-                break
-            }
-        }
-        else
-        {
-            switch layer {
-            case 0:
-                if mainViewLandscape.tag == 0
-                {
-                    //initAlefbaLandscape()
-                }
-                self.view = mainViewLandscape
-                break
-            case 1:
-                if shiftViewLandscape.tag == 0
-                {
-                    //initShiftLandscape()
-                }
-                self.view = shiftViewLandscape
-                break
-            case 2:
-                if numberViewLandscape.tag == 0
-                {
-                    //initNumberLandscape()
-                    
-                }
-                self.view = numberViewLandscape
-                break
-            default:
-                print("strange sitation in layer manager")
-                break
-            }
-        }
-    }
 
     func playSound(for type:UInt32)
     {
         // mute mode
-        if soundID == 0
+        if SoundState == 0
         {
             return  // Quiet! >:/
         }
         
         // vibrate mode
-        if soundID == 1
+        if SoundState == 1
         {
             AudioServicesPlaySystemSound(vibSound)
             return
@@ -714,45 +613,179 @@ class KeyboardViewController: UIInputViewController, GPButtonEventsDelegate {
     
     func getCharacterFromNearestButton(_ sender: UITapGestureRecognizer)
     {
-        return
-        if let v = sender.view
+        let loc = sender.location(in: sender.view)
+        if loc.y < 20 && emojiState == 0
         {
-            var distanceToClosestButton:CGFloat = 9999
-            let touchLocation = sender.location(in: v)
-            var button: GPButton = GPButton()
-            for case let b as GPButton in v.subviews
-            {
-                if b.frame.contains(touchLocation)
-                {
-                    return  // stop from double typing!
-                }
-                let currentButtonDistance = getDistance(a1: b.frame.midX, b1: b.frame.midY, a2: touchLocation.x, b2: touchLocation.y)
-                if currentButtonDistance < distanceToClosestButton
-                {
-                    button = b
-                    distanceToClosestButton = currentButtonDistance
-                }
-            }
-            
-            let type = button.type!
-            
-            
-            switch type {
-            case .CHAR:
-                // TODO: popup?!
-                // set user default sound on tap
-                playSound(for: charSound)
-                let proxy = textDocumentProxy as UITextDocumentProxy
-                proxy.insertText((button.label?.text)!)
-                break
-            case .DELETE, .GLOBE, .EMOJI, .ENTER, .HALBSPACE, .NUMBER, .SHIFT, .SPACE:
-                utilTouched(sender: button)
-                break
-            }
+            dismissKeyboard()
         }
+        
     }
     
+    func setAlefbaConstraints(buttons: [[GPButton]], kbLayout: UIView, topSpace:CGFloat, buttonWidth:CGFloat, buttonHeight: CGFloat)
+    {
+        var constraints = [NSLayoutConstraint]()
+        constraints.append(NSLayoutConstraint(item: buttons[emojiState][0], attribute: .width, relatedBy: .equal, toItem: nil, attribute: .width, multiplier: 1, constant: buttonWidth))
+        constraints.append(NSLayoutConstraint(item: buttons[emojiState][0], attribute: .height, relatedBy: .equal, toItem: nil, attribute: .width, multiplier: 1, constant: buttonHeight))
+        
+        for i in 0..<buttons.count
+        {
+            for j in 0..<buttons[i].count
+            {
+                
+                
+                // it is first row, so it should stick to top of the kbLayout
+                if i==0
+                {
+                    constraints.append(NSLayoutConstraint(item: buttons[i][j], attribute: .top, relatedBy: .equal, toItem: kbLayout, attribute: .top, multiplier: 1, constant: topSpace))
+                }
+                
+                // it is first button of i-th row. so it should be stick to left edge
+                if j==0
+                {
+                    constraints.append(NSLayoutConstraint(item: buttons[i][j], attribute: .left, relatedBy: .equal, toItem: kbLayout, attribute: .left, multiplier: 1, constant: 0))
+                }
+                
+                // it is the last row, so it should be sticked to bottom of the kbLayout
+                if i == buttons.count-1
+                {
+                    constraints.append(NSLayoutConstraint(item: buttons[i][j], attribute: .bottom, relatedBy: .equal, toItem: kbLayout, attribute: .bottom, multiplier: 1, constant: 0 * -1))
+                }
+                
+                // it is the last button of i-th row, it should be stick to the right side of kbLayout
+                if j == buttons[i].count-1
+                {
+                    constraints.append(NSLayoutConstraint(item: buttons[i][j], attribute: .right, relatedBy: .equal, toItem: kbLayout, attribute: .right, multiplier: 1, constant: 0 * -1))
+                }
+                
+                // set all buttons in i-th row equal to Horizontal gap
+                if j > 0
+                {
+                    constraints.append(NSLayoutConstraint(item: buttons[i][j], attribute: .left, relatedBy: .equal, toItem: buttons[i][j-1], attribute: .right, multiplier: 1, constant: 0))
+                }
+                
+                if i > 0
+                {
+                    constraints.append(NSLayoutConstraint(item: buttons[i][j], attribute: .top, relatedBy: .equal, toItem: buttons[i-1][j], attribute: .bottom, multiplier: 1, constant: 0))
+                }
+                
+                let type = buttons[i][j].type!
+                // all buttons should have same height (except emoji buttons)
+                if type != .EMOJI
+                {
+                    constraints.append(NSLayoutConstraint(item: buttons[i][j], attribute: .height, relatedBy: .equal, toItem: buttons[emojiState][0], attribute: .height, multiplier: 1, constant: 0))
+                }
+                
+                // assign width constraint to buttons according to its characteristic
+                switch type
+                {
+                case .CHAR:
+                    constraints.append(NSLayoutConstraint(item: buttons[i][j], attribute: .width, relatedBy: .equal, toItem: buttons[emojiState][0], attribute: .width, multiplier: 1, constant: 0))
+                    break
+                case .EMOJI:
+                    constraints.append(NSLayoutConstraint(item: buttons[i][j], attribute: .width, relatedBy: .equal, toItem: nil, attribute: .width, multiplier: 1, constant: emojiButtonWidth))
+                    constraints.append(NSLayoutConstraint(item: buttons[i][j], attribute: .height, relatedBy: .equal, toItem: nil, attribute: .width, multiplier: 1, constant: emojiButtonHeight))
+                    break
+                case .SHIFT, .DELETE:
+                    constraints.append(NSLayoutConstraint(item: buttons[i][j], attribute: .width, relatedBy: .greaterThanOrEqual, toItem: buttons[emojiState][0], attribute: .width, multiplier: 1.5, constant: 0))
+                    break
+                case .ENTER:
+                    constraints.append(NSLayoutConstraint(item: buttons[i][j], attribute: .width, relatedBy: .equal, toItem: buttons[emojiState][0], attribute: .width, multiplier: 1.75, constant: 0))
+                    break
+                case .SPACE, .HALBSPACE:
+                    constraints.append(NSLayoutConstraint(item: buttons[i][j], attribute: .width, relatedBy: .greaterThanOrEqual, toItem: buttons[emojiState][0], attribute: .width, multiplier: 3, constant: 0))
+                    break
+                case .GLOBE, .NUMBER:
+                    constraints.append(NSLayoutConstraint(item: buttons[i][j], attribute: .width, relatedBy: .equal, toItem: buttons[emojiState][0], attribute: .width, multiplier: 1.25, constant: 0))
+                    break
+                }
+            }
+        }
+        
+        kbLayout.addConstraints(constraints)
+    }
 
+    func setNumbersConstraints(buttons: [[GPButton]], kbLayout: UIView, topSpace:CGFloat, buttonWidth:CGFloat, buttonHeight: CGFloat)
+    {
+        var constraints = [NSLayoutConstraint]()
+        constraints.append(NSLayoutConstraint(item: buttons[emojiState][0], attribute: .width, relatedBy: .equal, toItem: nil, attribute: .width, multiplier: 1, constant: buttonWidth))
+        constraints.append(NSLayoutConstraint(item: buttons[emojiState][0], attribute: .height, relatedBy: .equal, toItem: nil, attribute: .width, multiplier: 1, constant: buttonHeight))
+        
+        for i in 0..<buttons.count
+        {
+            for j in 0..<buttons[i].count
+            {
+                
+                
+                // it is first row, so it should stick to top of the kbLayout
+                if i==0
+                {
+                    constraints.append(NSLayoutConstraint(item: buttons[i][j], attribute: .top, relatedBy: .equal, toItem: kbLayout, attribute: .top, multiplier: 1, constant: topSpace))
+                }
+                
+                // it is first button of i-th row. so it should be stick to left edge
+                if j==0
+                {
+                    constraints.append(NSLayoutConstraint(item: buttons[i][j], attribute: .left, relatedBy: .equal, toItem: kbLayout, attribute: .left, multiplier: 1, constant: 0))
+                }
+                
+                // it is the last row, so it should be sticked to bottom of the kbLayout
+                if i == buttons.count-1
+                {
+                    constraints.append(NSLayoutConstraint(item: buttons[i][j], attribute: .bottom, relatedBy: .equal, toItem: kbLayout, attribute: .bottom, multiplier: 1, constant: 0 * -1))
+                }
+                
+                // it is the last button of i-th row, it should be stick to the right side of kbLayout
+                if j == buttons[i].count-1
+                {
+                    constraints.append(NSLayoutConstraint(item: buttons[i][j], attribute: .right, relatedBy: .equal, toItem: kbLayout, attribute: .right, multiplier: 1, constant: 0 * -1))
+                }
+                
+                // set all buttons in i-th row equal to Horizontal gap
+                if j > 0
+                {
+                    constraints.append(NSLayoutConstraint(item: buttons[i][j], attribute: .left, relatedBy: .equal, toItem: buttons[i][j-1], attribute: .right, multiplier: 1, constant: 0))
+                }
+                
+                if i > 0
+                {
+                    constraints.append(NSLayoutConstraint(item: buttons[i][j], attribute: .top, relatedBy: .equal, toItem: buttons[i-1][j], attribute: .bottom, multiplier: 1, constant: 0))
+                }
+                
+                let type = buttons[i][j].type!
+                // all buttons should have same height (except emoji buttons)
+                if type != .EMOJI
+                {
+                    constraints.append(NSLayoutConstraint(item: buttons[i][j], attribute: .height, relatedBy: .equal, toItem: buttons[emojiState][0], attribute: .height, multiplier: 1, constant: 0))
+                }
+                
+                // assign width constraint to buttons according to its characteristic
+                switch type
+                {
+                case .CHAR:
+                    constraints.append(NSLayoutConstraint(item: buttons[i][j], attribute: .width, relatedBy: .equal, toItem: buttons[emojiState][0], attribute: .width, multiplier: 1, constant: 0))
+                    break
+                case .EMOJI:
+                    constraints.append(NSLayoutConstraint(item: buttons[i][j], attribute: .width, relatedBy: .equal, toItem: nil, attribute: .width, multiplier: 1, constant: emojiButtonWidth))
+                    constraints.append(NSLayoutConstraint(item: buttons[i][j], attribute: .height, relatedBy: .equal, toItem: nil, attribute: .width, multiplier: 1, constant: emojiButtonHeight))
+                    break
+                case .SHIFT, .DELETE:
+                    constraints.append(NSLayoutConstraint(item: buttons[i][j], attribute: .width, relatedBy: .greaterThanOrEqual, toItem: buttons[emojiState][0], attribute: .width, multiplier: 1.5, constant: 0))
+                    break
+                case .ENTER:
+                    constraints.append(NSLayoutConstraint(item: buttons[i][j], attribute: .width, relatedBy: .equal, toItem: buttons[emojiState][0], attribute: .width, multiplier: 1.75, constant: 0))
+                    break
+                case .SPACE, .HALBSPACE:
+                    constraints.append(NSLayoutConstraint(item: buttons[i][j], attribute: .width, relatedBy: .greaterThanOrEqual, toItem: nil, attribute: .width, multiplier: 3, constant: alefbaButtonWidth))
+                    break
+                case .GLOBE, .NUMBER:
+                    constraints.append(NSLayoutConstraint(item: buttons[i][j], attribute: .width, relatedBy: .equal, toItem: buttons[emojiState][0], attribute: .width, multiplier: 1.25, constant: 0))
+                    break
+                }
+            }
+        }
+        
+        kbLayout.addConstraints(constraints)
+    }
     /****************************************
      *                                       *
      *   System default function             *
@@ -766,82 +799,139 @@ class KeyboardViewController: UIInputViewController, GPButtonEventsDelegate {
     
     override func willRotate(to toInterfaceOrientation: UIInterfaceOrientation, duration: TimeInterval) {
         
+        
     }
     override func didRotate(from fromInterfaceOrientation: UIInterfaceOrientation) {
-        layerManager(layer: currentLayout)
+        calculateVariables()
+        setAlefbaConstraints(buttons: alefbaButtons, kbLayout: alefbaLayout, topSpace: marginTop, buttonWidth: alefbaButtonWidth, buttonHeight: allButtonHeight)
+        setNumbersConstraints(buttons: numberButtons, kbLayout: numberLayout, topSpace: marginTop, buttonWidth: numberButtonWidth, buttonHeight: allButtonHeight)
+        
+        updateViewConstraints()
 
     }
     
-    /*override func viewWillAppear(_ animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) {
         print("override func viewWillAppear(_ animated: Bool)")
+        print(UIScreen.main.bounds.size.width)
         super.viewWillAppear(animated)
-        let proxy = self.textDocumentProxy
-        if proxy.keyboardAppearance == UIKeyboardAppearance.dark {
-            viewBackground = UIColor(red:0.08, green:0.08, blue:0.08, alpha:1.0)
-            utilBackgroundColor = UIColor(red:0.21, green:0.21, blue:0.21, alpha:1.0)
-            buttonBackground = UIColor(red:0.35, green:0.35, blue:0.35, alpha:1.0)
-            textColorNormal = UIColor.white
-            textColorHighlighted = UIColor.lightGray
-            makeButtonBiggerTextColor = UIColor.white
-            makeButtonBiggerBackground = UIColor.gray
-        }
-    }*/
+//        let proxy = self.textDocumentProxy
+//        if proxy.keyboardAppearance == UIKeyboardAppearance.dark {
+//            viewBackground = UIColor(red:0.08, green:0.08, blue:0.08, alpha:1.0)
+//            utilBackgroundColor = UIColor(red:0.21, green:0.21, blue:0.21, alpha:1.0)
+//            buttonBackground = UIColor(red:0.35, green:0.35, blue:0.35, alpha:1.0)
+//            textColorNormal = UIColor.white
+//            textColorHighlighted = UIColor.lightGray
+//            makeButtonBiggerTextColor = UIColor.white
+//            makeButtonBiggerBackground = UIColor.gray
+//        }
+        
+        
+        
+        /**** initial Alefba layer    ****/
+        alefbaLayout = UIView()
+        alefbaLayout.translatesAutoresizingMaskIntoConstraints = false
+        self.view.addSubview(alefbaLayout)
+        alefbaLayout.topAnchor.constraint(equalTo: self.view.topAnchor).isActive = true
+        alefbaLayout.rightAnchor.constraint(equalTo: self.view.rightAnchor).isActive = true
+        alefbaLayout.bottomAnchor.constraint(equalTo: self.view.bottomAnchor).isActive = true
+        alefbaLayout.leftAnchor.constraint(equalTo: self.view.leftAnchor).isActive = true
+        initAlefbaLayout()
+        alefbaLayout.layer.opacity = 1
+        
+        
+        /**** Initial Number Layer  ****/
+        numberLayout = UIView()
+        numberLayout.translatesAutoresizingMaskIntoConstraints = false
+        self.view.addSubview(numberLayout)
+        numberLayout.topAnchor.constraint(equalTo: self.view.topAnchor).isActive = true
+        numberLayout.rightAnchor.constraint(equalTo: self.view.rightAnchor).isActive = true
+        numberLayout.bottomAnchor.constraint(equalTo: self.view.bottomAnchor).isActive = true
+        numberLayout.leftAnchor.constraint(equalTo: self.view.leftAnchor).isActive = true
+        initNumberLayout()
+        numberLayout.layer.opacity = 0
+    }
     override func viewDidLoad() {
         super.viewDidLoad()
-        // setup colors
+        print("viewDidLoad()")
         
         
-        // detect keyboardwidth and height
-        var screenWidth: CGFloat = 0
-        var screenHeight: CGFloat = 0
-        if UIScreen.main.bounds.size.width > UIScreen.main.bounds.size.height
-        {
-            screenHeight = UIScreen.main.bounds.size.width
-            screenWidth = UIScreen.main.bounds.size.height
+        // TODO: Should I Calculate here? iPad!, Landscape......
+        let prefs = UserDefaults(suiteName: "group.me.alirezak.gpkeys")
+        if let val = prefs?.integer(forKey: "emojiState") {
+            emojiState = val
+            
         }
         else
         {
-            screenWidth = UIScreen.main.bounds.size.width
-            screenHeight = UIScreen.main.bounds.size.height
-            
+            emojiState = 1  // default = show emojies
         }
         
-        // get user Sound settings
-        let prefs = UserDefaults(suiteName: "group.me.alirezak.gpkeys")
-        soundID = prefs?.integer(forKey: "sound") ?? 2
+        // retreive user Sound settings
+        SoundState = prefs?.integer(forKey: "sound") ?? 2
         
-        // always keyboard width in portrait is equal to screen width
-        keyboardWidth = screenWidth
         
-        // and keyboard width in Landscape is equal to screen height
-        keyboardWidthLandscape = screenHeight
-        print("screen bounds",UIScreen.main.bounds.size)
+        // get all variable according current device state
+        calculateVariables()
         
-        switch screenWidth {
-        case CGFloat(320):  // iphone 5/5s
-            keyboardHeight = 216.0
-            keyboardHeightLandscape = 162.0
-            break
-        case CGFloat(375):  // iphone 6/6s/7
-            keyboardHeight = 216.0
-            keyboardHeightLandscape = 162.0
-            break
-        case CGFloat(414): // iphone 6+/6s+/7+
-            keyboardHeight = 226
-            keyboardHeightLandscape = 162
-            break
-        default:
-            // TODO: I should impliment keyboard for iPads too!...
-            print("someting else detected!", UIScreen.main.bounds.size)
-            keyboardHeight = 216.0
-            keyboardHeightLandscape = 162.0
-            break
-        }
-        currentLayout = 0
-        layerManager(layer: currentLayout)
     }
 
-    
+    func calculateVariables()
+    {
+        // we should fix allButtonHeight for landscape and Portrait mode
+        if UIScreen.main.bounds.size.height > UIScreen.main.bounds.size.width
+        {   /*  _____
+             * |     |
+             * |     |
+             * |     |
+             * |     |
+             * |__o__|
+             */
+            
+            // determine device multiplier
+            let wmp = UIScreen.main.bounds.size.width / 375    // width multiplier
+            
+            alefbaButtonWidth = (UIScreen.main.bounds.size.width / 11) * wmp
+            numberButtonWidth = (UIScreen.main.bounds.size.width / 10) * wmp
+            allButtonHeight = (alefbaButtonWidth * 1.55) * wmp
+            emojiButtonWidth = alefbaButtonWidth
+            emojiButtonHeight = alefbaButtonWidth
+            
+            gapHorizontal = 6 * wmp
+            gapVertical = 10 * wmp
+            marginTop = 10 * wmp
+            
+            if emojiState == 0
+            {
+                marginTop = (allButtonHeight * wmp) - gapVertical
+            }
+        }
+        else
+        {
+            /*  __________
+             * |         |
+             * |         o
+             * |_________|
+             *
+             */
+            
+            // determine device multiplier
+            let wmp = UIScreen.main.bounds.size.width / 667    // width multiplier
+            
+            alefbaButtonWidth = (UIScreen.main.bounds.size.width / 11) * wmp
+            numberButtonWidth = (UIScreen.main.bounds.size.width / 10) * wmp
+            allButtonHeight = (UIScreen.main.bounds.size.height / 11) * 1.25 * wmp
+            emojiButtonWidth = alefbaButtonWidth
+            emojiButtonHeight = allButtonHeight
+            gapHorizontal = 6 * wmp * 1.5
+            gapVertical = 10 * wmp
+            marginTop = 10 * wmp
+            
+            if emojiState == 0
+            {
+                marginTop = (allButtonHeight * wmp) - gapVertical
+            }
+        }
+    }
     override func textDidChange(_ textInput: UITextInput?) {
         // The app has just changed the document's contents, the document context has been updated.
         /*let proxy = self.textDocumentProxy

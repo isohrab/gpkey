@@ -32,7 +32,7 @@ class BackLayer: CALayer {
         if let gpButton = gpButton {
             
             // TODO: should this value be accessible?
-            let keyFrame = bounds.insetBy(dx: 0, dy: 1)
+            let keyFrame = bounds.insetBy(dx: gpButton.backLayerInsetX, dy: gpButton.backLayerInsetY)
             let cornerRadius = gpButton.radius
             let keyPath = UIBezierPath(roundedRect: keyFrame, cornerRadius: cornerRadius)
             
@@ -57,11 +57,14 @@ class BackLayer: CALayer {
                     else
                     {
                         
-                        var popupFrame = bounds.insetBy(dx: -10, dy: -10)
-                        popupFrame = popupFrame.offsetBy(dx: 0, dy: -bounds.height)
+                        var popupFrame = bounds.insetBy(dx: -bounds.width * gpButton.scaleX, dy: 0)
+                        popupFrame = popupFrame.offsetBy(dx: 0, dy: -bounds.height + 5)
                         let popupPath = UIBezierPath(roundedRect: popupFrame, cornerRadius: 2*cornerRadius)
                         popUpLayer = CAShapeLayer()
+                        
                         popUpLayer!.path = popupPath.cgPath
+                        popUpLayer!.strokeColor = gpButton.shadowColor.cgColor
+                        popUpLayer!.lineWidth = 0.3
                         popUpLayer!.fillColor = gpButton.bgColor.cgColor
                         self.addSublayer(popUpLayer!)
                     }
