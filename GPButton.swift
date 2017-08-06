@@ -61,6 +61,7 @@ class GPButton: UIControl {
     var scaleX:CGFloat = 0.1
     var scaleY:CGFloat = 0
     
+    
     // Harf variable
     weak var harf: Harf? {
         didSet {
@@ -75,7 +76,7 @@ class GPButton: UIControl {
     // TODO Do I need this?
     override var intrinsicContentSize: CGSize
     {
-        return CGSize(width: 60, height: 60)
+        return CGSize(width: 45, height: 52)
     }
     
     override var bounds: CGRect {
@@ -110,10 +111,9 @@ class GPButton: UIControl {
         label?.minimumScaleFactor = CGFloat(0.1)
         label?.numberOfLines = 1
         self.addSubview(label!)
-        label?.center = self.center
+//        label?.center = self.center
         type = .CHAR
         updateLayerFrames()
-        
     }
     convenience init(with type: GPButtonType)
     {
@@ -146,7 +146,6 @@ class GPButton: UIControl {
         CATransaction.begin()
         CATransaction.setDisableActions(true)
         
-        // TODO: should I change the values?
         backLayer.frame = bounds.insetBy(dx: 0 , dy: 0)
         label?.frame = bounds.insetBy(dx: textInsetX, dy: textInsetY)
         backLayer.setNeedsDisplay()
@@ -265,7 +264,6 @@ class GPButton: UIControl {
                 sendActions(for: .touchUpOutside)
             }
         }
-        
         let _ = Timer.scheduledTimer(timeInterval: 0.065, target: self, selector: #selector(Highlighting(state:)), userInfo: nil, repeats: false)
     }
     
@@ -282,7 +280,6 @@ class GPButton: UIControl {
         }
         
         sendActions(for: .touchCancel)
-        //highlightTimer = Timer()
         let _ = Timer.scheduledTimer(timeInterval: 0.065, target: self, selector: #selector(Highlighting(state:)), userInfo: nil, repeats: false)
     }
     

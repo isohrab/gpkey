@@ -121,33 +121,37 @@ class KeyboardViewController: UIInputViewController, GPButtonEventsDelegate {
           Harf.init(name: "haft",face: "۷", output: "۷", returnable: false, spaceReturnable: false),
           Harf.init(name: "hasht",face: "۸", output: "۸", returnable: false, spaceReturnable: false),
           Harf.init(name: "noh",face: "۹", output: "۹", returnable: false, spaceReturnable: false),
-          Harf.init(name: "sefr",face: "۰", output: "۰", returnable: false, spaceReturnable: false)],
+          Harf.init(name: "sefr",face: "۰", output: "۰", returnable: false, spaceReturnable: false),
+          Harf.init(name: "mosbat",face: "=", output: "=", returnable: false, spaceReturnable: false)],
          
          //second Row:
-            [Harf.init(name: "mad",face: "~", output: "~", returnable: false, spaceReturnable: false),
+            [Harf.init(name: "prime",face: "`", output: "`", returnable: false, spaceReturnable: false),
+             Harf.init(name: "mad",face: "~", output: "~", returnable: false, spaceReturnable: false),
              Harf.init(name: "bala",face: "^", output: "^", returnable: false, spaceReturnable: false),
              Harf.init(name: "dollar",face: "$", output: "$", returnable: false, spaceReturnable: false),
+             Harf.init(name: "euro",face: "€", output: "€", returnable: false, spaceReturnable: false),
              Harf.init(name: "star",face: "*", output: "*", returnable: false, spaceReturnable: false),
              Harf.init(name: "darsad",face: "٪", output: "٪", returnable: false, spaceReturnable: false),
-             Harf.init(name: "mosavi",face: "=", output: "=", returnable: false, spaceReturnable: false),
              Harf.init(name: "mosbat",face: "+", output: "+", returnable: false, spaceReturnable: false),
              Harf.init(name: "menha", face: "-",output: "-", returnable: false, spaceReturnable: false),
              Harf.init(name: "zarb",face: "×", output: "×", returnable: false, spaceReturnable: false),
              Harf.init(name: "taghsim",face: "÷", output: "÷", returnable: false, spaceReturnable: false)],
             
             //third Row:
-            [Harf.init(name: "prime",face: "`", output: "`", returnable: false, spaceReturnable: false),
-             Harf.init(name: "coma-pool",face: "،", output: "،", returnable: false, spaceReturnable: false),
-             Harf.init(name: "euro",face: "€", output: "€", returnable: false, spaceReturnable: false),
+            [Harf.init(name: "number-seperator",face: ",", output: ",", returnable: false, spaceReturnable: false),
              Harf.init(name: "register",face: ".", output: ".", returnable: false, spaceReturnable: false),
              Harf.init(name: "Copyright",face: ":", output: ":", returnable: false, spaceReturnable: false),
+             Harf.init(name: "slash",face: "/", output: "/", returnable: false, spaceReturnable: false),
+             Harf.init(name: "back-slash",face: "\\", output: "\\", returnable: false, spaceReturnable: false),
              Harf.init(name: "small",face: "<", output: ">", returnable: false, spaceReturnable: false),
              Harf.init(name: "great",face: ">", output: "<", returnable: false, spaceReturnable: false),
-             Harf.init(name: "pipe",face: "|", output: "|", returnable: false, spaceReturnable: true)],
+             Harf.init(name: "pipe",face: "|", output: "|", returnable: false, spaceReturnable: false),
+             Harf.init(name: "parantezL",  face: "\u{0028}",   output: "\u{0029}", returnable: false, spaceReturnable: false),
+             Harf.init(name: "parantezR",  face: "\u{0029}",   output: "\u{0028}", returnable: false, spaceReturnable: false),],
             
             // fourht row:
-            [Harf.init(name: "slash",face: "/", output: "/", returnable: false, spaceReturnable: false),
-             Harf.init(name: "backslash",face: "\\", output: "\\", returnable: false, spaceReturnable: false)]]]
+            [Harf.init(name: "at",face: "@", output: "@", returnable: false, spaceReturnable: false),
+             Harf.init(name: "sharp",face: "#", output: "#", returnable: false, spaceReturnable: false)]]]
     
     // the smiles are changable in main App
     var smile:[String] =  ["\u{1F600}","\u{1F601}","\u{1F602}","\u{1F60E}","\u{1F60D}","\u{1F618}","\u{0263A}","\u{1F61C}",
@@ -163,13 +167,27 @@ class KeyboardViewController: UIInputViewController, GPButtonEventsDelegate {
     
     var gapHorizontal: CGFloat = 6    // in iPad screens should be multiply by 2
     var gapVertical: CGFloat = 10        // in iPad Screen should be multiply by 2
-    var alefbaButtonWidth: CGFloat = 0  // should be calculated according to UIScreen
-    var allButtonHeight: CGFloat = 0 // should be calculated according to UIScreen
-    var numberButtonWidth: CGFloat = 0  // should be calculated according to UIScreen
-    var emojiButtonWidth: CGFloat = 0
-    var emojiButtonHeight: CGFloat = 0
-    var marginTop:CGFloat = 10     // in iPad screen it should be multiply by 2
-    var shift: Bool = true         // show state of shift button
+    var buttonHeight: CGFloat = 52
+
+    var marginTop:CGFloat = 25     // in iPad screen it should be multiply by 2
+    
+    var shift: Bool = false          // show state of shift button
+    {
+        didSet {
+            doShift(shifting: shift)
+        }
+    }
+    
+    var returnAfterSpace = false {
+        didSet {
+            if returnAfterSpace == true
+            {
+                alefbaButtons[emojiState + 3][3].label?.text = "فاصله"
+                alefbaButtons[emojiState + 3][3].type = .SPACE
+            }
+        }
+    }
+    
     var deleting: Bool = false  // when it is true, continuing deleting characters
     var deleteTimer: TimeInterval = 0.3    // it will accelerate deleting upto 500 milisecond
     var timer:Timer!
@@ -188,11 +206,13 @@ class KeyboardViewController: UIInputViewController, GPButtonEventsDelegate {
     
     /*******    Layout variabels     *********/
     var alefbaLayout: UIView!
-    var numberButtons:[[GPButton]]!
-    
     var numberLayout: UIView!
-    var alefbaButtons:[[GPButton]]!
     
+    var alefbaButtons: [[GPButton]]!
+    var numberButtons: [[GPButton]]!
+    
+    var portraitConstraints:[NSLayoutConstraint]!
+    var landscapeConstraints:[NSLayoutConstraint]!
     
     /*******  user pref variables   ********/
     var emojiState = 0
@@ -210,15 +230,15 @@ class KeyboardViewController: UIInputViewController, GPButtonEventsDelegate {
         // TODO: background should be checked here
         alefbaLayout.backgroundColor = viewBackground
         
-        // setup tap detection for background view
-        let tap = UITapGestureRecognizer(target: self, action: #selector(getCharacterFromNearestButton(_:)))
-        tap.numberOfTouchesRequired = 1
-        tap.numberOfTapsRequired = 1
-        alefbaLayout.addGestureRecognizer(tap)
+//        // setup tap detection for background view
+//        let tap = UITapGestureRecognizer(target: self, action: #selector(getCharacterFromNearestButton(_:)))
+//        tap.numberOfTouchesRequired = 1
+//        tap.numberOfTapsRequired = 1
+//        alefbaLayout.addGestureRecognizer(tap)
         
         alefbaButtons = [[GPButton]]()
-        
-        // check user setting if he want to use smily. Also
+
+        // check user setting if he wants to use emojies
         if emojiState == 1
         {
             var rowButtons = [GPButton]()
@@ -236,7 +256,7 @@ class KeyboardViewController: UIInputViewController, GPButtonEventsDelegate {
             alefbaButtons.append(rowButtons)
         }
         
-        
+        // Add character buttons
         for i in 0..<characters[0].count
         {
             var rowButtons = [GPButton]()
@@ -248,14 +268,14 @@ class KeyboardViewController: UIInputViewController, GPButtonEventsDelegate {
                 rowButtons.append(btn)
                 btn.backLayerInsetX = gapHorizontal / 2
                 btn.backLayerInsetY = gapVertical / 2
-                btn.isExclusiveTouch = true
+//                btn.isExclusiveTouch = true
                 btn.addTarget(self, action: #selector(self.charTouched(_:)), for: .touchUpInside)
                 alefbaLayout.addSubview(btn)
             }
             alefbaButtons.append(rowButtons)
         }
+        
         // add all util function
-
         let shiftButton = GPButton(with: .SHIFT)
         shiftButton.addTarget(self, action: #selector(self.utilTouched(sender:)), for: .touchUpInside)
         shiftButton.label?.text = ".؟!"
@@ -288,7 +308,7 @@ class KeyboardViewController: UIInputViewController, GPButtonEventsDelegate {
         globeButton.label?.text = "globe"
         alefbaButtons[emojiState + 3].insert(globeButton, at: 1)
         alefbaLayout.addSubview(globeButton)
-        globeButton.addTarget(self, action: #selector(advanceToNextInputMode), for: .touchDown)
+        globeButton.addTarget(self, action: #selector(advanceToNextInputMode), for: .touchUpInside)
         
         let spaceButton = GPButton(with: .SPACE)
         spaceButton.label?.text = "فاصله"
@@ -307,10 +327,8 @@ class KeyboardViewController: UIInputViewController, GPButtonEventsDelegate {
         alefbaLayout.addSubview(enterButton)
         
         // calculate constraints
-        setAlefbaConstraints(buttons: alefbaButtons, kbLayout: alefbaLayout, topSpace: marginTop, buttonWidth: alefbaButtonWidth, buttonHeight: allButtonHeight)
-        
-        // I do it by hand! because it is different with numberlayout
-        alefbaLayout.addConstraint(NSLayoutConstraint(item: shiftButton, attribute: .width, relatedBy: .equal, toItem: deleteButton, attribute: .width, multiplier: 1, constant: 0))
+        sizeConstraints(buttons: alefbaButtons, kbLayout: alefbaLayout)
+        positionConstraints(buttons: alefbaButtons, kbLayout: alefbaLayout)
     }
     
     /******************************************
@@ -325,7 +343,7 @@ class KeyboardViewController: UIInputViewController, GPButtonEventsDelegate {
     
         numberButtons = [[GPButton]]()
         
-        // check user setting if he want to use smily. Also
+        // check user setting if he want to use emojies
         if emojiState == 1
         {
             var rowButtons = [GPButton]()
@@ -387,10 +405,10 @@ class KeyboardViewController: UIInputViewController, GPButtonEventsDelegate {
         globeButton.label?.text = "globe"
         numberButtons[emojiState + 3].insert(globeButton, at: 1)
         numberLayout.addSubview(globeButton)
-        globeButton.addTarget(self, action: #selector(advanceToNextInputMode), for: .touchDown)
+        globeButton.addTarget(self, action: #selector(advanceToNextInputMode), for: .touchUpInside)
         
         let spaceButton = GPButton(with: .SPACE)
-        spaceButton.label?.text = "نیم‌فاصله"
+        spaceButton.label?.text = "فاصله"
         spaceButton.backLayerInsetX = gapHorizontal / 2
         spaceButton.backLayerInsetY = gapVertical / 2
         spaceButton.addTarget(self, action: #selector(self.utilTouched(sender:)), for: .touchUpInside)
@@ -406,7 +424,8 @@ class KeyboardViewController: UIInputViewController, GPButtonEventsDelegate {
         numberLayout.addSubview(enterButton)
         
         // Calculate constraint
-        setNumbersConstraints(buttons: numberButtons, kbLayout: numberLayout, topSpace: marginTop, buttonWidth: numberButtonWidth, buttonHeight: allButtonHeight)
+        sizeConstraints(buttons: numberButtons, kbLayout: numberLayout)
+        positionConstraints(buttons: numberButtons, kbLayout: numberLayout)
         
     }
     /************************************
@@ -469,13 +488,20 @@ class KeyboardViewController: UIInputViewController, GPButtonEventsDelegate {
         case .SPACE:
             playSound(for: utilSound)
             proxy.insertText(" ")
+            if shift == true
+            {
+                if returnAfterSpace == true
+                {
+                    shift = false
+                    returnAfterSpace = false
+                }
+            }
             break
         case .GLOBE:
             self.advanceToNextInputMode()
             break
         case .SHIFT:
             playSound(for: utilSound)
-            doShift(shifting: shift)
             shift = !shift
             break
         case .NUMBER:
@@ -490,6 +516,10 @@ class KeyboardViewController: UIInputViewController, GPButtonEventsDelegate {
                 alefbaLayout.layer.opacity = 0
                 numberLayout.layer.opacity = 1
             }
+            if shift == true
+            {
+                shift = false
+            }
             break
         case .ENTER:
             playSound(for: utilSound)
@@ -498,6 +528,7 @@ class KeyboardViewController: UIInputViewController, GPButtonEventsDelegate {
         case .HALBSPACE:
             playSound(for: utilSound)
             proxy.insertText("\u{200C}")
+            shift = false
             break
         default:
             break
@@ -538,6 +569,7 @@ class KeyboardViewController: UIInputViewController, GPButtonEventsDelegate {
             alefbaButtons[emojiState + 3][4].harf = characters[1][3][1]
             // half space
             alefbaButtons[emojiState + 3][3].label?.text = "نیم‌فاصله"
+            alefbaButtons[emojiState + 3][3].type = .HALBSPACE
         }
         else
         {
@@ -568,9 +600,32 @@ class KeyboardViewController: UIInputViewController, GPButtonEventsDelegate {
             alefbaButtons[emojiState + 3][4].harf = characters[0][3][1]
             // half space
             alefbaButtons[emojiState + 3][3].label?.text = "فاصله"
+            alefbaButtons[emojiState + 3][3].type = .SPACE
+
         }
     }
-    
+    func shiftManager(sender: GPButton)
+    {
+        if shift == true {
+            let type = sender.type!
+            if type == .CHAR
+            {
+                if let h = sender.harf
+                {
+                    if h.returnable == true
+                    {
+                        sender.Highlighting(state: false)
+                        shift = false
+                        return
+                    }
+                    if h.spaceReturnable == true
+                    {
+                        returnAfterSpace = true
+                    }
+                }
+            }
+        }
+    }
     /************************************
      *       OTHER  FUNCTION            *
      ************************************/
@@ -581,6 +636,7 @@ class KeyboardViewController: UIInputViewController, GPButtonEventsDelegate {
         let proxy = textDocumentProxy as UITextDocumentProxy
         guard let char = sender.harf?.output else {return}
         proxy.insertText(char)
+        shiftManager(sender: sender)
     }
     
     func emojiTouched(_ sender: GPButton)
@@ -589,6 +645,10 @@ class KeyboardViewController: UIInputViewController, GPButtonEventsDelegate {
         let proxy = textDocumentProxy as UITextDocumentProxy
         guard let char = sender.label?.text else {return}
         proxy.insertText(char)
+        if shift == true
+        {
+            returnAfterSpace = true
+        }
     }
 
 
@@ -597,7 +657,7 @@ class KeyboardViewController: UIInputViewController, GPButtonEventsDelegate {
         // mute mode
         if SoundState == 0
         {
-            return  // Quiet! >:/
+            return  // hisssss! >:/
         }
         
         // vibrate mode
@@ -611,181 +671,104 @@ class KeyboardViewController: UIInputViewController, GPButtonEventsDelegate {
     }
     
     
-    func getCharacterFromNearestButton(_ sender: UITapGestureRecognizer)
+//    func getCharacterFromNearestButton(_ sender: UITapGestureRecognizer)
+//    {
+//        let loc = sender.location(in: sender.view)
+////        if loc.y < 20 && emojiState == 0
+////        {
+////            dismissKeyboard()
+////        }
+//        
+//    }
+    
+    
+    
+    //////////// constraints functions:    ///////////
+    func positionConstraints(buttons: [[GPButton]], kbLayout: UIView)
     {
-        let loc = sender.location(in: sender.view)
-        if loc.y < 20 && emojiState == 0
+        // chaining all first column to top and botton of each other vertically.
+        for row in 0..<buttons.count-1
         {
-            dismissKeyboard()
+            NSLayoutConstraint(item: buttons[row][0], attribute: .bottom, relatedBy: .equal, toItem: buttons[row+1][0], attribute: .top, multiplier: 1, constant: 0).isActive = true
+            NSLayoutConstraint(item: buttons[row][0], attribute: .centerX, relatedBy: .equal, toItem: buttons[row+1][0], attribute: .centerX, multiplier: 1, constant: 0).isActive = true
         }
+        // chain first button to top of the keyboard layer
+        NSLayoutConstraint(item: buttons[0][0], attribute: .top, relatedBy: .equal, toItem: kbLayout, attribute: .top, multiplier: 1, constant: 0).isActive = true
+        // chain the last button to top of the keyboard layer
+        NSLayoutConstraint(item: buttons[buttons.count-1][0], attribute: .bottom, relatedBy: .equal, toItem: kbLayout, attribute: .bottom, multiplier: 1, constant: 0).isActive = true
         
+        // chaining all buttons in a row from left to right of each other horizontally.
+        for row in 0..<buttons.count
+        {
+            for col in 1..<buttons[row].count
+            {
+                NSLayoutConstraint(item: buttons[row][col-1], attribute: .right, relatedBy: .equal, toItem: buttons[row][col], attribute: .left, multiplier: 1, constant: 0).isActive = true
+                NSLayoutConstraint(item: buttons[row][col-1], attribute: .centerY, relatedBy: .equal, toItem: buttons[row][col], attribute: .centerY, multiplier: 1, constant: 0).isActive = true
+            }
+        }
+        for row in 0..<buttons.count
+        {
+            NSLayoutConstraint(item: buttons[row][0], attribute: .left, relatedBy: .equal, toItem: kbLayout, attribute: .left, multiplier: 1, constant: 0).isActive = true
+            NSLayoutConstraint(item: buttons[row][buttons[row].count-1], attribute: .right, relatedBy: .equal, toItem: kbLayout, attribute: .right, multiplier: 1, constant: 0).isActive = true
+
+        }
     }
     
-    func setAlefbaConstraints(buttons: [[GPButton]], kbLayout: UIView, topSpace:CGFloat, buttonWidth:CGFloat, buttonHeight: CGFloat)
+    func sizeConstraints(buttons: [[GPButton]], kbLayout: UIView)
     {
-        var constraints = [NSLayoutConstraint]()
-        constraints.append(NSLayoutConstraint(item: buttons[emojiState][0], attribute: .width, relatedBy: .equal, toItem: nil, attribute: .width, multiplier: 1, constant: buttonWidth))
-        constraints.append(NSLayoutConstraint(item: buttons[emojiState][0], attribute: .height, relatedBy: .equal, toItem: nil, attribute: .width, multiplier: 1, constant: buttonHeight))
-        
-        for i in 0..<buttons.count
+        let muster = buttons[1][1]
+        muster.heightAnchor.constraint(equalToConstant: buttonHeight).isActive = true
+        for row in 0..<buttons.count
         {
-            for j in 0..<buttons[i].count
+            for col in 0..<buttons[row].count
             {
+                let type = buttons[row][col].type!
                 
-                
-                // it is first row, so it should stick to top of the kbLayout
-                if i==0
-                {
-                    constraints.append(NSLayoutConstraint(item: buttons[i][j], attribute: .top, relatedBy: .equal, toItem: kbLayout, attribute: .top, multiplier: 1, constant: topSpace))
-                }
-                
-                // it is first button of i-th row. so it should be stick to left edge
-                if j==0
-                {
-                    constraints.append(NSLayoutConstraint(item: buttons[i][j], attribute: .left, relatedBy: .equal, toItem: kbLayout, attribute: .left, multiplier: 1, constant: 0))
-                }
-                
-                // it is the last row, so it should be sticked to bottom of the kbLayout
-                if i == buttons.count-1
-                {
-                    constraints.append(NSLayoutConstraint(item: buttons[i][j], attribute: .bottom, relatedBy: .equal, toItem: kbLayout, attribute: .bottom, multiplier: 1, constant: 0 * -1))
-                }
-                
-                // it is the last button of i-th row, it should be stick to the right side of kbLayout
-                if j == buttons[i].count-1
-                {
-                    constraints.append(NSLayoutConstraint(item: buttons[i][j], attribute: .right, relatedBy: .equal, toItem: kbLayout, attribute: .right, multiplier: 1, constant: 0 * -1))
-                }
-                
-                // set all buttons in i-th row equal to Horizontal gap
-                if j > 0
-                {
-                    constraints.append(NSLayoutConstraint(item: buttons[i][j], attribute: .left, relatedBy: .equal, toItem: buttons[i][j-1], attribute: .right, multiplier: 1, constant: 0))
-                }
-                
-                if i > 0
-                {
-                    constraints.append(NSLayoutConstraint(item: buttons[i][j], attribute: .top, relatedBy: .equal, toItem: buttons[i-1][j], attribute: .bottom, multiplier: 1, constant: 0))
-                }
-                
-                let type = buttons[i][j].type!
                 // all buttons should have same height (except emoji buttons)
                 if type != .EMOJI
                 {
-                    constraints.append(NSLayoutConstraint(item: buttons[i][j], attribute: .height, relatedBy: .equal, toItem: buttons[emojiState][0], attribute: .height, multiplier: 1, constant: 0))
+                    NSLayoutConstraint(item: buttons[row][col], attribute: .height, relatedBy: .equal, toItem: muster, attribute: .height, multiplier: 1, constant: 0).isActive = true
                 }
                 
                 // assign width constraint to buttons according to its characteristic
                 switch type
                 {
                 case .CHAR:
-                    constraints.append(NSLayoutConstraint(item: buttons[i][j], attribute: .width, relatedBy: .equal, toItem: buttons[emojiState][0], attribute: .width, multiplier: 1, constant: 0))
+                    NSLayoutConstraint(item: buttons[row][col], attribute: .width, relatedBy: .equal, toItem: muster, attribute: .width, multiplier: 1, constant: 0).isActive = true
                     break
+                    
                 case .EMOJI:
-                    constraints.append(NSLayoutConstraint(item: buttons[i][j], attribute: .width, relatedBy: .equal, toItem: nil, attribute: .width, multiplier: 1, constant: emojiButtonWidth))
-                    constraints.append(NSLayoutConstraint(item: buttons[i][j], attribute: .height, relatedBy: .equal, toItem: nil, attribute: .width, multiplier: 1, constant: emojiButtonHeight))
+                    // the width is always equal to muster
+                    // Portrait
+                    portraitConstraints.append(NSLayoutConstraint(item: buttons[row][col], attribute: .height, relatedBy: .equal, toItem: muster, attribute: .width, multiplier: 1.3, constant: 0))
+                    // Landscape
+                    landscapeConstraints.append(NSLayoutConstraint(item: buttons[row][col], attribute: .height, relatedBy: .equal, toItem: muster, attribute: .height, multiplier: 1, constant: 0))
+                    
+                    NSLayoutConstraint(item: buttons[row][col], attribute: .width, relatedBy: .equal, toItem: muster, attribute: .width, multiplier: 1, constant: 0).isActive = true
                     break
+                    
                 case .SHIFT, .DELETE:
-                    constraints.append(NSLayoutConstraint(item: buttons[i][j], attribute: .width, relatedBy: .greaterThanOrEqual, toItem: buttons[emojiState][0], attribute: .width, multiplier: 1.5, constant: 0))
+                    NSLayoutConstraint(item: buttons[row][col], attribute: .width, relatedBy: .greaterThanOrEqual, toItem: muster, attribute: .width, multiplier: 1.5, constant: 0).isActive = true
                     break
+                    
                 case .ENTER:
-                    constraints.append(NSLayoutConstraint(item: buttons[i][j], attribute: .width, relatedBy: .equal, toItem: buttons[emojiState][0], attribute: .width, multiplier: 1.75, constant: 0))
+                    NSLayoutConstraint(item: buttons[row][col], attribute: .width, relatedBy: .equal, toItem: muster, attribute: .width, multiplier: 1.75, constant: 0).isActive = true
                     break
+                    
                 case .SPACE, .HALBSPACE:
-                    constraints.append(NSLayoutConstraint(item: buttons[i][j], attribute: .width, relatedBy: .greaterThanOrEqual, toItem: buttons[emojiState][0], attribute: .width, multiplier: 3, constant: 0))
+                    NSLayoutConstraint(item: buttons[row][col], attribute: .width, relatedBy: .greaterThanOrEqual, toItem: muster, attribute: .width, multiplier: 3.5, constant: 0).isActive = true
                     break
+                    
                 case .GLOBE, .NUMBER:
-                    constraints.append(NSLayoutConstraint(item: buttons[i][j], attribute: .width, relatedBy: .equal, toItem: buttons[emojiState][0], attribute: .width, multiplier: 1.25, constant: 0))
+                    NSLayoutConstraint(item: buttons[row][col], attribute: .width, relatedBy: .equal, toItem: muster, attribute: .width, multiplier: 1.25, constant: 0).isActive = true
                     break
                 }
             }
         }
-        
-        kbLayout.addConstraints(constraints)
     }
+    
+    
 
-    func setNumbersConstraints(buttons: [[GPButton]], kbLayout: UIView, topSpace:CGFloat, buttonWidth:CGFloat, buttonHeight: CGFloat)
-    {
-        var constraints = [NSLayoutConstraint]()
-        constraints.append(NSLayoutConstraint(item: buttons[emojiState][0], attribute: .width, relatedBy: .equal, toItem: nil, attribute: .width, multiplier: 1, constant: buttonWidth))
-        constraints.append(NSLayoutConstraint(item: buttons[emojiState][0], attribute: .height, relatedBy: .equal, toItem: nil, attribute: .width, multiplier: 1, constant: buttonHeight))
-        
-        for i in 0..<buttons.count
-        {
-            for j in 0..<buttons[i].count
-            {
-                
-                
-                // it is first row, so it should stick to top of the kbLayout
-                if i==0
-                {
-                    constraints.append(NSLayoutConstraint(item: buttons[i][j], attribute: .top, relatedBy: .equal, toItem: kbLayout, attribute: .top, multiplier: 1, constant: topSpace))
-                }
-                
-                // it is first button of i-th row. so it should be stick to left edge
-                if j==0
-                {
-                    constraints.append(NSLayoutConstraint(item: buttons[i][j], attribute: .left, relatedBy: .equal, toItem: kbLayout, attribute: .left, multiplier: 1, constant: 0))
-                }
-                
-                // it is the last row, so it should be sticked to bottom of the kbLayout
-                if i == buttons.count-1
-                {
-                    constraints.append(NSLayoutConstraint(item: buttons[i][j], attribute: .bottom, relatedBy: .equal, toItem: kbLayout, attribute: .bottom, multiplier: 1, constant: 0 * -1))
-                }
-                
-                // it is the last button of i-th row, it should be stick to the right side of kbLayout
-                if j == buttons[i].count-1
-                {
-                    constraints.append(NSLayoutConstraint(item: buttons[i][j], attribute: .right, relatedBy: .equal, toItem: kbLayout, attribute: .right, multiplier: 1, constant: 0 * -1))
-                }
-                
-                // set all buttons in i-th row equal to Horizontal gap
-                if j > 0
-                {
-                    constraints.append(NSLayoutConstraint(item: buttons[i][j], attribute: .left, relatedBy: .equal, toItem: buttons[i][j-1], attribute: .right, multiplier: 1, constant: 0))
-                }
-                
-                if i > 0
-                {
-                    constraints.append(NSLayoutConstraint(item: buttons[i][j], attribute: .top, relatedBy: .equal, toItem: buttons[i-1][j], attribute: .bottom, multiplier: 1, constant: 0))
-                }
-                
-                let type = buttons[i][j].type!
-                // all buttons should have same height (except emoji buttons)
-                if type != .EMOJI
-                {
-                    constraints.append(NSLayoutConstraint(item: buttons[i][j], attribute: .height, relatedBy: .equal, toItem: buttons[emojiState][0], attribute: .height, multiplier: 1, constant: 0))
-                }
-                
-                // assign width constraint to buttons according to its characteristic
-                switch type
-                {
-                case .CHAR:
-                    constraints.append(NSLayoutConstraint(item: buttons[i][j], attribute: .width, relatedBy: .equal, toItem: buttons[emojiState][0], attribute: .width, multiplier: 1, constant: 0))
-                    break
-                case .EMOJI:
-                    constraints.append(NSLayoutConstraint(item: buttons[i][j], attribute: .width, relatedBy: .equal, toItem: nil, attribute: .width, multiplier: 1, constant: emojiButtonWidth))
-                    constraints.append(NSLayoutConstraint(item: buttons[i][j], attribute: .height, relatedBy: .equal, toItem: nil, attribute: .width, multiplier: 1, constant: emojiButtonHeight))
-                    break
-                case .SHIFT, .DELETE:
-                    constraints.append(NSLayoutConstraint(item: buttons[i][j], attribute: .width, relatedBy: .greaterThanOrEqual, toItem: buttons[emojiState][0], attribute: .width, multiplier: 1.5, constant: 0))
-                    break
-                case .ENTER:
-                    constraints.append(NSLayoutConstraint(item: buttons[i][j], attribute: .width, relatedBy: .equal, toItem: buttons[emojiState][0], attribute: .width, multiplier: 1.75, constant: 0))
-                    break
-                case .SPACE, .HALBSPACE:
-                    constraints.append(NSLayoutConstraint(item: buttons[i][j], attribute: .width, relatedBy: .greaterThanOrEqual, toItem: nil, attribute: .width, multiplier: 3, constant: alefbaButtonWidth))
-                    break
-                case .GLOBE, .NUMBER:
-                    constraints.append(NSLayoutConstraint(item: buttons[i][j], attribute: .width, relatedBy: .equal, toItem: buttons[emojiState][0], attribute: .width, multiplier: 1.25, constant: 0))
-                    break
-                }
-            }
-        }
-        
-        kbLayout.addConstraints(constraints)
-    }
     /****************************************
      *                                       *
      *   System default function             *
@@ -798,16 +781,28 @@ class KeyboardViewController: UIInputViewController, GPButtonEventsDelegate {
     }
     
     override func willRotate(to toInterfaceOrientation: UIInterfaceOrientation, duration: TimeInterval) {
+        if UIScreen.main.bounds.size.height > UIScreen.main.bounds.size.width
+        {
+            NSLayoutConstraint.deactivate(landscapeConstraints)
+            NSLayoutConstraint.activate(portraitConstraints)
+            
+        }
+        else
+        {
+            NSLayoutConstraint.deactivate(portraitConstraints)
+            NSLayoutConstraint.activate(landscapeConstraints)
+            
+        }
         
-        
+        UIView.animate(withDuration: 0.5) {
+            self.updateViewConstraints()
+            self.view.layoutIfNeeded()
+        }
     }
+    
     override func didRotate(from fromInterfaceOrientation: UIInterfaceOrientation) {
-        calculateVariables()
-        setAlefbaConstraints(buttons: alefbaButtons, kbLayout: alefbaLayout, topSpace: marginTop, buttonWidth: alefbaButtonWidth, buttonHeight: allButtonHeight)
-        setNumbersConstraints(buttons: numberButtons, kbLayout: numberLayout, topSpace: marginTop, buttonWidth: numberButtonWidth, buttonHeight: allButtonHeight)
-        
-        updateViewConstraints()
-
+        self.updateViewConstraints()
+        self.view.layoutIfNeeded()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -824,35 +819,9 @@ class KeyboardViewController: UIInputViewController, GPButtonEventsDelegate {
 //            makeButtonBiggerTextColor = UIColor.white
 //            makeButtonBiggerBackground = UIColor.gray
 //        }
-        
-        
-        
-        /**** initial Alefba layer    ****/
-        alefbaLayout = UIView()
-        alefbaLayout.translatesAutoresizingMaskIntoConstraints = false
-        self.view.addSubview(alefbaLayout)
-        alefbaLayout.topAnchor.constraint(equalTo: self.view.topAnchor).isActive = true
-        alefbaLayout.rightAnchor.constraint(equalTo: self.view.rightAnchor).isActive = true
-        alefbaLayout.bottomAnchor.constraint(equalTo: self.view.bottomAnchor).isActive = true
-        alefbaLayout.leftAnchor.constraint(equalTo: self.view.leftAnchor).isActive = true
-        initAlefbaLayout()
-        alefbaLayout.layer.opacity = 1
-        
-        
-        /**** Initial Number Layer  ****/
-        numberLayout = UIView()
-        numberLayout.translatesAutoresizingMaskIntoConstraints = false
-        self.view.addSubview(numberLayout)
-        numberLayout.topAnchor.constraint(equalTo: self.view.topAnchor).isActive = true
-        numberLayout.rightAnchor.constraint(equalTo: self.view.rightAnchor).isActive = true
-        numberLayout.bottomAnchor.constraint(equalTo: self.view.bottomAnchor).isActive = true
-        numberLayout.leftAnchor.constraint(equalTo: self.view.leftAnchor).isActive = true
-        initNumberLayout()
-        numberLayout.layer.opacity = 0
     }
     override func viewDidLoad() {
         super.viewDidLoad()
-        print("viewDidLoad()")
         
         
         // TODO: Should I Calculate here? iPad!, Landscape......
@@ -873,63 +842,59 @@ class KeyboardViewController: UIInputViewController, GPButtonEventsDelegate {
         // get all variable according current device state
         calculateVariables()
         
+        
+        // initial landscape and portrait constraints
+        landscapeConstraints = [NSLayoutConstraint]()
+        portraitConstraints = [NSLayoutConstraint]()
+        /**** initial Alefba layer    ****/
+        alefbaLayout = UIView()
+        alefbaLayout.translatesAutoresizingMaskIntoConstraints = false
+        self.view.addSubview(alefbaLayout)
+        alefbaLayout.topAnchor.constraint(equalTo: self.view.topAnchor, constant: 0).isActive = true
+        alefbaLayout.rightAnchor.constraint(equalTo: self.view.rightAnchor).isActive = true
+        alefbaLayout.bottomAnchor.constraint(equalTo: self.view.bottomAnchor).isActive = true
+        alefbaLayout.leftAnchor.constraint(equalTo: self.view.leftAnchor).isActive = true
+        initAlefbaLayout()
+        alefbaLayout.layer.opacity = 1
+        
+        /*** Initial Number Layer  ***/
+        numberLayout = UIView()
+        numberLayout.translatesAutoresizingMaskIntoConstraints = false
+        self.view.addSubview(numberLayout)
+        numberLayout.topAnchor.constraint(equalTo: self.view.topAnchor, constant: 0).isActive = true
+        numberLayout.rightAnchor.constraint(equalTo: self.view.rightAnchor).isActive = true
+        numberLayout.bottomAnchor.constraint(equalTo: self.view.bottomAnchor).isActive = true
+        numberLayout.leftAnchor.constraint(equalTo: self.view.leftAnchor).isActive = true
+        initNumberLayout()
+        numberLayout.layer.opacity = 0
+        
+         // Activate constraints according device orientation
+        if UIScreen.main.bounds.size.height > UIScreen.main.bounds.size.width
+        {
+            NSLayoutConstraint.deactivate(landscapeConstraints)
+            NSLayoutConstraint.activate(portraitConstraints)
+        }
+        else
+        {
+            NSLayoutConstraint.deactivate(portraitConstraints)
+            NSLayoutConstraint.activate(landscapeConstraints)
+        }
+        self.updateViewConstraints()
+        self.view.updateConstraintsIfNeeded()
     }
 
     func calculateVariables()
     {
-        // we should fix allButtonHeight for landscape and Portrait mode
-        if UIScreen.main.bounds.size.height > UIScreen.main.bounds.size.width
-        {   /*  _____
-             * |     |
-             * |     |
-             * |     |
-             * |     |
-             * |__o__|
-             */
-            
-            // determine device multiplier
-            let wmp = UIScreen.main.bounds.size.width / 375    // width multiplier
-            
-            alefbaButtonWidth = (UIScreen.main.bounds.size.width / 11) * wmp
-            numberButtonWidth = (UIScreen.main.bounds.size.width / 10) * wmp
-            allButtonHeight = (alefbaButtonWidth * 1.55) * wmp
-            emojiButtonWidth = alefbaButtonWidth
-            emojiButtonHeight = alefbaButtonWidth
-            
-            gapHorizontal = 6 * wmp
-            gapVertical = 10 * wmp
-            marginTop = 10 * wmp
-            
-            if emojiState == 0
-            {
-                marginTop = (allButtonHeight * wmp) - gapVertical
-            }
-        }
-        else
+        // define a default multiplier based iphone 6/6s/7 (width = 375) screen size.
+        let dmpPatriot:CGFloat = UIScreen.main.bounds.size.width / 375
+        gapHorizontal = gapHorizontal * dmpPatriot
+        gapVertical = gapVertical * dmpPatriot
+        marginTop = marginTop * dmpPatriot
+        buttonHeight = buttonHeight * dmpPatriot
+        
+        if emojiState == 0
         {
-            /*  __________
-             * |         |
-             * |         o
-             * |_________|
-             *
-             */
-            
-            // determine device multiplier
-            let wmp = UIScreen.main.bounds.size.width / 667    // width multiplier
-            
-            alefbaButtonWidth = (UIScreen.main.bounds.size.width / 11) * wmp
-            numberButtonWidth = (UIScreen.main.bounds.size.width / 10) * wmp
-            allButtonHeight = (UIScreen.main.bounds.size.height / 11) * 1.25 * wmp
-            emojiButtonWidth = alefbaButtonWidth
-            emojiButtonHeight = allButtonHeight
-            gapHorizontal = 6 * wmp * 1.5
-            gapVertical = 10 * wmp
-            marginTop = 10 * wmp
-            
-            if emojiState == 0
-            {
-                marginTop = (allButtonHeight * wmp) - gapVertical
-            }
+            marginTop = marginTop * 2
         }
     }
     override func textDidChange(_ textInput: UITextInput?) {
