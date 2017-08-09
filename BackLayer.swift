@@ -31,6 +31,67 @@ class BackLayer: CALayer {
     override func draw(in ctx: CGContext) {
         if let gpButton = gpButton {
             
+//            // get size of button with respect of inset values
+//            let w = gpButton.frame.width
+//            let h = gpButton.frame.height
+            let type = gpButton.type!
+//            switch type {
+//            case .DELETE:
+//                // inset width and height
+//                let p1 = CGPoint(x: w * 0.3, y: h * 0.35)
+//                let p2 = CGPoint(x: w * 0.75, y: h * 0.35)
+//                let p3 = CGPoint(x: w * 0.75, y: h * 0.65)
+//                let p4 = CGPoint(x: w * 0.3, y: h * 0.65)
+//                let p5 = CGPoint(x: w * 0.2, y: h * 0.5)
+//                
+//                let px1 = CGPoint(x: w * 0.35, y: h * 0.25)
+//                let px2 = CGPoint(x: w * 0.35, y: h * 0.75)
+//                let px3 = CGPoint(x: w * 0.55, y: h * 0.25)
+//                let px4 = CGPoint(x: w * 0.55, y: h * 0.75)
+//                
+//                let delPath = UIBezierPath()
+//                delPath.move(to: p1)
+//                delPath.addLine(to: p2)
+//                delPath.addLine(to: p3)
+//                delPath.addLine(to: p4)
+//                delPath.addLine(to: p5)
+//                delPath.close()
+//                
+//                delPath.move(to: px1)
+//                delPath.addLine(to: px3)
+//                
+//                delPath.move(to: px2)
+//                delPath.addLine(to: px4)
+//                
+//                let delLayer = CAShapeLayer()
+//                delLayer.path = delPath.cgPath
+//                delLayer.strokeColor = UIColor.black.cgColor
+//                delLayer.lineWidth = 1
+//                self.addSublayer(delLayer)
+//                //                setNeedsDisplay()
+//                break
+//            case .GLOBE:
+//                
+//                let circlePath = UIBezierPath(arcCenter: CGPoint(x: 100,y: 100), radius: CGFloat(20), startAngle: CGFloat(0), endAngle:CGFloat(M_PI * 2), clockwise: true)
+//                
+//                let shapeLayer = CAShapeLayer()
+//                shapeLayer.path = circlePath.cgPath
+//                
+//                //change the fill color
+//                shapeLayer.fillColor = UIColor.clear.cgColor
+//                //you can change the stroke color
+//                shapeLayer.strokeColor = UIColor.red.cgColor
+//                //you can change the line width
+//                shapeLayer.lineWidth = 3.0
+//                
+//                self.addSublayer(shapeLayer)
+//                break
+//            default:
+//                break
+//            }
+//            
+            
+            
             // TODO: should this value be accessible?
             let keyFrame = bounds.insetBy(dx: gpButton.backLayerInsetX, dy: gpButton.backLayerInsetY)
             let cornerRadius = gpButton.radius
@@ -41,14 +102,13 @@ class BackLayer: CALayer {
             ctx.setFillColor(gpButton.bgColor.cgColor)
             ctx.addPath(keyPath.cgPath)
             ctx.fillPath()
+            displayIfNeeded()
             
             if let layer = popUpLayer {
                 layer.isHidden = true
             }
             
             if highlighted {
-                
-                let type = gpButton.type!
                 if type == .CHAR
                 {
                     if let layer = popUpLayer {

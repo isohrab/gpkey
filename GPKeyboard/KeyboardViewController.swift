@@ -141,17 +141,16 @@ class KeyboardViewController: UIInputViewController, GPButtonEventsDelegate {
             [Harf.init(name: "number-seperator",face: ",", output: ",", returnable: false, spaceReturnable: false),
              Harf.init(name: "register",face: ".", output: ".", returnable: false, spaceReturnable: false),
              Harf.init(name: "Copyright",face: ":", output: ":", returnable: false, spaceReturnable: false),
-             Harf.init(name: "slash",face: "/", output: "/", returnable: false, spaceReturnable: false),
-             Harf.init(name: "back-slash",face: "\\", output: "\\", returnable: false, spaceReturnable: false),
+             Harf.init(name: "kama",face: "،", output: "،", returnable: false, spaceReturnable: false),
              Harf.init(name: "small",face: "<", output: ">", returnable: false, spaceReturnable: false),
              Harf.init(name: "great",face: ">", output: "<", returnable: false, spaceReturnable: false),
              Harf.init(name: "pipe",face: "|", output: "|", returnable: false, spaceReturnable: false),
-             Harf.init(name: "parantezL",  face: "\u{0028}",   output: "\u{0029}", returnable: false, spaceReturnable: false),
-             Harf.init(name: "parantezR",  face: "\u{0029}",   output: "\u{0028}", returnable: false, spaceReturnable: false),],
+             Harf.init(name: "parantezL",  face: "\u{0028}",   output: "\u{0028}", returnable: false, spaceReturnable: false),
+             Harf.init(name: "parantezR",  face: "\u{0029}",   output: "\u{0029}", returnable: false, spaceReturnable: false),],
             
             // fourht row:
-            [Harf.init(name: "at",face: "@", output: "@", returnable: false, spaceReturnable: false),
-             Harf.init(name: "sharp",face: "#", output: "#", returnable: false, spaceReturnable: false)]]]
+            [Harf.init(name: "back-slash",face: "\\", output: "\\", returnable: false, spaceReturnable: false),
+             Harf.init(name: "slash",face: "/", output: "/", returnable: false, spaceReturnable: false),]]]
     
     // the smiles are changable in main App
     var smile:[String] =  ["\u{1F600}","\u{1F601}","\u{1F602}","\u{1F60E}","\u{1F60D}","\u{1F618}","\u{0263A}","\u{1F61C}",
@@ -168,8 +167,8 @@ class KeyboardViewController: UIInputViewController, GPButtonEventsDelegate {
     var gapHorizontal: CGFloat = 6    // in iPad screens should be multiply by 2
     var gapVertical: CGFloat = 10        // in iPad Screen should be multiply by 2
     var buttonHeight: CGFloat = 52
-
-    var marginTop:CGFloat = 25     // in iPad screen it should be multiply by 2
+    var dmpPatriot: CGFloat = 1
+    var marginTop:CGFloat = 0     // in iPad screen it should be multiply by 2
     
     var shift: Bool = false          // show state of shift button
     {
@@ -288,7 +287,7 @@ class KeyboardViewController: UIInputViewController, GPButtonEventsDelegate {
         deleteButton.addTarget(self, action: #selector(self.deleteTouchDown(sender:)), for: .touchDown)
         deleteButton.addTarget(self, action: #selector(self.deleteTouchUp(_:)), for: .touchUpInside)
         deleteButton.addTarget(self, action: #selector(self.deleteTouchUp(_:)), for: .touchUpOutside)
-        deleteButton.label?.text = "dele"
+        deleteButton.label?.text = ""
         deleteButton.backLayerInsetX = gapHorizontal / 2
         deleteButton.backLayerInsetY = gapVertical / 2
         alefbaButtons[emojiState + 2].insert(deleteButton, at: alefbaButtons[emojiState + 2].count)
@@ -297,6 +296,7 @@ class KeyboardViewController: UIInputViewController, GPButtonEventsDelegate {
         let numberButton = GPButton(with: .NUMBER)
         numberButton.addTarget(self, action: #selector(self.utilTouched(sender:)), for: .touchUpInside)
         numberButton.label?.text = "۱۲۳"
+        numberButton.bgColor = utilBackgroundColor
         numberButton.backLayerInsetX = gapHorizontal / 2
         numberButton.backLayerInsetY = gapVertical / 2
         alefbaButtons[emojiState + 3].insert(numberButton, at: 0)
@@ -306,6 +306,7 @@ class KeyboardViewController: UIInputViewController, GPButtonEventsDelegate {
         globeButton.backLayerInsetX = gapHorizontal / 2
         globeButton.backLayerInsetY = gapVertical / 2
         globeButton.label?.text = "globe"
+        globeButton.bgColor = utilBackgroundColor
         alefbaButtons[emojiState + 3].insert(globeButton, at: 1)
         alefbaLayout.addSubview(globeButton)
         globeButton.addTarget(self, action: #selector(advanceToNextInputMode), for: .touchUpInside)
@@ -321,6 +322,7 @@ class KeyboardViewController: UIInputViewController, GPButtonEventsDelegate {
         let enterButton = GPButton(with: .ENTER)
         enterButton.addTarget(self, action: #selector(self.utilTouched(sender:)), for: .touchUpInside)
         enterButton.label?.text = "enter"
+        enterButton.bgColor = utilBackgroundColor
         enterButton.backLayerInsetX = gapHorizontal / 2
         enterButton.backLayerInsetY = gapVertical / 2
         alefbaButtons[emojiState + 3].insert(enterButton, at: 5)
@@ -386,6 +388,7 @@ class KeyboardViewController: UIInputViewController, GPButtonEventsDelegate {
         deleteButton.addTarget(self, action: #selector(self.deleteTouchUp(_:)), for: .touchUpInside)
         deleteButton.addTarget(self, action: #selector(self.deleteTouchUp(_:)), for: .touchUpOutside)
         deleteButton.label?.text = "dele"
+        deleteButton.bgColor = utilBackgroundColor
         deleteButton.backLayerInsetX = gapHorizontal / 2
         deleteButton.backLayerInsetY = gapVertical / 2
         numberButtons[emojiState + 2].insert(deleteButton, at: numberButtons[emojiState + 2].count)
@@ -394,6 +397,7 @@ class KeyboardViewController: UIInputViewController, GPButtonEventsDelegate {
         let numberButton = GPButton(with: .NUMBER)
         numberButton.addTarget(self, action: #selector(self.utilTouched(sender:)), for: .touchUpInside)
         numberButton.label?.text = "الفبا"
+        numberButton.bgColor = utilBackgroundColor
         numberButton.backLayerInsetX = gapHorizontal / 2
         numberButton.backLayerInsetY = gapVertical / 2
         numberButtons[emojiState + 3].insert(numberButton, at: 0)
@@ -403,6 +407,7 @@ class KeyboardViewController: UIInputViewController, GPButtonEventsDelegate {
         globeButton.backLayerInsetX = gapHorizontal / 2
         globeButton.backLayerInsetY = gapVertical / 2
         globeButton.label?.text = "globe"
+        globeButton.bgColor = utilBackgroundColor
         numberButtons[emojiState + 3].insert(globeButton, at: 1)
         numberLayout.addSubview(globeButton)
         globeButton.addTarget(self, action: #selector(advanceToNextInputMode), for: .touchUpInside)
@@ -418,6 +423,7 @@ class KeyboardViewController: UIInputViewController, GPButtonEventsDelegate {
         let enterButton = GPButton(with: .ENTER)
         enterButton.addTarget(self, action: #selector(self.utilTouched(sender:)), for: .touchUpInside)
         enterButton.label?.text = "enter"
+        enterButton.bgColor = utilBackgroundColor
         enterButton.backLayerInsetX = gapHorizontal / 2
         enterButton.backLayerInsetY = gapVertical / 2
         numberButtons[emojiState + 3].insert(enterButton, at: 5)
@@ -671,16 +677,6 @@ class KeyboardViewController: UIInputViewController, GPButtonEventsDelegate {
     }
     
     
-//    func getCharacterFromNearestButton(_ sender: UITapGestureRecognizer)
-//    {
-//        let loc = sender.location(in: sender.view)
-////        if loc.y < 20 && emojiState == 0
-////        {
-////            dismissKeyboard()
-////        }
-//        
-//    }
-    
     
     
     //////////// constraints functions:    ///////////
@@ -690,7 +686,6 @@ class KeyboardViewController: UIInputViewController, GPButtonEventsDelegate {
         for row in 0..<buttons.count-1
         {
             NSLayoutConstraint(item: buttons[row][0], attribute: .bottom, relatedBy: .equal, toItem: buttons[row+1][0], attribute: .top, multiplier: 1, constant: 0).isActive = true
-            NSLayoutConstraint(item: buttons[row][0], attribute: .centerX, relatedBy: .equal, toItem: buttons[row+1][0], attribute: .centerX, multiplier: 1, constant: 0).isActive = true
         }
         // chain first button to top of the keyboard layer
         NSLayoutConstraint(item: buttons[0][0], attribute: .top, relatedBy: .equal, toItem: kbLayout, attribute: .top, multiplier: 1, constant: 0).isActive = true
@@ -717,7 +712,14 @@ class KeyboardViewController: UIInputViewController, GPButtonEventsDelegate {
     func sizeConstraints(buttons: [[GPButton]], kbLayout: UIView)
     {
         let muster = buttons[1][1]
-        muster.heightAnchor.constraint(equalToConstant: buttonHeight).isActive = true
+        let np = NSLayoutConstraint(item: muster, attribute: .height, relatedBy: .equal, toItem: nil, attribute: .height, multiplier: 1, constant: buttonHeight)
+        np.priority = 999
+        portraitConstraints.append(np)
+        
+        let nl = NSLayoutConstraint(item: muster, attribute: .height, relatedBy: .equal, toItem: nil, attribute: .height, multiplier: 1, constant: buttonHeight * 0.8)
+        nl.priority = 999
+        landscapeConstraints.append(nl)
+        
         for row in 0..<buttons.count
         {
             for col in 0..<buttons[row].count
@@ -742,7 +744,7 @@ class KeyboardViewController: UIInputViewController, GPButtonEventsDelegate {
                     // Portrait
                     portraitConstraints.append(NSLayoutConstraint(item: buttons[row][col], attribute: .height, relatedBy: .equal, toItem: muster, attribute: .width, multiplier: 1.3, constant: 0))
                     // Landscape
-                    landscapeConstraints.append(NSLayoutConstraint(item: buttons[row][col], attribute: .height, relatedBy: .equal, toItem: muster, attribute: .height, multiplier: 1, constant: 0))
+                    landscapeConstraints.append(NSLayoutConstraint(item: buttons[row][col], attribute: .height, relatedBy: .equal, toItem: muster, attribute: .height, multiplier: 0.8, constant: 0))
                     
                     NSLayoutConstraint(item: buttons[row][col], attribute: .width, relatedBy: .equal, toItem: muster, attribute: .width, multiplier: 1, constant: 0).isActive = true
                     break
@@ -781,6 +783,11 @@ class KeyboardViewController: UIInputViewController, GPButtonEventsDelegate {
     }
     
     override func willRotate(to toInterfaceOrientation: UIInterfaceOrientation, duration: TimeInterval) {
+        
+
+    }
+    
+    override func didRotate(from fromInterfaceOrientation: UIInterfaceOrientation) {
         if UIScreen.main.bounds.size.height > UIScreen.main.bounds.size.width
         {
             NSLayoutConstraint.deactivate(landscapeConstraints)
@@ -793,16 +800,8 @@ class KeyboardViewController: UIInputViewController, GPButtonEventsDelegate {
             NSLayoutConstraint.activate(landscapeConstraints)
             
         }
-        
-        UIView.animate(withDuration: 0.5) {
-            self.updateViewConstraints()
-            self.view.layoutIfNeeded()
-        }
-    }
-    
-    override func didRotate(from fromInterfaceOrientation: UIInterfaceOrientation) {
-        self.updateViewConstraints()
-        self.view.layoutIfNeeded()
+//            self.updateViewConstraints()
+            self.view.updateConstraintsIfNeeded()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -822,7 +821,6 @@ class KeyboardViewController: UIInputViewController, GPButtonEventsDelegate {
     }
     override func viewDidLoad() {
         super.viewDidLoad()
-        
         
         // TODO: Should I Calculate here? iPad!, Landscape......
         let prefs = UserDefaults(suiteName: "group.me.alirezak.gpkeys")
@@ -850,7 +848,7 @@ class KeyboardViewController: UIInputViewController, GPButtonEventsDelegate {
         alefbaLayout = UIView()
         alefbaLayout.translatesAutoresizingMaskIntoConstraints = false
         self.view.addSubview(alefbaLayout)
-        alefbaLayout.topAnchor.constraint(equalTo: self.view.topAnchor, constant: 0).isActive = true
+        alefbaLayout.topAnchor.constraint(equalTo: self.view.topAnchor, constant: marginTop).isActive = true
         alefbaLayout.rightAnchor.constraint(equalTo: self.view.rightAnchor).isActive = true
         alefbaLayout.bottomAnchor.constraint(equalTo: self.view.bottomAnchor).isActive = true
         alefbaLayout.leftAnchor.constraint(equalTo: self.view.leftAnchor).isActive = true
@@ -861,7 +859,7 @@ class KeyboardViewController: UIInputViewController, GPButtonEventsDelegate {
         numberLayout = UIView()
         numberLayout.translatesAutoresizingMaskIntoConstraints = false
         self.view.addSubview(numberLayout)
-        numberLayout.topAnchor.constraint(equalTo: self.view.topAnchor, constant: 0).isActive = true
+        numberLayout.topAnchor.constraint(equalTo: self.view.topAnchor, constant: marginTop).isActive = true
         numberLayout.rightAnchor.constraint(equalTo: self.view.rightAnchor).isActive = true
         numberLayout.bottomAnchor.constraint(equalTo: self.view.bottomAnchor).isActive = true
         numberLayout.leftAnchor.constraint(equalTo: self.view.leftAnchor).isActive = true
@@ -886,40 +884,65 @@ class KeyboardViewController: UIInputViewController, GPButtonEventsDelegate {
     func calculateVariables()
     {
         // define a default multiplier based iphone 6/6s/7 (width = 375) screen size.
-        let dmpPatriot:CGFloat = UIScreen.main.bounds.size.width / 375
+        if UIScreen.main.bounds.size.height > UIScreen.main.bounds.size.width
+        {
+            dmpPatriot = UIScreen.main.bounds.size.width / 375
+        }
+        else
+        {
+            dmpPatriot = UIScreen.main.bounds.size.width / 667
+        }
+        
         gapHorizontal = gapHorizontal * dmpPatriot
-        gapVertical = gapVertical * dmpPatriot
+        
+        if dmpPatriot < 1
+        {
+            gapVertical = gapVertical / dmpPatriot
+        }
+        else
+        {
+            gapVertical = gapVertical * dmpPatriot
+            buttonHeight = buttonHeight * dmpPatriot
+        }
+        
         marginTop = marginTop * dmpPatriot
-        buttonHeight = buttonHeight * dmpPatriot
         
         if emojiState == 0
         {
-            marginTop = marginTop * 2
+            marginTop = buttonHeight * 0.8
         }
     }
     override func textDidChange(_ textInput: UITextInput?) {
-        // The app has just changed the document's contents, the document context has been updated.
-        /*let proxy = self.textDocumentProxy
+        //The app has just changed the document's contents, the document context has been updated.
+        let proxy = self.textDocumentProxy
         if proxy.keyboardAppearance == UIKeyboardAppearance.dark {
+            
             viewBackground = UIColor(red:0.08, green:0.08, blue:0.08, alpha:1.0)
-            utilBackgroundColor = UIColor(red:0.21, green:0.21, blue:0.21, alpha:1.0)
-            buttonBackground = UIColor(red:0.35, green:0.35, blue:0.35, alpha:1.0)
-            textColorNormal = UIColor.white
-            textColorHighlighted = UIColor.lightGray
+            
+            GPButton.bgColor = UIColor(red:0.35, green:0.35, blue:0.35, alpha:1.0)
+            GPButton.bgHighlighted = UIColor.white
+            GPButton.utilBackgroundColor = UIColor(red:0.67, green:0.70, blue:0.73, alpha:1.0)
+            GPButton.charColor = UIColor.black
+            GPButton.shadowColor = UIColor(red:0.54, green:0.55, blue:0.56, alpha:1.0)
+            
         } else {
-            buttonBackground = UIColor.white
             viewBackground = UIColor(red:0.82, green:0.84, blue:0.86, alpha:1.0)
-            utilBackgroundColor = UIColor(red:0.67, green:0.70, blue:0.73, alpha:1.0)
-            textColorNormal = UIColor.darkGray
-            textColorHighlighted = UIColor.black
-            makeButtonBiggerTextColor = UIColor.black
-            makeButtonBiggerBackground = UIColor(red:0.90, green:0.89, blue:0.89, alpha:1.0)
-        }*/
+            
+            GPButton.bgColor = UIColor.white
+            GPButton.bgHighlighted = UIColor.white
+            GPButton.utilBackgroundColor = UIColor(red:0.67, green:0.70, blue:0.73, alpha:1.0)
+            GPButton.charColor = UIColor.black
+            GPButton.shadowColor = UIColor(red:0.54, green:0.55, blue:0.56, alpha:1.0)
+        }
     }
     
     // GPButtonEventsDelegate
     func moveCursor(numberOfMovement: Int) {
         let proxy = textDocumentProxy as UITextDocumentProxy
         proxy.adjustTextPosition(byCharacterOffset: numberOfMovement)
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        self.view.updateConstraintsIfNeeded()
     }
 }

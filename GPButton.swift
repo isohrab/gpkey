@@ -41,11 +41,12 @@ class GPButton: UIControl {
     var backLayerInsetY: CGFloat = 0
     
     // Color variables
-    var bgColor = UIColor.white
-    var bgHighlighted = UIColor.white
-    var utilBackgroundColor = UIColor(red:0.67, green:0.70, blue:0.73, alpha:1.0)
-    var charColor = UIColor.black
-    var shadowColor = UIColor(red:0.54, green:0.55, blue:0.56, alpha:1.0)
+    static var bgColor = UIColor.white
+    static var bgHighlighted = UIColor.white
+    static var utilBackgroundColor = UIColor(red:0.67, green:0.70, blue:0.73, alpha:1.0)
+    static var charColor = UIColor.black
+    static var shadowColor = UIColor(red:0.54, green:0.55, blue:0.56, alpha:1.0)
+    
     var textInsetX:CGFloat = 1
     var textInsetY:CGFloat = 2
     var type:GPButtonType!
@@ -111,7 +112,6 @@ class GPButton: UIControl {
         label?.minimumScaleFactor = CGFloat(0.1)
         label?.numberOfLines = 1
         self.addSubview(label!)
-//        label?.center = self.center
         type = .CHAR
         updateLayerFrames()
     }
@@ -119,20 +119,27 @@ class GPButton: UIControl {
     {
         self.init(frame: CGRect.zero)
         self.type = type
-        if type != .CHAR && type != .SPACE && type != .HALBSPACE && type != .EMOJI
-        {
-            bgColor = UIColor(red:0.67, green:0.70, blue:0.73, alpha:1.0)
-        }
-        if type == .EMOJI
-        {
+        switch type {
+        case .CHAR:
+            break
+        case .EMOJI:
             bgColor = UIColor.clear
             bgHighlighted = UIColor.lightText
             textInsetX = 0
             textInsetY = 0
-        }
-        if type == .SPACE || type == .HALBSPACE
-        {
+            break
+        case .DELETE:
+            break
+        case .HALBSPACE, .SPACE:
             bgHighlighted = utilBackgroundColor
+            break
+            
+        default:
+            break
+        }
+        if type != .CHAR && type != .SPACE && type != .HALBSPACE && type != .EMOJI
+        {
+            bgColor = utilBackgroundColor
         }
         updateLayerFrames()
     }
