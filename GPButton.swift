@@ -41,11 +41,12 @@ class GPButton: UIControl {
     var backLayerInsetY: CGFloat = 0
     
     // Color variables
-    static var bgColor = UIColor.white
-    static var bgHighlighted = UIColor.white
-    static var utilBackgroundColor = UIColor(red:0.67, green:0.70, blue:0.73, alpha:1.0)
+    static var buttonColor = UIColor.white
+    static var buttonHighlighted = UIColor.white
+    static var utilBackgroundColor = UIColor(red:0.7, green:0.70, blue:0.73, alpha:1.0)
     static var charColor = UIColor.black
     static var shadowColor = UIColor(red:0.54, green:0.55, blue:0.56, alpha:1.0)
+    static var layoutColor = UIColor(red:0.84, green:0.84, blue:0.84, alpha:1.0) // color of keyboard layout
     
     var textInsetX:CGFloat = 1
     var textInsetY:CGFloat = 2
@@ -91,6 +92,7 @@ class GPButton: UIControl {
         self.translatesAutoresizingMaskIntoConstraints = false
         backLayer.gpButton = self
         backLayer.contentsScale = UIScreen.main.scale
+        backLayer.backgroundColor = GPButton.layoutColor.cgColor
         layer.addSublayer(backLayer)
         label = UILabel()
         label?.frame = bounds.insetBy(dx: textInsetX, dy: textInsetY)
@@ -108,7 +110,7 @@ class GPButton: UIControl {
         }
         
         label?.textAlignment = .center
-        label?.textColor = charColor
+        label?.textColor = GPButton.charColor
         label?.minimumScaleFactor = CGFloat(0.1)
         label?.numberOfLines = 1
         self.addSubview(label!)
@@ -123,25 +125,29 @@ class GPButton: UIControl {
         case .CHAR:
             break
         case .EMOJI:
-            bgColor = UIColor.clear
-            bgHighlighted = UIColor.lightText
-            textInsetX = 0
-            textInsetY = 0
+//            textInsetX = 0
+//            textInsetY = 0
             break
         case .DELETE:
+//            GPButton.bgColor = GPButton.utilBackgroundColor
             break
         case .HALBSPACE, .SPACE:
-            bgHighlighted = utilBackgroundColor
+//            GPButton.bgHighlighted = GPButton.utilBackgroundColor
             break
-            
-        default:
+        case .GLOBE:
+//            GPButton.bgColor = GPButton.utilBackgroundColor
+            break
+        case .ENTER:
+//            GPButton.bgColor = GPButton.utilBackgroundColor
+            break
+        case .NUMBER:
+//            GPButton.bgColor = GPButton.utilBackgroundColor
+            break
+        case .SHIFT:
+//            GPButton.bgColor = GPButton.utilBackgroundColor
             break
         }
-        if type != .CHAR && type != .SPACE && type != .HALBSPACE && type != .EMOJI
-        {
-            bgColor = utilBackgroundColor
-        }
-        updateLayerFrames()
+//        updateLayerFrames()
     }
     
     required init?(coder aDecoder: NSCoder) {

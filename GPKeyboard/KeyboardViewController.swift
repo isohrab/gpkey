@@ -296,7 +296,6 @@ class KeyboardViewController: UIInputViewController, GPButtonEventsDelegate {
         let numberButton = GPButton(with: .NUMBER)
         numberButton.addTarget(self, action: #selector(self.utilTouched(sender:)), for: .touchUpInside)
         numberButton.label?.text = "۱۲۳"
-        numberButton.bgColor = utilBackgroundColor
         numberButton.backLayerInsetX = gapHorizontal / 2
         numberButton.backLayerInsetY = gapVertical / 2
         alefbaButtons[emojiState + 3].insert(numberButton, at: 0)
@@ -306,7 +305,6 @@ class KeyboardViewController: UIInputViewController, GPButtonEventsDelegate {
         globeButton.backLayerInsetX = gapHorizontal / 2
         globeButton.backLayerInsetY = gapVertical / 2
         globeButton.label?.text = "globe"
-        globeButton.bgColor = utilBackgroundColor
         alefbaButtons[emojiState + 3].insert(globeButton, at: 1)
         alefbaLayout.addSubview(globeButton)
         globeButton.addTarget(self, action: #selector(advanceToNextInputMode), for: .touchUpInside)
@@ -322,7 +320,6 @@ class KeyboardViewController: UIInputViewController, GPButtonEventsDelegate {
         let enterButton = GPButton(with: .ENTER)
         enterButton.addTarget(self, action: #selector(self.utilTouched(sender:)), for: .touchUpInside)
         enterButton.label?.text = "enter"
-        enterButton.bgColor = utilBackgroundColor
         enterButton.backLayerInsetX = gapHorizontal / 2
         enterButton.backLayerInsetY = gapVertical / 2
         alefbaButtons[emojiState + 3].insert(enterButton, at: 5)
@@ -388,7 +385,6 @@ class KeyboardViewController: UIInputViewController, GPButtonEventsDelegate {
         deleteButton.addTarget(self, action: #selector(self.deleteTouchUp(_:)), for: .touchUpInside)
         deleteButton.addTarget(self, action: #selector(self.deleteTouchUp(_:)), for: .touchUpOutside)
         deleteButton.label?.text = "dele"
-        deleteButton.bgColor = utilBackgroundColor
         deleteButton.backLayerInsetX = gapHorizontal / 2
         deleteButton.backLayerInsetY = gapVertical / 2
         numberButtons[emojiState + 2].insert(deleteButton, at: numberButtons[emojiState + 2].count)
@@ -397,7 +393,6 @@ class KeyboardViewController: UIInputViewController, GPButtonEventsDelegate {
         let numberButton = GPButton(with: .NUMBER)
         numberButton.addTarget(self, action: #selector(self.utilTouched(sender:)), for: .touchUpInside)
         numberButton.label?.text = "الفبا"
-        numberButton.bgColor = utilBackgroundColor
         numberButton.backLayerInsetX = gapHorizontal / 2
         numberButton.backLayerInsetY = gapVertical / 2
         numberButtons[emojiState + 3].insert(numberButton, at: 0)
@@ -407,7 +402,6 @@ class KeyboardViewController: UIInputViewController, GPButtonEventsDelegate {
         globeButton.backLayerInsetX = gapHorizontal / 2
         globeButton.backLayerInsetY = gapVertical / 2
         globeButton.label?.text = "globe"
-        globeButton.bgColor = utilBackgroundColor
         numberButtons[emojiState + 3].insert(globeButton, at: 1)
         numberLayout.addSubview(globeButton)
         globeButton.addTarget(self, action: #selector(advanceToNextInputMode), for: .touchUpInside)
@@ -423,7 +417,6 @@ class KeyboardViewController: UIInputViewController, GPButtonEventsDelegate {
         let enterButton = GPButton(with: .ENTER)
         enterButton.addTarget(self, action: #selector(self.utilTouched(sender:)), for: .touchUpInside)
         enterButton.label?.text = "enter"
-        enterButton.bgColor = utilBackgroundColor
         enterButton.backLayerInsetX = gapHorizontal / 2
         enterButton.backLayerInsetY = gapVertical / 2
         numberButtons[emojiState + 3].insert(enterButton, at: 5)
@@ -779,7 +772,17 @@ class KeyboardViewController: UIInputViewController, GPButtonEventsDelegate {
     override func updateViewConstraints()
     {
         super.updateViewConstraints()
-        
+        // Activate constraints according device orientation
+        if UIScreen.main.bounds.size.height > UIScreen.main.bounds.size.width
+        {
+            NSLayoutConstraint.deactivate(landscapeConstraints)
+            NSLayoutConstraint.activate(portraitConstraints)
+        }
+        else
+        {
+            NSLayoutConstraint.deactivate(portraitConstraints)
+            NSLayoutConstraint.activate(landscapeConstraints)
+        }
     }
     
     override func willRotate(to toInterfaceOrientation: UIInterfaceOrientation, duration: TimeInterval) {
@@ -804,24 +807,8 @@ class KeyboardViewController: UIInputViewController, GPButtonEventsDelegate {
             self.view.updateConstraintsIfNeeded()
     }
     
-    override func viewWillAppear(_ animated: Bool) {
-        print("override func viewWillAppear(_ animated: Bool)")
-        print(UIScreen.main.bounds.size.width)
-        super.viewWillAppear(animated)
-//        let proxy = self.textDocumentProxy
-//        if proxy.keyboardAppearance == UIKeyboardAppearance.dark {
-//            viewBackground = UIColor(red:0.08, green:0.08, blue:0.08, alpha:1.0)
-//            utilBackgroundColor = UIColor(red:0.21, green:0.21, blue:0.21, alpha:1.0)
-//            buttonBackground = UIColor(red:0.35, green:0.35, blue:0.35, alpha:1.0)
-//            textColorNormal = UIColor.white
-//            textColorHighlighted = UIColor.lightGray
-//            makeButtonBiggerTextColor = UIColor.white
-//            makeButtonBiggerBackground = UIColor.gray
-//        }
-    }
     override func viewDidLoad() {
         super.viewDidLoad()
-        
         // TODO: Should I Calculate here? iPad!, Landscape......
         let prefs = UserDefaults(suiteName: "group.me.alirezak.gpkeys")
         if let val = prefs?.integer(forKey: "emojiState") {
@@ -840,6 +827,12 @@ class KeyboardViewController: UIInputViewController, GPButtonEventsDelegate {
         // get all variable according current device state
         calculateVariables()
         
+    }
+    override func viewWillAppear(_ animated: Bool) {
+        print("viewWillAppear")
+        super.viewWillAppear(animated)
+        
+        setTheme()
         
         // initial landscape and portrait constraints
         landscapeConstraints = [NSLayoutConstraint]()
@@ -865,18 +858,11 @@ class KeyboardViewController: UIInputViewController, GPButtonEventsDelegate {
         numberLayout.leftAnchor.constraint(equalTo: self.view.leftAnchor).isActive = true
         initNumberLayout()
         numberLayout.layer.opacity = 0
-        
-         // Activate constraints according device orientation
-        if UIScreen.main.bounds.size.height > UIScreen.main.bounds.size.width
-        {
-            NSLayoutConstraint.deactivate(landscapeConstraints)
-            NSLayoutConstraint.activate(portraitConstraints)
-        }
-        else
-        {
-            NSLayoutConstraint.deactivate(portraitConstraints)
-            NSLayoutConstraint.activate(landscapeConstraints)
-        }
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        print("viewDidAppear")
+        self.view.setNeedsDisplay()
         self.updateViewConstraints()
         self.view.updateConstraintsIfNeeded()
     }
@@ -914,26 +900,7 @@ class KeyboardViewController: UIInputViewController, GPButtonEventsDelegate {
     }
     override func textDidChange(_ textInput: UITextInput?) {
         //The app has just changed the document's contents, the document context has been updated.
-        let proxy = self.textDocumentProxy
-        if proxy.keyboardAppearance == UIKeyboardAppearance.dark {
-            
-            viewBackground = UIColor(red:0.08, green:0.08, blue:0.08, alpha:1.0)
-            
-            GPButton.bgColor = UIColor(red:0.35, green:0.35, blue:0.35, alpha:1.0)
-            GPButton.bgHighlighted = UIColor.white
-            GPButton.utilBackgroundColor = UIColor(red:0.67, green:0.70, blue:0.73, alpha:1.0)
-            GPButton.charColor = UIColor.black
-            GPButton.shadowColor = UIColor(red:0.54, green:0.55, blue:0.56, alpha:1.0)
-            
-        } else {
-            viewBackground = UIColor(red:0.82, green:0.84, blue:0.86, alpha:1.0)
-            
-            GPButton.bgColor = UIColor.white
-            GPButton.bgHighlighted = UIColor.white
-            GPButton.utilBackgroundColor = UIColor(red:0.67, green:0.70, blue:0.73, alpha:1.0)
-            GPButton.charColor = UIColor.black
-            GPButton.shadowColor = UIColor(red:0.54, green:0.55, blue:0.56, alpha:1.0)
-        }
+        setTheme()
     }
     
     // GPButtonEventsDelegate
@@ -942,7 +909,29 @@ class KeyboardViewController: UIInputViewController, GPButtonEventsDelegate {
         proxy.adjustTextPosition(byCharacterOffset: numberOfMovement)
     }
     
-    override func viewDidAppear(_ animated: Bool) {
-        self.view.updateConstraintsIfNeeded()
+    func setTheme()
+    {
+        let proxy = self.textDocumentProxy
+        if proxy.keyboardAppearance == UIKeyboardAppearance.dark {
+            
+            viewBackground = UIColor(red:0.08, green:0.08, blue:0.08, alpha:1.0)
+            
+            GPButton.buttonColor = UIColor(red:0.35, green:0.35, blue:0.35, alpha:1.0)
+            GPButton.buttonHighlighted = UIColor(red:0.35, green:0.35, blue:0.35, alpha:1.0)
+            GPButton.utilBackgroundColor = UIColor(red:0.22, green:0.22, blue:0.22, alpha:1.0)
+            GPButton.charColor = UIColor.white
+            GPButton.shadowColor = UIColor(red:0.08, green:0.08, blue:0.08, alpha:1.0)
+            GPButton.layoutColor = UIColor(red:0.08, green:0.08, blue:0.08, alpha:1.0)
+            
+        } else {
+            viewBackground = UIColor(red:0.84, green:0.84, blue:0.84, alpha:1.0)
+            
+            GPButton.buttonColor = UIColor.white
+            GPButton.buttonHighlighted = UIColor.white
+            GPButton.utilBackgroundColor = UIColor(red:0.67, green:0.70, blue:0.73, alpha:1.0)
+            GPButton.charColor = UIColor.black
+            GPButton.shadowColor = UIColor(red:0.54, green:0.55, blue:0.56, alpha:1.0)
+            GPButton.layoutColor = UIColor(red:0.84, green:0.84, blue:0.84, alpha:1.0)
+        }
     }
 }
