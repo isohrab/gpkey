@@ -121,33 +121,6 @@ class GPButton: UIControl {
     {
         self.init(frame: CGRect.zero)
         self.type = type
-        switch type {
-        case .CHAR:
-            break
-        case .EMOJI:
-//            textInsetX = 0
-//            textInsetY = 0
-            break
-        case .DELETE:
-//            GPButton.bgColor = GPButton.utilBackgroundColor
-            break
-        case .HALBSPACE, .SPACE:
-//            GPButton.bgHighlighted = GPButton.utilBackgroundColor
-            break
-        case .GLOBE:
-//            GPButton.bgColor = GPButton.utilBackgroundColor
-            break
-        case .ENTER:
-//            GPButton.bgColor = GPButton.utilBackgroundColor
-            break
-        case .NUMBER:
-//            GPButton.bgColor = GPButton.utilBackgroundColor
-            break
-        case .SHIFT:
-//            GPButton.bgColor = GPButton.utilBackgroundColor
-            break
-        }
-//        updateLayerFrames()
     }
     
     required init?(coder aDecoder: NSCoder) {

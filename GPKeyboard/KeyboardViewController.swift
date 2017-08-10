@@ -288,7 +288,7 @@ class KeyboardViewController: UIInputViewController, GPButtonEventsDelegate {
         let globeButton = GPButton(with: .GLOBE)
         globeButton.backLayerInsetX = gapHorizontal / 2
         globeButton.backLayerInsetY = gapVertical / 2
-        globeButton.label?.text = "globe"
+        globeButton.label?.text = ""
         alefbaButtons[4].insert(globeButton, at: 1)
         alefbaLayout.addSubview(globeButton)
         globeButton.addTarget(self, action: #selector(advanceToNextInputMode), for: .touchUpInside)
@@ -303,7 +303,7 @@ class KeyboardViewController: UIInputViewController, GPButtonEventsDelegate {
         
         let enterButton = GPButton(with: .ENTER)
         enterButton.addTarget(self, action: #selector(self.utilTouched(sender:)), for: .touchUpInside)
-        enterButton.label?.text = "enter"
+        enterButton.label?.text = ""
         enterButton.backLayerInsetX = gapHorizontal / 2
         enterButton.backLayerInsetY = gapVertical / 2
         alefbaButtons[4].insert(enterButton, at: 5)
@@ -382,7 +382,7 @@ class KeyboardViewController: UIInputViewController, GPButtonEventsDelegate {
         let globeButton = GPButton(with: .GLOBE)
         globeButton.backLayerInsetX = gapHorizontal / 2
         globeButton.backLayerInsetY = gapVertical / 2
-        globeButton.label?.text = "globe"
+        globeButton.label?.text = ""
         numberButtons[4].insert(globeButton, at: 1)
         numberLayout.addSubview(globeButton)
         globeButton.addTarget(self, action: #selector(advanceToNextInputMode), for: .touchUpInside)
@@ -397,7 +397,7 @@ class KeyboardViewController: UIInputViewController, GPButtonEventsDelegate {
         
         let enterButton = GPButton(with: .ENTER)
         enterButton.addTarget(self, action: #selector(self.utilTouched(sender:)), for: .touchUpInside)
-        enterButton.label?.text = "enter"
+        enterButton.label?.text = ""
         enterButton.backLayerInsetX = gapHorizontal / 2
         enterButton.backLayerInsetY = gapVertical / 2
         numberButtons[4].insert(enterButton, at: 5)
