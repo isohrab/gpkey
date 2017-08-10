@@ -18,7 +18,10 @@ class ViewController: UIViewController{
     var defaultSize: CGSize!
     
     // objects for smilies layer
-    let defaultEmojies =  "\u{1F600}\u{1F601}\u{1F602}\u{1F60E}\u{1F60D}\u{1F618}\u{0263A}\u{1F61C}\u{1F914}\u{1F339}\u{02764}\u{1F610}\u{1F61E}\u{1F62D}\u{1F633}\u{1F631}\u{1F620}\u{1F621}\u{1F382}\u{1F381}\u{1F38A}\u{1F494}"
+    var smile:[String] =  ["\u{1F600}","\u{1F601}","\u{1F602}","\u{1F60E}","\u{1F60D}","\u{1F618}","\u{0263A}","\u{1F61C}",
+                           "\u{1F914}","\u{1F339}","\u{02764}","\u{1F610}","\u{1F61E}","\u{1F62D}","\u{1F633}","\u{1F631}",
+                           "\u{1F620}","\u{1F621}","\u{1F382}","\u{1F381}","\u{1F38A}","\u{1F494}","\u{1F494}","\u{1F494}",
+                           "\u{1F494}","\u{1F494}","\u{1F494}","\u{1F494}","\u{1F494}","\u{1F494}","\u{1F494}","\u{1F494}","\u{1F494}"]
     var emojiButtons: [UIButton] = [UIButton]()
     var emojiOnOff:Int = 0 // 0: not set, 1: On (default), 2: Off
     let emojiOnOffLabel: UILabel = UILabel()
@@ -105,7 +108,7 @@ class ViewController: UIViewController{
             }
             else
             {
-                b.setTitle(String(defaultEmojies.charAt(i)), for: .normal)
+                b.setTitle(smile[i], for: .normal)
             }
             b.translatesAutoresizingMaskIntoConstraints = true
             b.backgroundColor = UIColor.white
@@ -143,7 +146,7 @@ class ViewController: UIViewController{
             }
             else
             {
-                b.setTitle(String(defaultEmojies.charAt(i + 11)), for: .normal)
+                b.setTitle(smile[i + 11], for: .normal)
             }
             b.translatesAutoresizingMaskIntoConstraints = true
             b.backgroundColor = UIColor.white

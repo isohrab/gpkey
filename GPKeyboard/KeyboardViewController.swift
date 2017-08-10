@@ -28,9 +28,9 @@ class KeyboardViewController: UIInputViewController, GPButtonEventsDelegate {
     
 
     // [layer][row][column]
-    let characters :[[[Harf]]]=[[[
+    let characters :[[[Harf]]]=[[
         // first layer: first row:
-        Harf.init(name: "zad",  face: "ض", output: "ض", returnable: false, spaceReturnable: false),
+        [Harf.init(name: "zad",  face: "ض", output: "ض", returnable: false, spaceReturnable: false),
         Harf.init(name: "sad",  face: "ص", output: "ص", returnable: false, spaceReturnable: false),
         Harf.init(name: "ghaf", face: "ق", output: "ق", returnable: false, spaceReturnable: false),
         Harf.init(name: "fe",   face: "ف", output: "ف", returnable: false, spaceReturnable: false),
@@ -155,7 +155,8 @@ class KeyboardViewController: UIInputViewController, GPButtonEventsDelegate {
     // the smiles are changable in main App
     var smile:[String] =  ["\u{1F600}","\u{1F601}","\u{1F602}","\u{1F60E}","\u{1F60D}","\u{1F618}","\u{0263A}","\u{1F61C}",
                            "\u{1F914}","\u{1F339}","\u{02764}","\u{1F610}","\u{1F61E}","\u{1F62D}","\u{1F633}","\u{1F631}",
-                           "\u{1F620}","\u{1F621}","\u{1F382}","\u{1F381}","\u{1F38A}","\u{1F494}"]
+                           "\u{1F620}","\u{1F621}","\u{1F382}","\u{1F381}","\u{1F38A}","\u{1F494}","\u{1F494}","\u{1F494}",
+                           "\u{1F494}","\u{1F494}","\u{1F494}","\u{1F494}","\u{1F494}","\u{1F494}","\u{1F494}","\u{1F494}","\u{1F494}"]
     /*************************************
      *                                    *
      *   Define Global Value              *
@@ -168,7 +169,6 @@ class KeyboardViewController: UIInputViewController, GPButtonEventsDelegate {
     var gapVertical: CGFloat = 10        // in iPad Screen should be multiply by 2
     var buttonHeight: CGFloat = 52
     var dmpPatriot: CGFloat = 1
-    var marginTop:CGFloat = 0     // in iPad screen it should be multiply by 2
     
     var shift: Bool = false          // show state of shift button
     {
@@ -181,8 +181,8 @@ class KeyboardViewController: UIInputViewController, GPButtonEventsDelegate {
         didSet {
             if returnAfterSpace == true
             {
-                alefbaButtons[emojiState + 3][3].label?.text = "فاصله"
-                alefbaButtons[emojiState + 3][3].type = .SPACE
+                alefbaButtons[4][3].label?.text = "فاصله"
+                alefbaButtons[4][3].type = .SPACE
             }
         }
     }
@@ -213,11 +213,6 @@ class KeyboardViewController: UIInputViewController, GPButtonEventsDelegate {
     var portraitConstraints:[NSLayoutConstraint]!
     var landscapeConstraints:[NSLayoutConstraint]!
     
-    /*******  user pref variables   ********/
-    var emojiState = 0
-    
-    
-    
     
     /******************************************
      *                                        *
@@ -226,34 +221,23 @@ class KeyboardViewController: UIInputViewController, GPButtonEventsDelegate {
      *****************************************/
     
     func initAlefbaLayout(){
-        // TODO: background should be checked here
-        alefbaLayout.backgroundColor = viewBackground
-        
-//        // setup tap detection for background view
-//        let tap = UITapGestureRecognizer(target: self, action: #selector(getCharacterFromNearestButton(_:)))
-//        tap.numberOfTouchesRequired = 1
-//        tap.numberOfTapsRequired = 1
-//        alefbaLayout.addGestureRecognizer(tap)
         
         alefbaButtons = [[GPButton]]()
 
-        // check user setting if he wants to use emojies
-        if emojiState == 1
+        // Add emojies
+        var rowButtons = [GPButton]()
+        for i in 0...10
         {
-            var rowButtons = [GPButton]()
-            for i in 0...10
-            {
-                let btn = GPButton(with: .EMOJI)
-                btn.label?.text = smile[i]
-                rowButtons.append(btn)
-                btn.backLayerInsetX = 0
-                btn.backLayerInsetY = 0
-                btn.addTarget(self, action: #selector(self.emojiTouched(_:)), for: .touchUpInside)
-                alefbaLayout.addSubview(btn)
+            let btn = GPButton(with: .EMOJI)
+            btn.label?.text = smile[i]
+            rowButtons.append(btn)
+            btn.backLayerInsetX = 0
+            btn.backLayerInsetY = 0
+            btn.addTarget(self, action: #selector(self.emojiTouched(_:)), for: .touchUpInside)
+            alefbaLayout.addSubview(btn)
 
-            }
-            alefbaButtons.append(rowButtons)
         }
+        alefbaButtons.append(rowButtons)
         
         // Add character buttons
         for i in 0..<characters[0].count
@@ -280,7 +264,7 @@ class KeyboardViewController: UIInputViewController, GPButtonEventsDelegate {
         shiftButton.label?.text = ".؟!"
         shiftButton.backLayerInsetX = gapHorizontal / 2
         shiftButton.backLayerInsetY = gapVertical / 2
-        alefbaButtons[emojiState + 2].insert(shiftButton, at: 0)
+        alefbaButtons[3].insert(shiftButton, at: 0)
         alefbaLayout.addSubview(shiftButton)
         
         let deleteButton = GPButton(with: .DELETE)
@@ -290,7 +274,7 @@ class KeyboardViewController: UIInputViewController, GPButtonEventsDelegate {
         deleteButton.label?.text = ""
         deleteButton.backLayerInsetX = gapHorizontal / 2
         deleteButton.backLayerInsetY = gapVertical / 2
-        alefbaButtons[emojiState + 2].insert(deleteButton, at: alefbaButtons[emojiState + 2].count)
+        alefbaButtons[3].insert(deleteButton, at: alefbaButtons[3].count)
         alefbaLayout.addSubview(deleteButton)
         
         let numberButton = GPButton(with: .NUMBER)
@@ -298,14 +282,14 @@ class KeyboardViewController: UIInputViewController, GPButtonEventsDelegate {
         numberButton.label?.text = "۱۲۳"
         numberButton.backLayerInsetX = gapHorizontal / 2
         numberButton.backLayerInsetY = gapVertical / 2
-        alefbaButtons[emojiState + 3].insert(numberButton, at: 0)
+        alefbaButtons[4].insert(numberButton, at: 0)
         alefbaLayout.addSubview(numberButton)
         
         let globeButton = GPButton(with: .GLOBE)
         globeButton.backLayerInsetX = gapHorizontal / 2
         globeButton.backLayerInsetY = gapVertical / 2
         globeButton.label?.text = "globe"
-        alefbaButtons[emojiState + 3].insert(globeButton, at: 1)
+        alefbaButtons[4].insert(globeButton, at: 1)
         alefbaLayout.addSubview(globeButton)
         globeButton.addTarget(self, action: #selector(advanceToNextInputMode), for: .touchUpInside)
         
@@ -314,7 +298,7 @@ class KeyboardViewController: UIInputViewController, GPButtonEventsDelegate {
         spaceButton.backLayerInsetX = gapHorizontal / 2
         spaceButton.backLayerInsetY = gapVertical / 2
         spaceButton.addTarget(self, action: #selector(self.utilTouched(sender:)), for: .touchUpInside)
-        alefbaButtons[emojiState + 3].insert(spaceButton, at: 3)
+        alefbaButtons[4].insert(spaceButton, at: 3)
         alefbaLayout.addSubview(spaceButton)
         
         let enterButton = GPButton(with: .ENTER)
@@ -322,7 +306,7 @@ class KeyboardViewController: UIInputViewController, GPButtonEventsDelegate {
         enterButton.label?.text = "enter"
         enterButton.backLayerInsetX = gapHorizontal / 2
         enterButton.backLayerInsetY = gapVertical / 2
-        alefbaButtons[emojiState + 3].insert(enterButton, at: 5)
+        alefbaButtons[4].insert(enterButton, at: 5)
         alefbaLayout.addSubview(enterButton)
         
         // calculate constraints
@@ -342,23 +326,20 @@ class KeyboardViewController: UIInputViewController, GPButtonEventsDelegate {
     
         numberButtons = [[GPButton]]()
         
-        // check user setting if he want to use emojies
-        if emojiState == 1
+        // Add emojies
+        var rowButtons = [GPButton]()
+        for i in 0...10
         {
-            var rowButtons = [GPButton]()
-            for i in 0...10
-            {
-                let btn = GPButton(with: .EMOJI)
-                btn.label?.text = smile[i]
-                rowButtons.append(btn)
-                btn.backLayerInsetX = 0
-                btn.backLayerInsetY = 0
-                btn.addTarget(self, action: #selector(self.emojiTouched(_:)), for: .touchUpInside)
-                numberLayout.addSubview(btn)
-                
-            }
-            numberButtons.append(rowButtons)
+            let btn = GPButton(with: .EMOJI)
+            btn.label?.text = smile[i+22]
+            rowButtons.append(btn)
+            btn.backLayerInsetX = 0
+            btn.backLayerInsetY = 0
+            btn.addTarget(self, action: #selector(self.emojiTouched(_:)), for: .touchUpInside)
+            numberLayout.addSubview(btn)
+            
         }
+        numberButtons.append(rowButtons)
         
         
         
@@ -387,7 +368,7 @@ class KeyboardViewController: UIInputViewController, GPButtonEventsDelegate {
         deleteButton.label?.text = "dele"
         deleteButton.backLayerInsetX = gapHorizontal / 2
         deleteButton.backLayerInsetY = gapVertical / 2
-        numberButtons[emojiState + 2].insert(deleteButton, at: numberButtons[emojiState + 2].count)
+        numberButtons[3].insert(deleteButton, at: numberButtons[3].count)
         numberLayout.addSubview(deleteButton)
         
         let numberButton = GPButton(with: .NUMBER)
@@ -395,14 +376,14 @@ class KeyboardViewController: UIInputViewController, GPButtonEventsDelegate {
         numberButton.label?.text = "الفبا"
         numberButton.backLayerInsetX = gapHorizontal / 2
         numberButton.backLayerInsetY = gapVertical / 2
-        numberButtons[emojiState + 3].insert(numberButton, at: 0)
+        numberButtons[4].insert(numberButton, at: 0)
         numberLayout.addSubview(numberButton)
         
         let globeButton = GPButton(with: .GLOBE)
         globeButton.backLayerInsetX = gapHorizontal / 2
         globeButton.backLayerInsetY = gapVertical / 2
         globeButton.label?.text = "globe"
-        numberButtons[emojiState + 3].insert(globeButton, at: 1)
+        numberButtons[4].insert(globeButton, at: 1)
         numberLayout.addSubview(globeButton)
         globeButton.addTarget(self, action: #selector(advanceToNextInputMode), for: .touchUpInside)
         
@@ -411,7 +392,7 @@ class KeyboardViewController: UIInputViewController, GPButtonEventsDelegate {
         spaceButton.backLayerInsetX = gapHorizontal / 2
         spaceButton.backLayerInsetY = gapVertical / 2
         spaceButton.addTarget(self, action: #selector(self.utilTouched(sender:)), for: .touchUpInside)
-        numberButtons[emojiState + 3].insert(spaceButton, at: 3)
+        numberButtons[4].insert(spaceButton, at: 3)
         numberLayout.addSubview(spaceButton)
         
         let enterButton = GPButton(with: .ENTER)
@@ -419,7 +400,7 @@ class KeyboardViewController: UIInputViewController, GPButtonEventsDelegate {
         enterButton.label?.text = "enter"
         enterButton.backLayerInsetX = gapHorizontal / 2
         enterButton.backLayerInsetY = gapVertical / 2
-        numberButtons[emojiState + 3].insert(enterButton, at: 5)
+        numberButtons[4].insert(enterButton, at: 5)
         numberLayout.addSubview(enterButton)
         
         // Calculate constraint
@@ -541,65 +522,61 @@ class KeyboardViewController: UIInputViewController, GPButtonEventsDelegate {
     {
         if shifting
         {
-            if emojiState == 1
+            for i in 0...10
             {
-                for i in 0...10
-                {
-                    alefbaButtons[0][i].label?.text = smile[i+11]
-                    
-                }
+                alefbaButtons[0][i].label?.text = smile[i+11]
+                
             }
-            // row 1 and 2
+            // first two row in characters array
             for i in 0...1
             {
                 for j in 0...10
                 {
-                    alefbaButtons[emojiState + i][j].harf = characters[1][i][j]
+                    // i+1 because buttons have one more row for emojies
+                    alefbaButtons[i+1][j].harf = characters[1][i][j]
                 }
             }
             
             // row 3 is include shift and delete button
             for j in 1...8
             {
-                alefbaButtons[emojiState + 2][j].harf = characters[1][2][j-1]
+                alefbaButtons[3][j].harf = characters[1][2][j-1]
             }
             // 4th row, the buttons beside the space
-            alefbaButtons[emojiState + 3][2].harf = characters[1][3][0]
-            alefbaButtons[emojiState + 3][4].harf = characters[1][3][1]
+            alefbaButtons[4][2].harf = characters[1][3][0]
+            alefbaButtons[4][4].harf = characters[1][3][1]
             // half space
-            alefbaButtons[emojiState + 3][3].label?.text = "نیم‌فاصله"
-            alefbaButtons[emojiState + 3][3].type = .HALBSPACE
+            alefbaButtons[4][3].label?.text = "نیم‌فاصله"
+            alefbaButtons[4][3].type = .HALBSPACE
         }
         else
         {
-            if emojiState == 1
+            for i in 0...10
             {
-                for i in 0...10
-                {
-                    alefbaButtons[0][i].label?.text = smile[i]
-                    
-                }
+                alefbaButtons[0][i].label?.text = smile[i]
+                
             }
+
             // row 1 and 2
             for i in 0...1
             {
                 for j in 0...10
                 {
-                    alefbaButtons[emojiState + i][j].harf = characters[0][i][j]
+                    alefbaButtons[i+1][j].harf = characters[0][i][j]
                 }
             }
             
             // row 3 is include shift and delete button
             for j in 1...8
             {
-                alefbaButtons[emojiState + 2][j].harf = characters[0][2][j-1]
+                alefbaButtons[3][j].harf = characters[0][2][j-1]
             }
             // 4th row, the buttons beside the space
-            alefbaButtons[emojiState + 3][2].harf = characters[0][3][0]
-            alefbaButtons[emojiState + 3][4].harf = characters[0][3][1]
+            alefbaButtons[4][2].harf = characters[0][3][0]
+            alefbaButtons[4][4].harf = characters[0][3][1]
             // half space
-            alefbaButtons[emojiState + 3][3].label?.text = "فاصله"
-            alefbaButtons[emojiState + 3][3].type = .SPACE
+            alefbaButtons[4][3].label?.text = "فاصله"
+            alefbaButtons[4][3].type = .SPACE
 
         }
     }
@@ -783,46 +760,30 @@ class KeyboardViewController: UIInputViewController, GPButtonEventsDelegate {
             NSLayoutConstraint.deactivate(portraitConstraints)
             NSLayoutConstraint.activate(landscapeConstraints)
         }
-    }
-    
-    override func willRotate(to toInterfaceOrientation: UIInterfaceOrientation, duration: TimeInterval) {
-        
-
+        self.view.layoutSubviews()
     }
     
     override func didRotate(from fromInterfaceOrientation: UIInterfaceOrientation) {
-        if UIScreen.main.bounds.size.height > UIScreen.main.bounds.size.width
-        {
-            NSLayoutConstraint.deactivate(landscapeConstraints)
-            NSLayoutConstraint.activate(portraitConstraints)
-            
-        }
-        else
-        {
-            NSLayoutConstraint.deactivate(portraitConstraints)
-            NSLayoutConstraint.activate(landscapeConstraints)
-            
-        }
-//            self.updateViewConstraints()
-            self.view.updateConstraintsIfNeeded()
+        updateViewConstraints()
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        // TODO: Should I Calculate here? iPad!, Landscape......
-        let prefs = UserDefaults(suiteName: "group.me.alirezak.gpkeys")
-        if let val = prefs?.integer(forKey: "emojiState") {
-            emojiState = val
-            
-        }
-        else
-        {
-            emojiState = 1  // default = show emojies
-        }
         
+        let prefs = UserDefaults(suiteName: "group.me.alirezak.gpkeys")
         // retreive user Sound settings
         SoundState = prefs?.integer(forKey: "sound") ?? 2
         
+        for i in 0..<33
+        {
+            if let  emojiInt = prefs?.integer(forKey: String(i)){
+                if emojiInt != 0
+                {
+                    smile [i] = String(Character(UnicodeScalar(emojiInt)!))
+                }
+            }
+
+        }
         
         // get all variable according current device state
         calculateVariables()
@@ -841,18 +802,18 @@ class KeyboardViewController: UIInputViewController, GPButtonEventsDelegate {
         alefbaLayout = UIView()
         alefbaLayout.translatesAutoresizingMaskIntoConstraints = false
         self.view.addSubview(alefbaLayout)
-        alefbaLayout.topAnchor.constraint(equalTo: self.view.topAnchor, constant: marginTop).isActive = true
+        alefbaLayout.topAnchor.constraint(equalTo: self.view.topAnchor).isActive = true
         alefbaLayout.rightAnchor.constraint(equalTo: self.view.rightAnchor).isActive = true
         alefbaLayout.bottomAnchor.constraint(equalTo: self.view.bottomAnchor).isActive = true
         alefbaLayout.leftAnchor.constraint(equalTo: self.view.leftAnchor).isActive = true
         initAlefbaLayout()
-        alefbaLayout.layer.opacity = 1
+        alefbaLayout.layer.opacity = 0
         
         /*** Initial Number Layer  ***/
         numberLayout = UIView()
         numberLayout.translatesAutoresizingMaskIntoConstraints = false
         self.view.addSubview(numberLayout)
-        numberLayout.topAnchor.constraint(equalTo: self.view.topAnchor, constant: marginTop).isActive = true
+        numberLayout.topAnchor.constraint(equalTo: self.view.topAnchor).isActive = true
         numberLayout.rightAnchor.constraint(equalTo: self.view.rightAnchor).isActive = true
         numberLayout.bottomAnchor.constraint(equalTo: self.view.bottomAnchor).isActive = true
         numberLayout.leftAnchor.constraint(equalTo: self.view.leftAnchor).isActive = true
@@ -861,10 +822,10 @@ class KeyboardViewController: UIInputViewController, GPButtonEventsDelegate {
     }
     
     override func viewDidAppear(_ animated: Bool) {
-        print("viewDidAppear")
-        self.view.setNeedsDisplay()
-        self.updateViewConstraints()
-        self.view.updateConstraintsIfNeeded()
+        UIView.animate(withDuration: 0.4) {
+            self.alefbaLayout.layer.opacity = 1
+        }
+        
     }
 
     func calculateVariables()
@@ -891,12 +852,6 @@ class KeyboardViewController: UIInputViewController, GPButtonEventsDelegate {
             buttonHeight = buttonHeight * dmpPatriot
         }
         
-        marginTop = marginTop * dmpPatriot
-        
-        if emojiState == 0
-        {
-            marginTop = buttonHeight * 0.8
-        }
     }
     override func textDidChange(_ textInput: UITextInput?) {
         //The app has just changed the document's contents, the document context has been updated.
@@ -934,4 +889,5 @@ class KeyboardViewController: UIInputViewController, GPButtonEventsDelegate {
             GPButton.layoutColor = UIColor(red:0.84, green:0.84, blue:0.84, alpha:1.0)
         }
     }
+    
 }
