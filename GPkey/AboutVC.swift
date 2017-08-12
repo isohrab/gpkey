@@ -40,8 +40,23 @@ class AboutVC: UITableViewController {
     
     @IBAction func reportABug(_ sender: UIButton) {
         
-        if let url = URL(string: "mailto:me@alirezak.me") {
-            UIApplication.shared.openURL(url)
+        let subject = "Report GachPazh Bug"
+        var body = "لطفا در باره نحوه وقوع خطا شرح دهید:"
+        body = body + "\n\n\n\n"
+        body = body + "--- device Inofrmation ---"
+        body = body + "\n"
+        body = body + "Device Model: " + platform() + "\n"
+        body = body + "iOS version: " + UIDevice.current.systemVersion + "\n"
+        if let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String {
+            body = body + "GP version:" + version
+        }
+        
+        let coded = "mailto:me@alirezak.me?subject=\(subject)&body=\(body)".addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)
+        
+        if let emailURL: NSURL = NSURL(string: coded!) {
+            if UIApplication.shared.canOpenURL(emailURL as URL) {
+                UIApplication.shared.openURL(emailURL as URL)
+            }
         }
     }
     
@@ -51,5 +66,11 @@ class AboutVC: UITableViewController {
         {
             UIApplication.shared.openURL(url)
         }
+    }
+    
+    func platform() -> String {
+        var sysinfo = utsname()
+        uname(&sysinfo) // ignore return value
+        return String(bytes: Data(bytes: &sysinfo.machine, count: Int(_SYS_NAMELEN)), encoding: .ascii)!.trimmingCharacters(in: .controlCharacters)
     }
 }

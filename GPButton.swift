@@ -64,6 +64,10 @@ class GPButton: UIControl {
     var scaleY:CGFloat = 0
     
     
+    // when user type very fast, it is possible to sweep over a button.
+    // to catch the button, I use this variable. this happen, specially in 5s
+    var sweepActive:Bool = false
+    
     // Harf variable
     weak var harf: Harf? {
         didSet {
@@ -203,6 +207,9 @@ class GPButton: UIControl {
         dx = 0
         dt = 0
         
+        // activate to catch the sweep
+        sweepActive = true
+        
     }
     
     override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -224,6 +231,12 @@ class GPButton: UIControl {
             else if !isInside && wasInside
             {
                 sendActions(for: .touchDragExit)
+                if sweepActive
+                {
+                    sweepActive = false
+                    sendActions(for: .touchUpInside)
+                }
+                
             }
             else
             {
@@ -242,6 +255,7 @@ class GPButton: UIControl {
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
         if let touch = touches.first {
             let location = touch.preciseLocation(in: self)
+            sweepActive = false
             if self.bounds.contains(location) {
                 sendActions(for: .touchUpInside)
             }
@@ -256,6 +270,7 @@ class GPButton: UIControl {
     override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {
         if let touch = touches.first {
             let location = touch.preciseLocation(in: self)
+            sweepActive = false
             if self.bounds.contains(location) { // TODO: should self.bounds or backLayer.bounds
                 sendActions(for: .touchUpInside)
             }

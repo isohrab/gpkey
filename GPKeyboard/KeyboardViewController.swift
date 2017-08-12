@@ -19,7 +19,7 @@ class KeyboardViewController: UIInputViewController, GPButtonEventsDelegate {
     let charSound: SystemSoundID = 1306
     let utilSound: SystemSoundID = 1156
     let vibSound: SystemSoundID = 1520
-    var SoundState: Int = 0
+    var soundState: Int = 0
     
     /****************************
      *   define alphabet value   *
@@ -153,10 +153,46 @@ class KeyboardViewController: UIInputViewController, GPButtonEventsDelegate {
              Harf.init(name: "slash",face: "/", output: "/", returnable: false, spaceReturnable: false),]]]
     
     // the smiles are changable in main App
-    var smile:[String] =  ["\u{1F600}","\u{1F601}","\u{1F602}","\u{1F60E}","\u{1F60D}","\u{1F618}","\u{0263A}","\u{1F61C}",
-                           "\u{1F914}","\u{1F339}","\u{02764}","\u{1F610}","\u{1F61E}","\u{1F62D}","\u{1F633}","\u{1F631}",
-                           "\u{1F620}","\u{1F621}","\u{1F382}","\u{1F381}","\u{1F38A}","\u{1F494}","\u{1F494}","\u{1F494}",
-                           "\u{1F494}","\u{1F494}","\u{1F494}","\u{1F494}","\u{1F494}","\u{1F494}","\u{1F494}","\u{1F494}","\u{1F494}"]
+    
+    
+    var smile:[String] =  ["\u{1F600}", // 😀
+        "\u{1F601}", // 😁
+        "\u{1F602}", // 😂
+        "\u{1F60F}", // 😏
+        "\u{0263A}", // 😘☺
+        "\u{1F917}", // 🤗
+        "\u{1F60D}", // 😍
+        "\u{1F618}", // 😘
+        "\u{1F61C}", // 😜
+        "\u{1F339}", // 🌹
+        "\u{02764}", // 🌹❤
+        
+        "\u{1f614}", // 😔
+        "\u{1F622}", // 😢
+        "\u{1F62D}", // 😭
+        "\u{1F612}", // 😒
+        "\u{1F620}", // 😠
+        "\u{1F624}", // 😤
+        "\u{1F633}", // 😳
+        "\u{1F631}", // 😱
+        "\u{1F60B}", // 😋
+        "\u{1F38A}", // 🎊
+        "\u{1F494}", // 💔
+        
+        "\u{1F610}", // 😐
+        "\u{1F62C}", // 😬
+        "\u{1F644}", // 🙄
+        "\u{1F60E}", // 😎
+        "\u{1F615}", // 😕
+        "\u{1F925}", // 🤥
+        "\u{1F914}", // 🤔
+        "\u{1F922}", // 🤢
+        "\u{1F44C}", // 👌
+        "\u{1F44D}", // 👍
+        "\u{1F64F}"] // 🙏
+    
+    
+    
     /*************************************
      *                                    *
      *   Define Global Value              *
@@ -365,7 +401,7 @@ class KeyboardViewController: UIInputViewController, GPButtonEventsDelegate {
         deleteButton.addTarget(self, action: #selector(self.deleteTouchDown(sender:)), for: .touchDown)
         deleteButton.addTarget(self, action: #selector(self.deleteTouchUp(_:)), for: .touchUpInside)
         deleteButton.addTarget(self, action: #selector(self.deleteTouchUp(_:)), for: .touchUpOutside)
-        deleteButton.label?.text = "dele"
+        deleteButton.label?.text = ""
         deleteButton.backLayerInsetX = gapHorizontal / 2
         deleteButton.backLayerInsetY = gapVertical / 2
         numberButtons[3].insert(deleteButton, at: numberButtons[3].count)
@@ -631,13 +667,13 @@ class KeyboardViewController: UIInputViewController, GPButtonEventsDelegate {
     func playSound(for type:UInt32)
     {
         // mute mode
-        if SoundState == 0
+        if soundState == 1
         {
             return  // hisssss! >:/
         }
         
         // vibrate mode
-        if SoundState == 1
+        if soundState == 2
         {
             AudioServicesPlaySystemSound(vibSound)
             return
@@ -772,7 +808,16 @@ class KeyboardViewController: UIInputViewController, GPButtonEventsDelegate {
         
         let prefs = UserDefaults(suiteName: "group.me.alirezak.gpkeys")
         // retreive user Sound settings
-        SoundState = prefs?.integer(forKey: "sound") ?? 2
+        if let s = prefs?.integer(forKey: "sound") {
+            if s != 0
+            {
+                soundState = s
+            }
+            else
+            {
+                soundState = 3 // default sound is On
+            }
+        }
         
         for i in 0..<33
         {
@@ -856,6 +901,17 @@ class KeyboardViewController: UIInputViewController, GPButtonEventsDelegate {
     override func textDidChange(_ textInput: UITextInput?) {
         //The app has just changed the document's contents, the document context has been updated.
         setTheme()
+        
+        // check if user "SEND" the message!
+        let proxy = self.textDocumentProxy
+        if proxy.documentContextAfterInput == nil && proxy.documentContextBeforeInput == nil
+        {
+            guard (alefbaLayout != nil) else {
+                return
+            }
+            shift = false
+        }
+        
     }
     
     // GPButtonEventsDelegate
