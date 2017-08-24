@@ -173,7 +173,7 @@
                                                     <accessibility key="accessibilityConfiguration">
                                                         <accessibilityTraits key="traits" staticText="YES" notEnabled="YES"/>
                                                     </accessibility>
-                                                    <string key="text">در این کیبورد سعی بر آن شده تا حداکثر از لایه استاندارد ISIRI-9147 و استاندارد طراحی شرکت اپل پشتیبانی شود. استفاده از کلید شیفت تعریف جدیدی را در کیبورد فارسی ایجاد کرده که هر کاربری را تشویق به استفاده از کسره ها و تنوین ها میکند. همچنین وجود اِموجی ها در بالای کیبورد امکان یک تجربه منحصربفرد را در شبکه های اجتماعی فراهم میسازد.</string>
+                                                    <mutableString key="text">در این کیبورد سعی بر آن شده تا حداکثر از لایه استاندارد ISIRI-9147 و استاندارد طراحی شرکت اپل پشتیبانی شود. استفاده از کلید شیفت تعریف جدیدی را در کیبورد فارسی ایجاد کرده که هر کاربری را تشویق به استفاده از کسره ها و تنوین ها میکند. همچنین وجود اِموجی ها در بالای کیبورد امکان یک تجربه منحصربفرد را در شبکه های اجتماعی فراهم میسازد.</mutableString>
                                                     <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                     <fontDescription key="fontDescription" name="Parastoo" family="Parastoo" pointSize="14"/>
                                                     <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>

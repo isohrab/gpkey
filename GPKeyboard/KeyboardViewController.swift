@@ -7,7 +7,6 @@
 //
 
 
-// TODO: bug in shift button when 123 button touched
 
 import UIKit
 import AudioToolbox
@@ -16,7 +15,7 @@ class KeyboardViewController: UIInputViewController, GPButtonEventsDelegate {
     
     // 1396 - 1397 - 1306:char - 1155:delete - 1156:space+number+shift+return
     let delSound: SystemSoundID = 1155
-    let charSound: SystemSoundID = 1306
+    let charSound: SystemSoundID = 1104
     let utilSound: SystemSoundID = 1156
     let vibSound: SystemSoundID = 1520
     var soundState: Int = 0
