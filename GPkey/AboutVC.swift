@@ -41,7 +41,7 @@ class AboutVC: UITableViewController {
     @IBAction func reportABug(_ sender: UIButton) {
         
         let subject = "Report GachPazh Bug"
-        var body = "لطفا در باره نحوه وقوع خطا شرح دهید:"
+        var body = "Please fully explain the sitations:"
         body = body + "\n\n\n\n"
         body = body + "--- device Inofrmation ---"
         body = body + "\n"

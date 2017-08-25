@@ -105,23 +105,23 @@ class ViewController: UIViewController{
         
         // add instruction label on layer
         let l = UILabel()
-        l.text = "در اینجا سعی بر آن شده تا پرکاربردترین شکلک ها را قرار دهیم تا کمتر نیاز به خرید نسخه کامل احساس شود. اما در صورتی که نسخه کامل را خریداری کنید، مارا نسبت به ارتقا به نسخه های جدید تر دلگرم خواهید کرد. برای تغییر هر شکلک روی آن تپ کنید و از کیبورد استاندارد اِموجی ها، شکلک دلخواه خود را انتخاب نمایید."
+        l.text = "Here we tried to fit all popular emojis that you don't need to buy the full program. Of course, if you buy it, we appreciate that and we have more energy to develop Gachpazh in the future version. To change an emoji, you need to just tap on it and with standard emoji keyboard choose your desired emoji."
         l.font = UIFont.systemFont(ofSize: 14)
         l.textColor = UIColor.darkGray
         l.numberOfLines = 0
         l.sizeToFit()
-        l.frame = CGRect(x: 10, y: defaultSize.height + (-1.2 * buttonWidth), width: defaultSize.width - 20, height: 100)
+        l.frame = CGRect(x: 10, y: defaultSize.height + (-1.2 * buttonWidth), width: defaultSize.width - 20, height: 130)
         self.view.addSubview(l)
         
         
         
         // initial buttons 2x11
         let firstHeader = UILabel()
-        firstHeader.text = "شکلک های لایه اصلی"
+        firstHeader.text = "Emoji in character Layer"
         firstHeader.textColor = UIColor.darkGray
         firstHeader.font = UIFont.boldSystemFont(ofSize: 14)
         firstHeader.sizeToFit()
-        firstHeader.frame = CGRect(x: defaultSize.width - 210, y: defaultSize.height + 2 * buttonWidth , width: 200, height: 30)
+        firstHeader.frame = CGRect(x: 10, y: defaultSize.height + 3 * buttonWidth , width: 200, height: 30)
         self.view.addSubview(firstHeader)
         // calculate default size width = height
         for i in  0...10
@@ -148,18 +148,18 @@ class ViewController: UIViewController{
             b.layer.cornerRadius = 5
             b.tag = i
             b.isExclusiveTouch = true
-            b.frame = CGRect(x: 4 + (CGFloat(i) * (buttonWidth + 4)), y:  defaultSize.height + (3 * buttonWidth) , width: buttonWidth, height: buttonWidth)
+            b.frame = CGRect(x: 4 + (CGFloat(i) * (buttonWidth + 4)), y:  defaultSize.height + (4 * buttonWidth) , width: buttonWidth, height: buttonWidth)
             b.addTarget(self, action: #selector(emojiSelected(_:)), for: .touchDown)
             self.view.addSubview(b)
             emojiButtons.append(b)
         }
         
         let secondHeader = UILabel()
-        secondHeader.text = "شکلک های لایه شیفت"
+        secondHeader.text = "Emoji in shift Layer"
         secondHeader.textColor = UIColor.darkGray
         secondHeader.font = UIFont.boldSystemFont(ofSize: 14)
         secondHeader.sizeToFit()
-        secondHeader.frame = CGRect(x: defaultSize.width - 210, y:  defaultSize.height + (4 * buttonWidth) , width: 200, height: 30)
+        secondHeader.frame = CGRect(x: 10, y:  defaultSize.height + (5 * buttonWidth) , width: 200, height: 30)
         self.view.addSubview(secondHeader)
         
         for i in  0...10
@@ -186,18 +186,18 @@ class ViewController: UIViewController{
             b.layer.cornerRadius = 5
             b.tag = i + 11
             b.isExclusiveTouch = true
-            b.frame = CGRect(x: 4 + (CGFloat(i) * (buttonWidth + 4)), y: (5 * buttonWidth) +  defaultSize.height, width: buttonWidth, height: buttonWidth)
+            b.frame = CGRect(x: 4 + (CGFloat(i) * (buttonWidth + 4)), y: (6 * buttonWidth) +  defaultSize.height, width: buttonWidth, height: buttonWidth)
             b.addTarget(self, action: #selector(emojiSelected(_:)), for: .touchUpInside)
             self.view.addSubview(b)
             emojiButtons.append(b)
         }
         
         let thirdHeader = UILabel()
-        thirdHeader.text = "شکلک های لایه اعداد"
+        thirdHeader.text = "Emoji in number Layer"
         thirdHeader.textColor = UIColor.darkGray
         thirdHeader.font = UIFont.boldSystemFont(ofSize: 14)
         thirdHeader.sizeToFit()
-        thirdHeader.frame = CGRect(x: defaultSize.width - 210, y:  defaultSize.height + (6 * buttonWidth) , width: 200, height: 30)
+        thirdHeader.frame = CGRect(x: 10, y:  defaultSize.height + (7 * buttonWidth) , width: 200, height: 30)
         self.view.addSubview(thirdHeader)
         
         for i in  0...10
@@ -224,7 +224,7 @@ class ViewController: UIViewController{
             b.layer.cornerRadius = 5
             b.tag = i + 22
             b.isExclusiveTouch = true
-            b.frame = CGRect(x: 4 + (CGFloat(i) * (buttonWidth + 4)), y: (7 * buttonWidth) +  defaultSize.height, width: buttonWidth, height: buttonWidth)
+            b.frame = CGRect(x: 4 + (CGFloat(i) * (buttonWidth + 4)), y: (8 * buttonWidth) +  defaultSize.height, width: buttonWidth, height: buttonWidth)
             b.addTarget(self, action: #selector(emojiSelected(_:)), for: .touchUpInside)
             self.view.addSubview(b)
             emojiButtons.append(b)
@@ -237,10 +237,10 @@ class ViewController: UIViewController{
         {
             // buy button
             buyButton = UIButton()
-            buyButton?.setTitle("خرید نسخه کامل", for: .normal)
+            buyButton?.setTitle("Buy", for: .normal)
             buyButton?.setImage(UIImage(named: "buy"), for: .normal)
             buyButton?.titleEdgeInsets = UIEdgeInsets(top: 5, left: 0, bottom: 10, right: 0)
-            buyButton?.imageEdgeInsets = UIEdgeInsets(top: 0, left: 5, bottom: 0, right: 0)
+            buyButton?.imageEdgeInsets = UIEdgeInsets(top: 0, left: -15, bottom: 0, right: 0)
             buyButton?.backgroundColor = UIColor(red:1.00, green:1.00, blue:1.00, alpha:0.25)
             buyButton?.setTitleColor(UIColor.black, for: UIControlState.normal)
             buyButton?.setTitleColor(UIColor.gray, for: UIControlState.highlighted)
@@ -248,35 +248,35 @@ class ViewController: UIViewController{
             buyButton?.layer.cornerRadius = 5
             buyButton?.layer.borderColor = UIColor(red:0.66, green:0.28, blue:0.28, alpha:1.0).cgColor
             buyButton?.isExclusiveTouch = true
-            buyButton?.frame = CGRect(x: (defaultSize.width / 2) + 10, y: defaultSize.height + (9 * buttonWidth), width: 150, height: 30)
+            buyButton?.frame = CGRect(x: (defaultSize.width / 2) + 10, y: defaultSize.height + (10 * buttonWidth), width: 150, height: 30)
             buyButton?.addTarget(self, action: #selector(buyItem), for: .touchUpInside)
             self.view.addSubview(buyButton!)
             
             // restore button
             restoreButton = UIButton()
-            restoreButton?.setTitle("بازیابی خرید", for: .normal)
+            restoreButton?.setTitle("restore", for: .normal)
             restoreButton?.setImage(UIImage(named: "restore"), for: .normal)
             restoreButton?.backgroundColor = UIColor(red:1.00, green:1.00, blue:1.00, alpha:0.25)
             restoreButton?.titleEdgeInsets = UIEdgeInsets(top: 5, left: 0, bottom: 10, right: 0)
-            restoreButton?.imageEdgeInsets = UIEdgeInsets(top: 0, left: 20, bottom: 0, right: 0)
+            restoreButton?.imageEdgeInsets = UIEdgeInsets(top: 0, left: -10, bottom: 0, right: 0)
             restoreButton?.setTitleColor(UIColor.black, for: UIControlState.normal)
             restoreButton?.setTitleColor(UIColor.gray, for: UIControlState.highlighted)
             restoreButton?.layer.borderWidth = 2
             restoreButton?.layer.cornerRadius = 5
             restoreButton?.layer.borderColor = UIColor(red:0.66, green:0.28, blue:0.28, alpha:1.0).cgColor
             restoreButton?.isExclusiveTouch = true
-            restoreButton?.frame = CGRect(x: (defaultSize.width / 2)  - 160, y: defaultSize.height + (9 * buttonWidth), width: 150, height: 30)
+            restoreButton?.frame = CGRect(x: (defaultSize.width / 2)  - 160, y: defaultSize.height + (10 * buttonWidth), width: 150, height: 30)
             restoreButton?.addTarget(self, action: #selector(restore), for: .touchUpInside)
             self.view.addSubview(restoreButton!)
             
             // add buy description
             buyLabel = UILabel()
-            buyLabel?.text = "برای تغییر شکلک ها نیاز هست تا برنامه را خریداری کنید. در صورتی که قبلا خریداری کرده اید روی بازیابی خرید تپ کنید."
+            buyLabel?.text = "To change the emojies, you need to buy the full app."
             buyLabel?.font = UIFont.systemFont(ofSize: 14)
             buyLabel?.textColor = UIColor.darkGray
             buyLabel?.numberOfLines = 0
             buyLabel?.sizeToFit()
-            buyLabel?.frame = CGRect(x: 10, y: defaultSize.height + (10 * buttonWidth), width: defaultSize.width - 20 , height: 50)
+            buyLabel?.frame = CGRect(x: 10, y: defaultSize.height + (12 * buttonWidth), width: defaultSize.width - 20 , height: 50)
             self.view.addSubview(buyLabel!)
         }
 
@@ -310,7 +310,7 @@ class ViewController: UIViewController{
         {
             if emojiText.textInputMode?.primaryLanguage != nil
             {
-                let alert = UIAlertController(title: "خطای کیبورد", message: "از کیبورد اِموجی استاندارد استفاده کنید.", preferredStyle:.alert)
+                let alert = UIAlertController(title: "Keyboard Error", message: "Please use apple's standard emoji keyboard as input", preferredStyle:.alert)
                 alert.addAction(UIAlertAction(title: "Ok", style: .default, handler: nil))
                 self.present(alert, animated: true, completion: nil)
                 emojiText.text = ""
@@ -334,9 +334,9 @@ class ViewController: UIViewController{
         }
         else
         {
-            let alert = UIAlertController(title: "نسخه آزمایشی", message: "برای تغییر شکلک ها لطفا نسخه کامل را از اپ استور خریداری فرمایید.", preferredStyle:.alert)
-            alert.addAction(UIAlertAction(title: "شاید بعداً", style: .default, handler: nil))
-            alert.addAction(UIAlertAction(title: "خرید", style: .default, handler:buyEmojis))
+            let alert = UIAlertController(title: "trial version", message: "To change the emojies, you need to buy full version", preferredStyle:.alert)
+            alert.addAction(UIAlertAction(title: "Maybe later", style: .default, handler: nil))
+            alert.addAction(UIAlertAction(title: "Buy", style: .default, handler:buyEmojis))
             self.present(alert, animated: true, completion: nil)
             emojiText.text = ""
         }
@@ -440,7 +440,7 @@ extension ViewController: SKProductsRequestDelegate, SKPaymentTransactionObserve
                 prefs?.synchronize()
                 hideBuyObjects()
                 SKPaymentQueue.default().finishTransaction(transaction)
-                let alert = UIAlertController(title: "اتمام خرید", message: "خرید با موفقیت انجام شد. هم اکنون میتوانید شکلک ها را تغییر دهید.", preferredStyle: .alert)
+                let alert = UIAlertController(title: "Purchase finished", message: "Purchase successfully finished. Now you can change the emojies", preferredStyle: .alert)
                 let action = UIAlertAction(title: "OK", style: .cancel, handler: nil)
                 alert.addAction(action)
                 present(alert, animated: true, completion: nil)
@@ -448,7 +448,7 @@ extension ViewController: SKProductsRequestDelegate, SKPaymentTransactionObserve
             case .failed:
                 if let transactionError = transaction.error as NSError? {
                     if transactionError.code != SKError.paymentCancelled.rawValue {
-                        let alert = UIAlertController(title: "خطا در خرید", message:transaction.error?.localizedDescription, preferredStyle: .alert)
+                        let alert = UIAlertController(title: "Error in purchase, please try again", message:transaction.error?.localizedDescription, preferredStyle: .alert)
                         let action = UIAlertAction(title: "OK", style: .cancel, handler: nil)
                         alert.addAction(action)
                         present(alert, animated: true, completion: nil)
@@ -478,14 +478,14 @@ extension ViewController: SKProductsRequestDelegate, SKPaymentTransactionObserve
                 prefs?.set(true, forKey: "emojiPlus")
                 prefs?.synchronize()
                 hideBuyObjects()
-                let alert = UIAlertController(title: "بازیابی خرید", message: "خرید شما با موفقیت بازیابی شد.", preferredStyle: .alert)
+                let alert = UIAlertController(title: "Restore purchase", message: "Your previous purchase successfully restored.", preferredStyle: .alert)
                 let action = UIAlertAction(title: "OK", style: .cancel, handler: nil)
                 alert.addAction(action)
                 present(alert, animated: true, completion: nil)
                 return
             }
         }
-        let alert = UIAlertController(title: "بازیابی خرید", message: "خریدی یافت نشد!", preferredStyle: .alert)
+        let alert = UIAlertController(title: "Restore purchase", message: "There is no previous purchase", preferredStyle: .alert)
         let action = UIAlertAction(title: "OK", style: .cancel, handler: nil)
         alert.addAction(action)
         present(alert, animated: true, completion: nil)
