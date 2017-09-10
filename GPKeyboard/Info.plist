@@ -42,8 +42,8 @@
 	</dict>
 	<key>UIAppFonts</key>
 	<array>
-		<string>Parastoo.ttf</string>
-		<string>Parastoo-Bold.ttf</string>
+		<string>Fonts/Parastoo.ttf</string>
+		<string>Fonts/Parastoo-Bold.ttf</string>
 	</array>
 </dict>
 </plist>

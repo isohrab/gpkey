@@ -155,72 +155,31 @@
                         <sections>
                             <tableViewSection id="gOJ-DB-d6g">
                                 <cells>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" rowHeight="220" id="JyX-iI-4FC">
-                                        <rect key="frame" x="0.0" y="71" width="375" height="220"/>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" rowHeight="240" id="JyX-iI-4FC">
+                                        <rect key="frame" x="0.0" y="71" width="375" height="240"/>
                                         <autoresizingMask key="autoresizingMask"/>
-                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="JyX-iI-4FC" id="iAR-8N-tXm">
-                                            <rect key="frame" x="0.0" y="0.0" width="375" height="219.5"/>
+                                        <tableViewCellContentView key="contentView" autoresizesSubviews="NO" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="JyX-iI-4FC" id="iAR-8N-tXm">
+                                            <rect key="frame" x="0.0" y="0.0" width="375" height="239.5"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" scrollEnabled="NO" delaysContentTouches="NO" canCancelContentTouches="NO" bouncesZoom="NO" editable="NO" textAlignment="justified" selectable="NO" translatesAutoresizingMaskIntoConstraints="NO" id="PbD-Pm-Qb3">
-                                                    <rect key="frame" x="8" y="8" width="359" height="203.5"/>
+                                                    <rect key="frame" x="8" y="8" width="359" height="220"/>
                                                     <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                                     <accessibility key="accessibilityConfiguration">
                                                         <accessibilityTraits key="traits" staticText="YES" notEnabled="YES"/>
                                                     </accessibility>
-                                                    <string key="text">This Keyboard is based Standard Arabic keyboard layout plus G, P, Zh, Ch which currently not supported in Apple's Arabic Standard keyboard. We are integrated Shift layer in our layout design to have easy access to signs and Kasreh. The Emojies above the keyboard let you have access to your favorite emojis.</string>
-                                                    <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                                    <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                                    <string key="text">This Keyboard is based Standard Arabic keyboard layout plus G, P, Zh, Ch which currently not supported in Apple's Arabic Standard keyboard. We are integrated Shift layer in our layout design to have easy access to signs and Kasreh. The Emojies above the keyboard let you have access to your favorite emojis</string>
+                                                    <color key="textColor" white="0.25" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                                                    <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
                                                     <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                                                 </textView>
                                             </subviews>
                                             <constraints>
                                                 <constraint firstItem="PbD-Pm-Qb3" firstAttribute="centerX" secondItem="iAR-8N-tXm" secondAttribute="centerX" id="41q-lv-O6F"/>
                                                 <constraint firstItem="PbD-Pm-Qb3" firstAttribute="leading" secondItem="iAR-8N-tXm" secondAttribute="leadingMargin" id="OqR-Vp-o0X"/>
-                                                <constraint firstItem="PbD-Pm-Qb3" firstAttribute="centerY" secondItem="iAR-8N-tXm" secondAttribute="centerY" id="jaS-gB-xMa"/>
+                                                <constraint firstItem="PbD-Pm-Qb3" firstAttribute="centerY" secondItem="iAR-8N-tXm" secondAttribute="centerY" constant="-1.75" id="jaS-gB-xMa"/>
                                                 <constraint firstItem="PbD-Pm-Qb3" firstAttribute="top" secondItem="iAR-8N-tXm" secondAttribute="topMargin" id="keA-4r-bax"/>
                                                 <constraint firstItem="PbD-Pm-Qb3" firstAttribute="trailing" secondItem="iAR-8N-tXm" secondAttribute="trailingMargin" id="xoO-ZC-sSS"/>
-                                            </constraints>
-                                        </tableViewCellContentView>
-                                    </tableViewCell>
-                                </cells>
-                            </tableViewSection>
-                            <tableViewSection headerTitle="Support" id="Ce0-YF-j3b">
-                                <cells>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" rowHeight="150" id="seZ-2U-Hdb">
-                                        <rect key="frame" x="0.0" y="319" width="375" height="150"/>
-                                        <autoresizingMask key="autoresizingMask"/>
-                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="seZ-2U-Hdb" id="p4C-Z8-gmr">
-                                            <rect key="frame" x="0.0" y="0.0" width="375" height="149.5"/>
-                                            <autoresizingMask key="autoresizingMask"/>
-                                            <subviews>
-                                                <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" scrollEnabled="NO" editable="NO" adjustsFontForContentSizeCategory="YES" selectable="NO" translatesAutoresizingMaskIntoConstraints="NO" id="sIj-nT-eJe">
-                                                    <rect key="frame" x="8" y="8" width="359" height="133.5"/>
-                                                    <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                                    <accessibility key="accessibilityConfiguration">
-                                                        <accessibilityTraits key="traits" staticText="YES" notEnabled="YES"/>
-                                                    </accessibility>
-                                                    <string key="text">If you need help, Please first read FAQ in GachPazh home page, If you couldn't find your question, feel free to ask it. Please just fully describe the situations of problem.</string>
-                                                    <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="15"/>
-                                                    <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
-                                                </textView>
-                                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="WkR-3P-H87">
-                                                    <rect key="frame" x="94.5" y="117" width="186" height="30"/>
-                                                    <fontDescription key="fontDescription" type="system" pointSize="15"/>
-                                                    <state key="normal" title="Visit GachPazh Home page"/>
-                                                    <connections>
-                                                        <action selector="telegramTaped:" destination="do2-P8-Fjg" eventType="touchUpInside" id="FOv-ir-Z22"/>
-                                                    </connections>
-                                                </button>
-                                            </subviews>
-                                            <constraints>
-                                                <constraint firstItem="sIj-nT-eJe" firstAttribute="centerX" secondItem="p4C-Z8-gmr" secondAttribute="centerX" id="TM8-bH-ktK"/>
-                                                <constraint firstItem="WkR-3P-H87" firstAttribute="bottom" secondItem="p4C-Z8-gmr" secondAttribute="bottomMargin" constant="5.5" id="Wz0-cC-e2M"/>
-                                                <constraint firstItem="sIj-nT-eJe" firstAttribute="centerY" secondItem="p4C-Z8-gmr" secondAttribute="centerY" id="Ybj-vD-gh7"/>
-                                                <constraint firstItem="WkR-3P-H87" firstAttribute="centerX" secondItem="p4C-Z8-gmr" secondAttribute="centerX" id="bPi-10-dKd"/>
-                                                <constraint firstItem="sIj-nT-eJe" firstAttribute="top" secondItem="p4C-Z8-gmr" secondAttribute="topMargin" id="cJE-j4-h7m"/>
-                                                <constraint firstItem="sIj-nT-eJe" firstAttribute="leading" secondItem="p4C-Z8-gmr" secondAttribute="leadingMargin" id="pbc-1Z-NuJ"/>
-                                                <constraint firstItem="sIj-nT-eJe" firstAttribute="trailing" secondItem="p4C-Z8-gmr" secondAttribute="trailingMargin" id="z3v-8f-K6P"/>
                                             </constraints>
                                         </tableViewCellContentView>
                                     </tableViewCell>
@@ -229,7 +188,7 @@
                             <tableViewSection headerTitle="Report a Bug" id="hiV-Hi-Vj6">
                                 <cells>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" rowHeight="120" id="uN3-B9-keV">
-                                        <rect key="frame" x="0.0" y="497" width="375" height="120"/>
+                                        <rect key="frame" x="0.0" y="339" width="375" height="120"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="uN3-B9-keV" id="GFa-aY-uB2">
                                             <rect key="frame" x="0.0" y="0.0" width="375" height="119.5"/>
@@ -238,6 +197,7 @@
                                                 <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" scrollEnabled="NO" editable="NO" text="To report a bug, Please fully describe the event, such as app which you use the keyboard." adjustsFontForContentSizeCategory="YES" selectable="NO" translatesAutoresizingMaskIntoConstraints="NO" id="NTt-Gy-wIt">
                                                     <rect key="frame" x="8" y="0.0" width="359" height="97"/>
                                                     <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                                    <color key="textColor" white="0.25" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                                                     <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
                                                     <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                                                 </textView>
@@ -263,10 +223,10 @@
                                     </tableViewCell>
                                 </cells>
                             </tableViewSection>
-                            <tableViewSection headerTitle="Icon sources" id="eTS-bC-pxn">
+                            <tableViewSection headerTitle="Icon credits" id="eTS-bC-pxn">
                                 <cells>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" rowHeight="180" id="bpc-IE-oFe">
-                                        <rect key="frame" x="0.0" y="645" width="375" height="180"/>
+                                        <rect key="frame" x="0.0" y="487" width="375" height="180"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="bpc-IE-oFe" id="Vub-ok-WXZ">
                                             <rect key="frame" x="0.0" y="0.0" width="375" height="179.5"/>
@@ -278,7 +238,7 @@
                                                     <constraints>
                                                         <constraint firstAttribute="height" constant="80" id="BMx-oe-s85"/>
                                                     </constraints>
-                                                    <color key="textColor" red="0.23614211309523814" green="0.23614211309523814" blue="0.23614211309523814" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                    <color key="textColor" white="0.25" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                                                     <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
                                                     <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                                                 </textView>
@@ -325,16 +285,12 @@
                     </tableView>
                     <tabBarItem key="tabBarItem" title="GachPazh" image="gpkey" selectedImage="gpkeyActive" id="gbW-ei-Sip"/>
                     <connections>
-                        <outlet property="comment1" destination="PbD-Pm-Qb3" id="pFr-97-WfT"/>
-                        <outlet property="comment2" destination="sIj-nT-eJe" id="D7Q-ac-8EW"/>
-                        <outlet property="comment3" destination="NTt-Gy-wIt" id="FVs-ei-Kk6"/>
-                        <outlet property="comment4" destination="1kz-eN-XLd" id="IGF-C0-c5E"/>
                         <outlet property="table" destination="6Ob-nr-XvT" id="eiy-cl-PkP"/>
                     </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Txd-5F-dAb" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-116.25" y="698.23943661971828"/>
+            <point key="canvasLocation" x="-117.59999999999999" y="697.60119940029995"/>
         </scene>
         <!--Tab Bar Controller-->
         <scene sceneID="GrP-0L-gOE">
