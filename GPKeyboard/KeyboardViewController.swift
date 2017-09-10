@@ -805,7 +805,7 @@ class KeyboardViewController: UIInputViewController, GPButtonEventsDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        let prefs = UserDefaults(suiteName: "group.me.alirezak.gpkeys")
+        let prefs = UserDefaults(suiteName: "group.me.alirezak.gachpazh")
         // retreive user Sound settings
         if let s = prefs?.integer(forKey: "sound") {
             if s != 0
