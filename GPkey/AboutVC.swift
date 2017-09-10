@@ -19,14 +19,6 @@ class AboutVC: UITableViewController {
         table.rowHeight = UITableViewAutomaticDimension
         
     }
-
-    @IBAction func telegramTaped(_ sender: UIButton) {
-        if let url = URL(string: "http://alirezak.me/gachpazh-keyboard.php") {
-            UIApplication.shared.openURL(url)
-        }
-    }
-    
-    
     
     
     @IBAction func reportABug(_ sender: UIButton) {
