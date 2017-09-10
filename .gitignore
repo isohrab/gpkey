@@ -4,3 +4,4 @@ GPkeyUITests/*
 GPkey/Assets.xcassets/*
 *.entitlements
 *.xcodeproj
+*.ttf
