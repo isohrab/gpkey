@@ -7,150 +7,191 @@
 //
 
 
-// TODO: bug in shift button when 123 button touched
 
 import UIKit
 import AudioToolbox
 
-class KeyboardViewController: UIInputViewController {
+class KeyboardViewController: UIInputViewController, GPButtonEventsDelegate {
     
-    var tapSound: SystemSoundID = 1104
-    let topSound: SystemSoundID = 1105
+    // 1396 - 1397 - 1306:char - 1155:delete - 1156:space+number+shift+return
+    let delSound: SystemSoundID = 1155
+    let charSound: SystemSoundID = 1104
+    let utilSound: SystemSoundID = 1156
     let vibSound: SystemSoundID = 1520
-    var soundID: Int = 0
+    var soundState: Int = 0
+    
     /****************************
      *   define alphabet value   *
      ****************************/
-    struct Alefba {
-        let Seda: String
-        let value: Character
-    }
+    
     
 
     // [layer][row][column]
-    let alphabets :[[[Alefba]]]=[[[
+    let characters :[[[Harf]]]=[[
         // first layer: first row:
-        Alefba.init(Seda: "zad", value: "ض"),
-        Alefba.init(Seda: "sad", value: "ص"),
-        Alefba.init(Seda: "ghaf", value: "ق"),
-        Alefba.init(Seda: "fe", value: "ف"),
-        Alefba.init(Seda: "ghein", value: "غ"),
-        Alefba.init(Seda: "ein", value: "ع"),
-        Alefba.init(Seda: "ha", value: "ه"),
-        Alefba.init(Seda: "khe", value: "خ"),
-        Alefba.init(Seda: "he", value: "ح"),
-        Alefba.init(Seda: "je", value: "ج"),
-        Alefba.init(Seda: "che", value: "چ")],
+        [Harf.init(name: "zad",  face: "ض", output: "ض", returnable: false, spaceReturnable: false),
+        Harf.init(name: "sad",  face: "ص", output: "ص", returnable: false, spaceReturnable: false),
+        Harf.init(name: "ghaf", face: "ق", output: "ق", returnable: false, spaceReturnable: false),
+        Harf.init(name: "fe",   face: "ف", output: "ف", returnable: false, spaceReturnable: false),
+        Harf.init(name: "ghein",face: "غ", output: "غ", returnable: false, spaceReturnable: false),
+        Harf.init(name: "ein",  face: "ع", output: "ع", returnable: false, spaceReturnable: false),
+        Harf.init(name: "ha",   face: "ه", output: "ه", returnable: false, spaceReturnable: false),
+        Harf.init(name: "khe",  face: "خ", output: "خ", returnable: false, spaceReturnable: false),
+        Harf.init(name: "he",   face: "ح", output: "ح", returnable: false, spaceReturnable: false),
+        Harf.init(name: "je",   face: "ج", output: "ج", returnable: false, spaceReturnable: false),
+        Harf.init(name: "che",  face: "چ", output: "چ", returnable: false, spaceReturnable: false)],
                                   
-                                  //first Layer, Second Row:
-        [Alefba.init(Seda: "she", value: "ش"),
-         Alefba.init(Seda: "se", value: "س"),
-         Alefba.init(Seda: "ye", value: "ی"),
-         Alefba.init(Seda: "be", value: "ب"),
-         Alefba.init(Seda: "lam", value: "ل"),
-         Alefba.init(Seda: "alef", value: "ا"),
-         Alefba.init(Seda: "te", value: "ت"),
-         Alefba.init(Seda: "non", value: "ن"),
-         Alefba.init(Seda: "mim", value: "م"),
-         Alefba.init(Seda: "ke", value: "ک"),
-         Alefba.init(Seda: "ge", value: "گ")],
+        //first Layer, Second Row:
+        [Harf.init(name: "she", face: "ش", output: "ش", returnable: false, spaceReturnable: false),
+         Harf.init(name: "se",  face: "س", output: "س", returnable: false, spaceReturnable: false),
+         Harf.init(name: "ye",  face: "ی", output: "ی", returnable: false, spaceReturnable: false),
+         Harf.init(name: "be",  face: "ب", output: "ب", returnable: false, spaceReturnable: false),
+         Harf.init(name: "lam", face: "ل", output: "ل", returnable: false, spaceReturnable: false),
+         Harf.init(name: "alef",face: "ا", output: "ا", returnable: false, spaceReturnable: false),
+         Harf.init(name: "te",  face: "ت", output: "ت", returnable: false, spaceReturnable: false),
+         Harf.init(name: "non", face: "ن", output: "ن", returnable: false, spaceReturnable: false),
+         Harf.init(name: "mim", face: "م", output: "م", returnable: false, spaceReturnable: false),
+         Harf.init(name: "ke",  face: "ک", output: "ک", returnable: false, spaceReturnable: false),
+         Harf.init(name: "ge",  face: "گ", output: "گ", returnable: false, spaceReturnable: false)],
         
         //first Layer, Third Row:
-        [Alefba.init(Seda: "za", value: "ظ"),
-         Alefba.init(Seda: "ta", value: "ط"),
-         Alefba.init(Seda: "ze", value: "ز"),
-         Alefba.init(Seda: "re", value: "ر"),
-         Alefba.init(Seda: "zal", value: "ذ"),
-         Alefba.init(Seda: "dal", value: "د"),
-         Alefba.init(Seda: "pe", value: "پ"),
-         Alefba.init(Seda: "ve", value: "و")],
+        [Harf.init(name: "za",  face: "ظ", output: "ظ", returnable: false, spaceReturnable: false),
+         Harf.init(name: "ta",  face: "ط", output: "ط", returnable: false, spaceReturnable: false),
+         Harf.init(name: "ze",  face: "ز", output: "ز", returnable: false, spaceReturnable: false),
+         Harf.init(name: "re",  face: "ر", output: "ر", returnable: false, spaceReturnable: false),
+         Harf.init(name: "zal", face: "ذ", output: "ذ", returnable: false, spaceReturnable: false),
+         Harf.init(name: "dal", face: "د", output: "د", returnable: false, spaceReturnable: false),
+         Harf.init(name: "pe",  face: "پ", output: "پ", returnable: false, spaceReturnable: false),
+         Harf.init(name: "ve",  face: "و", output: "و", returnable: false, spaceReturnable: false)],
         
         // first Layer, Fourth Row:
-        [Alefba.init(Seda: "se3noghte", value: "ث"),
-         Alefba.init(Seda: "zhe", value: "ژ")]],
+        [Harf.init(name: "se3noghte",face: "ث", output: "ث", returnable: false, spaceReturnable: false),
+         Harf.init(name: "zhe",      face: "ژ", output: "ژ", returnable: false, spaceReturnable: false)]],
                                  
         // Shift LAYER
         // Second Layer: first Row:
-        [[Alefba.init(Seda: "saken", value: "ْ"),
-          Alefba.init(Seda: "o", value: "ُ"),
-          Alefba.init(Seda: "e", value: "ِ"),
-          Alefba.init(Seda: "a", value: "َ"),
-          Alefba.init(Seda: "an", value: "ً"),
-          Alefba.init(Seda: "parantezL", value: "\u{0028}"),
-          Alefba.init(Seda: "parantezR", value: "\u{0029}"),
-          Alefba.init(Seda: "akoladL", value: "\u{007B}"),
-          Alefba.init(Seda: "akoladR", value: "\u{007D}"),
-          Alefba.init(Seda: "beraketL", value: "\u{005b}"),
-          Alefba.init(Seda: "beraketR", value: "\u{005d}")],
+        [[Harf.init(name: "saken",      face: "ْ",          output: "ْ",        returnable: true, spaceReturnable: false),
+          Harf.init(name: "o",          face: "ُ",          output: "ُ",        returnable: true, spaceReturnable: false),
+          Harf.init(name: "e",          face: "ِ",          output: "ِ",        returnable: true, spaceReturnable: false),
+          Harf.init(name: "a",          face: "َ",          output: "َ",        returnable: true, spaceReturnable: false),
+          Harf.init(name: "an",         face: "ً",          output: "ً",        returnable: true, spaceReturnable: false),
+          Harf.init(name: "parantezL",  face: "\u{0028}",   output: "\u{0029}", returnable: false, spaceReturnable: true),
+          Harf.init(name: "parantezR",  face: "\u{0029}",   output: "\u{0028}", returnable: false, spaceReturnable: true),
+          Harf.init(name: "akoladL",    face: "\u{007B}",   output: "\u{007D}", returnable: false, spaceReturnable: true),
+          Harf.init(name: "akoladR",    face: "\u{007D}",   output: "\u{007B}", returnable: false, spaceReturnable: true),
+          Harf.init(name: "beraketL",   face: "\u{005b}",   output: "\u{005d}", returnable: false, spaceReturnable: true),
+          Harf.init(name: "beraketR",   face: "\u{005d}",   output: "\u{005b}", returnable: false, spaceReturnable: true)],
          
          // second Layer, Second Row:
-            [Alefba.init(Seda: "bullet", value: "•"),
-             Alefba.init(Seda: "underline", value: "_"),
-             Alefba.init(Seda: "yeHamze", value: "ئ"),
-             Alefba.init(Seda: "tashdid", value: "\u{0651}"),
-             Alefba.init(Seda: "hamze", value: "ء"),
-             Alefba.init(Seda: "abakola", value: "آ"),
-             Alefba.init(Seda: "keshidan", value: "ـ"),
-             Alefba.init(Seda: "2fleshL", value: "\u{00ab}"),
-             Alefba.init(Seda: "2fleshR", value: "\u{00bb}"),
-             Alefba.init(Seda: "apostroph", value: "'"),
-             Alefba.init(Seda: "quotation", value: "\"")],
+            [Harf.init(name: "bullet",  face: "•",      output: "•",        returnable: false, spaceReturnable: true),
+             Harf.init(name: "underline",face: "_",     output: "_",        returnable: false, spaceReturnable: true),
+             Harf.init(name: "yeHamze", face: "ئ",      output: "ئ",        returnable: true, spaceReturnable: false),
+             Harf.init(name: "tashdid", face: "\u{0651}", output: "\u{0651}", returnable: true, spaceReturnable: false),
+             Harf.init(name: "hamze",   face: "ء",      output: "ء",        returnable: true, spaceReturnable: false),
+             Harf.init(name: "abakola", face: "آ",      output: "آ",        returnable: true, spaceReturnable: false),
+             Harf.init(name: "keshidan",face: "ـ",      output: "ـ",        returnable: false, spaceReturnable: true),
+             Harf.init(name: "2fleshL", face: "\u{00ab}", output: "\u{00bb}", returnable: false, spaceReturnable: true),
+             Harf.init(name: "2fleshR", face: "\u{00bb}", output: "\u{00ab}", returnable: false, spaceReturnable: true),
+             Harf.init(name: "apostroph",face: "'",     output: "'",        returnable: true, spaceReturnable: false),
+             Harf.init(name: "quotation",face: "\"",    output: "\"",       returnable: false, spaceReturnable: true)],
             
             //second layer, third Row:
-            [Alefba.init(Seda: "noghte", value: "."),
-             Alefba.init(Seda: "virgol", value: "،"),
-             Alefba.init(Seda: "3noghte", value: "\u{2026}"),
-             Alefba.init(Seda: "donoghte", value: ":"),
-             Alefba.init(Seda: "semicolon", value: "؛"),
-             Alefba.init(Seda: "centigrad", value: "°"),
-             Alefba.init(Seda: "soal", value: "؟"),
-             Alefba.init(Seda: "tajob", value: "!")],
+            [Harf.init(name: "noghte",      face: ".",  output: ".",        returnable: false, spaceReturnable: true),
+             Harf.init(name: "virgol",      face: "،", output: "،",         returnable: false, spaceReturnable: true),
+             Harf.init(name: "3noghte",     face: "\u{2026}", output: "\u{2026}", returnable: false, spaceReturnable: true),
+             Harf.init(name: "donoghte",    face: ":",  output: ":",        returnable: false, spaceReturnable: true),
+             Harf.init(name: "semicolon",   face: "؛",  output: "؛",        returnable: false, spaceReturnable: true),
+             Harf.init(name: "centigrad",   face: "°",  output: "°",        returnable: false, spaceReturnable: true),
+             Harf.init(name: "soal",        face: "؟",  output: "؟",        returnable: false, spaceReturnable: true),
+             Harf.init(name: "tajob",       face: "!",  output: "!",        returnable: false, spaceReturnable: true)],
             
             // second layer, fourth Row:
-            [Alefba.init(Seda: "atsign", value: "@"),
-             Alefba.init(Seda: "sharp", value: "#")]],
+            [Harf.init(name: "atsign",      face: "@", output: "@", returnable: false, spaceReturnable: true),
+             Harf.init(name: "sharp",       face: "#", output: "#", returnable: false, spaceReturnable: true)]],
         
         //Number layer
         // first Row:
-        [[Alefba.init(Seda: "yek", value: "۱"),
-          Alefba.init(Seda: "do", value: "۲"),
-          Alefba.init(Seda: "se", value: "۳"),
-          Alefba.init(Seda: "char", value: "۴"),
-          Alefba.init(Seda: "panj", value: "۵"),
-          Alefba.init(Seda: "shesh", value: "۶"),
-          Alefba.init(Seda: "haft", value: "۷"),
-          Alefba.init(Seda: "hasht", value: "۸"),
-          Alefba.init(Seda: "noh", value: "۹"),
-          Alefba.init(Seda: "sefr", value: "۰")],
+        [[Harf.init(name: "yek",face: "۱", output: "۱", returnable: false, spaceReturnable: false),
+          Harf.init(name: "do",face: "۲", output: "۲", returnable: false, spaceReturnable: false),
+          Harf.init(name: "se",face: "۳", output: "۳", returnable: false, spaceReturnable: false),
+          Harf.init(name: "char",face: "۴", output: "۴", returnable: false, spaceReturnable: false),
+          Harf.init(name: "panj",face: "۵", output: "۵", returnable: false, spaceReturnable: false),
+          Harf.init(name: "shesh",face: "۶", output: "۶", returnable: false, spaceReturnable: false),
+          Harf.init(name: "haft",face: "۷", output: "۷", returnable: false, spaceReturnable: false),
+          Harf.init(name: "hasht",face: "۸", output: "۸", returnable: false, spaceReturnable: false),
+          Harf.init(name: "noh",face: "۹", output: "۹", returnable: false, spaceReturnable: false),
+          Harf.init(name: "sefr",face: "۰", output: "۰", returnable: false, spaceReturnable: false),
+          Harf.init(name: "mosbat",face: "=", output: "=", returnable: false, spaceReturnable: false)],
          
          //second Row:
-            [Alefba.init(Seda: "mad", value: "~"),
-             Alefba.init(Seda: "bala", value: "^"),
-             Alefba.init(Seda: "dollar", value: "$"),
-             Alefba.init(Seda: "star", value: "*"),
-             Alefba.init(Seda: "darsad", value: "٪"),
-             Alefba.init(Seda: "mosavi", value: "="),
-             Alefba.init(Seda: "mosbat", value: "+"),
-             Alefba.init(Seda: "menha", value: "-"),
-             Alefba.init(Seda: "zarb", value: "×"),
-             Alefba.init(Seda: "taghsim", value: "÷")],
+            [Harf.init(name: "prime",face: "`", output: "`", returnable: false, spaceReturnable: false),
+             Harf.init(name: "mad",face: "~", output: "~", returnable: false, spaceReturnable: false),
+             Harf.init(name: "bala",face: "^", output: "^", returnable: false, spaceReturnable: false),
+             Harf.init(name: "dollar",face: "$", output: "$", returnable: false, spaceReturnable: false),
+             Harf.init(name: "euro",face: "€", output: "€", returnable: false, spaceReturnable: false),
+             Harf.init(name: "star",face: "*", output: "*", returnable: false, spaceReturnable: false),
+             Harf.init(name: "darsad",face: "٪", output: "٪", returnable: false, spaceReturnable: false),
+             Harf.init(name: "mosbat",face: "+", output: "+", returnable: false, spaceReturnable: false),
+             Harf.init(name: "menha", face: "-",output: "-", returnable: false, spaceReturnable: false),
+             Harf.init(name: "zarb",face: "×", output: "×", returnable: false, spaceReturnable: false),
+             Harf.init(name: "taghsim",face: "÷", output: "÷", returnable: false, spaceReturnable: false)],
             
             //third Row:
-            [Alefba.init(Seda: "prime", value: "`"),
-             Alefba.init(Seda: "coma-pool", value: "،"),
-             Alefba.init(Seda: "euro", value: "€"),
-             Alefba.init(Seda: "register", value: "."),
-             Alefba.init(Seda: "Copyright", value: ":"),
-             Alefba.init(Seda: "small", value: "<"),
-             Alefba.init(Seda: "great", value: ">"),
-             Alefba.init(Seda: "pipe", value: "|")],
+            [Harf.init(name: "number-seperator",face: ",", output: ",", returnable: false, spaceReturnable: false),
+             Harf.init(name: "register",face: ".", output: ".", returnable: false, spaceReturnable: false),
+             Harf.init(name: "Copyright",face: ":", output: ":", returnable: false, spaceReturnable: false),
+             Harf.init(name: "kama",face: "،", output: "،", returnable: false, spaceReturnable: false),
+             Harf.init(name: "small",face: "<", output: ">", returnable: false, spaceReturnable: false),
+             Harf.init(name: "great",face: ">", output: "<", returnable: false, spaceReturnable: false),
+             Harf.init(name: "pipe",face: "|", output: "|", returnable: false, spaceReturnable: false),
+             Harf.init(name: "parantezL",  face: "\u{0028}",   output: "\u{0028}", returnable: false, spaceReturnable: false),
+             Harf.init(name: "parantezR",  face: "\u{0029}",   output: "\u{0029}", returnable: false, spaceReturnable: false),],
             
             // fourht row:
-            [Alefba.init(Seda: "slash", value: "/"),
-             Alefba.init(Seda: "backslash", value: "\\")]]]
+            [Harf.init(name: "back-slash",face: "\\", output: "\\", returnable: false, spaceReturnable: false),
+             Harf.init(name: "slash",face: "/", output: "/", returnable: false, spaceReturnable: false),]]]
     
     // the smiles are changable in main App
-    var smile:String =  "\u{1F600}\u{1F601}\u{1F602}\u{1F60E}\u{1F60D}\u{1F618}\u{0263A}\u{1F61C}\u{1F914}\u{1F339}\u{02764}\u{1F610}\u{1F61E}\u{1F62D}\u{1F633}\u{1F631}\u{1F620}\u{1F621}\u{1F382}\u{1F381}\u{1F38A}\u{1F494}"
+    
+    
+    var smile:[String] =  ["\u{1F600}", // 😀
+        "\u{1F601}", // 😁
+        "\u{1F602}", // 😂
+        "\u{1F60F}", // 😏
+        "\u{0263A}", // 😘☺
+        "\u{1F917}", // 🤗
+        "\u{1F60D}", // 😍
+        "\u{1F618}", // 😘
+        "\u{1F61C}", // 😜
+        "\u{1F339}", // 🌹
+        "\u{02764}", // 🌹❤
+        
+        "\u{1f614}", // 😔
+        "\u{1F622}", // 😢
+        "\u{1F62D}", // 😭
+        "\u{1F612}", // 😒
+        "\u{1F620}", // 😠
+        "\u{1F624}", // 😤
+        "\u{1F633}", // 😳
+        "\u{1F631}", // 😱
+        "\u{1F60B}", // 😋
+        "\u{1F38A}", // 🎊
+        "\u{1F494}", // 💔
+        
+        "\u{1F610}", // 😐
+        "\u{1F62C}", // 😬
+        "\u{1F644}", // 🙄
+        "\u{1F60E}", // 😎
+        "\u{1F615}", // 😕
+        "\u{1F925}", // 🤥
+        "\u{1F914}", // 🤔
+        "\u{1F922}", // 🤢
+        "\u{1F44C}", // 👌
+        "\u{1F44D}", // 👍
+        "\u{1F64F}"] // 🙏
+    
+    
+    
     /*************************************
      *                                    *
      *   Define Global Value              *
@@ -158,22 +199,32 @@ class KeyboardViewController: UIInputViewController {
      *   - keyboard dimension and points  *
      *                                    *
      *************************************/
-    var keyboardWidth: CGFloat = 0    // should be calculated according to UIScreen
-    var keyboardHeight: CGFloat = 0   // should be calculated according to UIScreen
-    var keyboardHeightLandscape:CGFloat = 0 // should be calculated according to UIScreen
-    var keyboardWidthLandscape:CGFloat = 0  // should be calculated according to UIScreen
-    var gapHorizontal: CGFloat = 2.5    // in iPad screens should be multiply by 2
-    var gapVertical: CGFloat = 4        // in iPad Screen should be multiply by 2
-    var alefbaButtonWidth: CGFloat = 0  // should be calculated according to UIScreen
-    var alefbaButtonHeight: CGFloat = 0 // should be calculated according to UIScreen
-    var marginRight:CGFloat = 1.75  // in iPad screen it should be multiply by 2
-    var marginTop:CGFloat = 1.5     // in iPad screen it should be multiply by 2
-    var shift: Bool = false         // show state of shift button
-    var currentLayout: Int = 0
+    
+    var gapHorizontal: CGFloat = 6    // in iPad screens should be multiply by 2
+    var gapVertical: CGFloat = 10        // in iPad Screen should be multiply by 2
+    var buttonHeight: CGFloat = 52
+    var dmpPatriot: CGFloat = 1
+    
+    var shift: Bool = false          // show state of shift button
+    {
+        didSet {
+            doShift(shifting: shift)
+        }
+    }
+    
+    var returnAfterSpace = false {
+        didSet {
+            if returnAfterSpace == true
+            {
+                alefbaButtons[4][3].label?.text = "فاصله"
+                alefbaButtons[4][3].type = .SPACE
+            }
+        }
+    }
+    
     var deleting: Bool = false  // when it is true, continuing deleting characters
     var deleteTimer: TimeInterval = 0.3    // it will accelerate deleting upto 500 milisecond
     var timer:Timer!
-    var aButtonTouched:Bool = false
     
     // colors
     var buttonBackground = UIColor.white    // color of button in noraml state
@@ -186,1521 +237,219 @@ class KeyboardViewController: UIInputViewController {
     var utilButtonTouchDownColor = UIColor.white
     var buttonBorderColor = UIColor.gray.cgColor
     var makeButtonBiggerBackground = UIColor(red:0.90, green:0.89, blue:0.89, alpha:1.0)
-    /*******    Keyboard layers     *********/
     
-    let mainViewPortrait: UIView = UIView()
-    let shiftViewPortrait: UIView = UIView()
-    let numberViewPortrait: UIView = UIView()
-    var mainViewLandscape: UIView = UIView()
-    let shiftViewLandscape:UIView = UIView()
-    let numberViewLandscape:UIView = UIView()
-    // show alphabet above the touched button
-    var shower:UILabel = UILabel()
-    var lastTouchedButton: UIButton!
+    /*******    Layout variabels     *********/
+    var alefbaLayout: UIView!
+    var numberLayout: UIView!
     
-    /****************************************
-     *                                       *
-     *   Main function to initial keyboard   *
-     *                                       *
-     ****************************************/
+    var alefbaButtons: [[GPButton]]!
+    var numberButtons: [[GPButton]]!
     
-    func initAlefba(){
-        // TODO: background should be checked here
-        mainViewPortrait.backgroundColor = viewBackground
+    var portraitConstraints:[NSLayoutConstraint]!
+    var landscapeConstraints:[NSLayoutConstraint]!
+    
+    
+    /******************************************
+     *                                        *
+     *   initial Alefba Layout                *
+     *                                        *
+     *****************************************/
+    
+    func initAlefbaLayout(){
         
-        // setup tap detection for background view
-        let tap = UITapGestureRecognizer(target: self, action: #selector(getCharacterFromNearestButton(_:)))
-        tap.numberOfTouchesRequired = 1
-        tap.numberOfTapsRequired = 1
-        tap.requiresExclusiveTouchType = false
-        mainViewPortrait.addGestureRecognizer(tap)
-        
-        
-        gapVertical = 6
-        gapHorizontal = 4
-        marginRight = 1.75  // in iPad screen it should be multiply by 2
-        marginTop = 1.5
-        // calculate values that need to put the buttons on the layer based different UIScreens sizes
-        alefbaButtonWidth = (keyboardWidth - ((10 * gapHorizontal) + (2 * marginRight))) / 11
-        
-        // read user setting if smilies are ON
-        // calculate the heigh of buttons
-        var isSmileOn:CGFloat = 0
-        let prefs = UserDefaults(suiteName: "group.me.alirezak.gpkeys")
-        let emojiState = prefs?.integer(forKey: "emojiState")
-        if emojiState == 1
-        {
-            alefbaButtonHeight = (keyboardHeight - ((4 * gapVertical) + (2 * marginTop) + alefbaButtonWidth)) / 4
-            isSmileOn = 1
-        }
-        else
-        {
-            gapVertical *= 2
-            marginTop *= 4
-            gapHorizontal *= 1.2
-            alefbaButtonHeight = (keyboardHeight - ((3 * gapVertical) + (2 * marginTop))) / 4
-            alefbaButtonWidth = (keyboardWidth - ((10 * gapHorizontal) + (2 * marginRight))) / 11
-            isSmileOn = 0
-        }
-        
-        
-        
-        
-        /*****************************************
-         *                                        *
-         *   initial Smily row                    *
-         *                                        *
-         *****************************************/
-        // check user setting if he want to use smily. Also
+        alefbaButtons = [[GPButton]]()
 
-        if emojiState == 1
+        // Add emojies
+        var rowButtons = [GPButton]()
+        for i in 0...10
         {
-            for i in 0...10
+            let btn = GPButton(with: .EMOJI)
+            btn.label?.text = smile[i]
+            rowButtons.append(btn)
+            btn.backLayerInsetX = 0
+            btn.backLayerInsetY = 0
+            btn.addTarget(self, action: #selector(self.emojiTouched(_:)), for: .touchUpInside)
+            alefbaLayout.addSubview(btn)
+
+        }
+        alefbaButtons.append(rowButtons)
+        
+        // Add character buttons
+        for i in 0..<characters[0].count
+        {
+            var rowButtons = [GPButton]()
+            for j in 0..<characters[0][i].count
             {
-                let r = CGRect(x: marginRight + (CGFloat(i) * (alefbaButtonWidth + gapHorizontal)) ,
-                               y: marginTop,
-                               width: alefbaButtonWidth,
-                               height: alefbaButtonWidth)
-                var b:UIButton!
-                let emojiInt = prefs?.integer(forKey: String(i))
-                if emojiInt != 0
-                {
-                    b = createButton(rect: r, char: Character(UnicodeScalar(emojiInt!)!))
-                }
-                else
-                {
-                    b = createButton(rect: r, char: toChar(s: smile, i: i))
-                }
-                b.contentEdgeInsets = UIEdgeInsets(top: 0, left: 1, bottom: 0, right: 0)
-                b.addTarget(self, action: #selector(self.buttonTouched(_:)), for: .touchUpInside)
-                b.addTarget(self, action: #selector(self.makeButtonBigger(_:)), for: .touchDown)
-                b.addTarget(self, action: #selector(self.makeButtonNormal(_:)), for: .touchUpOutside)
+                let btn = GPButton(with: .CHAR)
                 
-                mainViewPortrait.addSubview(b)
-
+                btn.harf = characters[0][i][j]
+                rowButtons.append(btn)
+                btn.backLayerInsetX = gapHorizontal / 2
+                btn.backLayerInsetY = gapVertical / 2
+//                btn.isExclusiveTouch = true
+                btn.addTarget(self, action: #selector(self.charTouched(_:)), for: .touchUpInside)
+                alefbaLayout.addSubview(btn)
             }
+            alefbaButtons.append(rowButtons)
         }
         
-        /*****************************************
-         *                                        *
-         *   initial first alfabet row            *
-         *                                        *
-         *****************************************/
+        // add all util function
+        let shiftButton = GPButton(with: .SHIFT)
+        shiftButton.addTarget(self, action: #selector(self.utilTouched(sender:)), for: .touchUpInside)
+        shiftButton.label?.text = ".؟!"
+        shiftButton.backLayerInsetX = gapHorizontal / 2
+        shiftButton.backLayerInsetY = gapVertical / 2
+        alefbaButtons[3].insert(shiftButton, at: 0)
+        alefbaLayout.addSubview(shiftButton)
         
-        for i in 0...10
-        {
-            let r = CGRect(x: marginRight + (CGFloat(i) * (alefbaButtonWidth + gapHorizontal)) ,
-                           y: marginTop + (isSmileOn * (alefbaButtonWidth + gapVertical)),
-                           width: alefbaButtonWidth,
-                           height: alefbaButtonHeight)
-            let b: UIButton = createButton(rect: r, char: alphabets[0][0][i].value)
-
-            b.addTarget(self, action: #selector(self.buttonTouched(_:)), for: .touchUpInside)
-            b.addTarget(self, action: #selector(self.makeButtonBigger(_:)), for: .touchDown)
-            b.addTarget(self, action: #selector(self.makeButtonNormal(_:)), for: .touchUpOutside)
-            
-            mainViewPortrait.addSubview(b)
-
-        }
-        /*****************************************
-         *                                        *
-         *   initial second alfabet row           *
-         *                                        *
-         *****************************************/
-        for i in 0...10
-        {
-            let r = CGRect(x: marginRight + (CGFloat(i) * (alefbaButtonWidth + gapHorizontal)) ,
-                           y: marginTop + (isSmileOn * (alefbaButtonWidth + gapVertical)) + gapVertical + alefbaButtonHeight,
-                           width: alefbaButtonWidth,
-                           height: alefbaButtonHeight)
-            
-            let b: UIButton = createButton(rect: r, char: alphabets[0][1][i].value)
-            
-            b.addTarget(self, action: #selector(self.buttonTouched(_:)), for: .touchUpInside)
-            b.addTarget(self, action: #selector(self.makeButtonBigger(_:)), for: .touchDown)
-            b.addTarget(self, action: #selector(self.makeButtonNormal(_:)), for: .touchUpOutside)
-            
-            mainViewPortrait.addSubview(b)
-        }
+        let deleteButton = GPButton(with: .DELETE)
+        deleteButton.addTarget(self, action: #selector(self.deleteTouchDown(sender:)), for: .touchDown)
+        deleteButton.addTarget(self, action: #selector(self.deleteTouchUp(_:)), for: .touchUpInside)
+        deleteButton.addTarget(self, action: #selector(self.deleteTouchUp(_:)), for: .touchUpOutside)
+        deleteButton.label?.text = ""
+        deleteButton.backLayerInsetX = gapHorizontal / 2
+        deleteButton.backLayerInsetY = gapVertical / 2
+        alefbaButtons[3].insert(deleteButton, at: alefbaButtons[3].count)
+        alefbaLayout.addSubview(deleteButton)
         
-        /*****************************************
-         *                                        *
-         *   initial third alfabet row            *
-         *                                        *
-         *****************************************/
+        let numberButton = GPButton(with: .NUMBER)
+        numberButton.addTarget(self, action: #selector(self.utilTouched(sender:)), for: .touchUpInside)
+        numberButton.label?.text = "۱۲۳"
+        numberButton.backLayerInsetX = gapHorizontal / 2
+        numberButton.backLayerInsetY = gapVertical / 2
+        alefbaButtons[4].insert(numberButton, at: 0)
+        alefbaLayout.addSubview(numberButton)
         
-        // initial Shift button
-        var r = CGRect( x: marginRight ,
-                        y: marginTop + (2 * (gapVertical + alefbaButtonHeight)) + (isSmileOn * (alefbaButtonWidth + gapVertical)),
-                        width: alefbaButtonWidth * 1.5,
-                        height: alefbaButtonHeight)
+        let globeButton = GPButton(with: .GLOBE)
+        globeButton.backLayerInsetX = gapHorizontal / 2
+        globeButton.backLayerInsetY = gapVertical / 2
+        globeButton.label?.text = ""
+        alefbaButtons[4].insert(globeButton, at: 1)
+        alefbaLayout.addSubview(globeButton)
+        globeButton.addTarget(self, action: #selector(advanceToNextInputMode), for: .touchUpInside)
         
-        let shiftb = createUtilButton(rect: r, withTarget: true)
-        shiftb.tag = 1
-        mainViewPortrait.addSubview(shiftb)
-
-        
-        // initial alefba
-        for i in 0...7
-        {
-            let startX = shiftb.frame.maxX + ((gapHorizontal * 3) / 2)
-            r = CGRect( x: startX + (CGFloat(i) * (gapHorizontal + alefbaButtonWidth)),
-                        y: shiftb.layer.frame.minY,
-                        width: alefbaButtonWidth,
-                        height: alefbaButtonHeight)
-            
-            let b: UIButton = createButton(rect: r, char: alphabets[0][2][i].value)
-            
-            b.addTarget(self, action: #selector(self.buttonTouched(_:)), for: .touchUpInside)
-            b.addTarget(self, action: #selector(self.makeButtonBigger(_:)), for: .touchDown)
-            b.addTarget(self, action: #selector(self.makeButtonNormal(_:)), for: .touchUpOutside)
-            
-            mainViewPortrait.addSubview(b)
-        }
-        
-        // initial delete button
-        r = CGRect( x: keyboardWidth - (marginRight + shiftb.frame.width),
-                    y: shiftb.layer.frame.minY,
-                    width: shiftb.frame.width ,
-                    height: alefbaButtonHeight)
-        let deleteButton = createUtilButton(rect: r, withTarget: false)
-        deleteButton.tag = 3
-        deleteButton.addTarget(self, action: #selector(self.utilTouched), for: .touchUpInside)
-        deleteButton.addTarget(self, action: #selector(self.deleteTouchDown), for: .touchDown)
-        deleteButton.addTarget(self, action: #selector(self.deleteTouchUpOutside), for: .touchUpOutside)
-        mainViewPortrait.addSubview(deleteButton)
-        
-        /*****************************************
-         *                                        *
-         *   initial fourth alfabet row           *
-         *                                        *
-         *****************************************/
-        // initial 123 button
-        r = CGRect( x: marginRight,
-                    y: keyboardHeight - (alefbaButtonHeight + marginTop),
-                    width: alefbaButtonWidth * 1.25 ,
-                    height: alefbaButtonHeight)
-        let numberButton = createUtilButton(rect: r, withTarget: true)
-        numberButton.setTitle("۱۲۳", for: UIControlState())
-        numberButton.tag = 2
-        mainViewPortrait.addSubview(numberButton)
-
-        
-        // Initial next button layer
-        r = CGRect(x: marginRight + numberButton.frame.width + gapHorizontal ,
-                   y: numberButton.frame.minY,
-                   width: numberButton.frame.width ,
-                   height: alefbaButtonHeight)
-        let nextKeyboardButton = createUtilButton(rect: r, withTarget: true)
-        nextKeyboardButton.tag = 99
-        mainViewPortrait.addSubview(nextKeyboardButton)
-        
-        // initial left  button
-        r = CGRect( x: nextKeyboardButton.frame.maxX + gapHorizontal,
-                    y: numberButton.layer.frame.minY,
-                    width: alefbaButtonWidth ,
-                    height: alefbaButtonHeight)
-
-        let leftButton: UIButton = createButton(rect: r, char: alphabets[0][3][0].value)
-        
-        leftButton.addTarget(self, action: #selector(self.buttonTouched(_:)), for: .touchUpInside)
-        leftButton.addTarget(self, action: #selector(self.makeButtonBigger(_:)), for: .touchDown)
-        leftButton.addTarget(self, action: #selector(self.makeButtonNormal(_:)), for: .touchUpOutside)
-        mainViewPortrait.addSubview(leftButton)
-        
-        // initial Space button
-        r = CGRect( x: leftButton.frame.maxX + gapHorizontal,
-                    y: numberButton.frame.minY,
-                    width: alefbaButtonWidth * 4.5 ,
-                    height: alefbaButtonHeight)
-        let spaceButton=createUtilButton(rect: r, withTarget: false)
-        spaceButton.setTitle("فاصله", for: UIControlState())
-        spaceButton.tag = 32
-        spaceButton.backgroundColor = buttonBackground
+        let spaceButton = GPButton(with: .SPACE)
+        spaceButton.label?.text = "فاصله"
+        spaceButton.backLayerInsetX = gapHorizontal / 2
+        spaceButton.backLayerInsetY = gapVertical / 2
         spaceButton.addTarget(self, action: #selector(self.utilTouched(sender:)), for: .touchUpInside)
-        mainViewPortrait.addSubview(spaceButton)
+        alefbaButtons[4].insert(spaceButton, at: 3)
+        alefbaLayout.addSubview(spaceButton)
         
-        // initial Right button
-        r = CGRect( x: spaceButton.frame.maxX + gapHorizontal ,
-                    y: numberButton.frame.minY,
-                    width: alefbaButtonWidth ,
-                    height: alefbaButtonHeight  )
-        let rightButton: UIButton = createButton(rect: r, char: alphabets[0][3][1].value)
+        let enterButton = GPButton(with: .ENTER)
+        enterButton.addTarget(self, action: #selector(self.utilTouched(sender:)), for: .touchUpInside)
+        enterButton.label?.text = ""
+        enterButton.backLayerInsetX = gapHorizontal / 2
+        enterButton.backLayerInsetY = gapVertical / 2
+        alefbaButtons[4].insert(enterButton, at: 5)
+        alefbaLayout.addSubview(enterButton)
         
-        rightButton.addTarget(self, action: #selector(self.buttonTouched(_:)), for: .touchUpInside)
-        rightButton.addTarget(self, action: #selector(self.makeButtonBigger(_:)), for: .touchDown)
-        rightButton.addTarget(self, action: #selector(self.makeButtonNormal(_:)), for: .touchUpOutside)
-        mainViewPortrait.addSubview(rightButton)
-        
-        // initial Enter Button
-        // calculate width for Enter to fill remined space
-        let w = keyboardWidth - ((9 * alefbaButtonWidth) + marginRight + (6 * gapHorizontal))
-        r = CGRect( x: keyboardWidth - (w + marginRight) ,
-                                          y: numberButton.frame.minY,
-                                          width: w ,
-                                          height: alefbaButtonHeight)
-        
-        let EnterButton = createUtilButton(rect: r, withTarget: true)
-        EnterButton.tag = 13
-        mainViewPortrait.addSubview(EnterButton)
-        
-        // change icons to white color if apperiance is dark
-        let proxy = self.textDocumentProxy
-        if proxy.keyboardAppearance == UIKeyboardAppearance.dark {
-            shiftb.setImage(UIImage(named: "shiftW"), for: UIControlState.normal)
-            deleteButton.setImage(UIImage(named: "deleteW"), for: UIControlState.normal)
-            nextKeyboardButton.setImage(UIImage(named: "langW"), for: UIControlState.normal)
-            EnterButton.setImage(UIImage(named: "enterW"), for: UIControlState.normal)
-            
-            shiftb.layer.shadowOpacity = 0
-            deleteButton.layer.shadowOpacity = 0
-            nextKeyboardButton.layer.shadowOpacity = 0
-            EnterButton.layer.shadowOpacity = 0
-            numberButton.layer.shadowOpacity = 0
-        }
-        else {
-            shiftb.setImage(UIImage(named: "shiftUp"), for: UIControlState.normal)
-            deleteButton.setImage(UIImage(named: "deleteUp"), for: UIControlState.normal)
-            nextKeyboardButton.setImage(UIImage(named: "lang"), for: UIControlState.normal)
-            EnterButton.setImage(UIImage(named: "enter"), for: UIControlState.normal)
-        }
-        
-        // make tag to 1: it means we initialized main layer
-        mainViewPortrait.tag = 1
-        mainViewPortrait.isMultipleTouchEnabled = false
-        // END OF ALEFBA LAYER
-        
+        // calculate constraints
+        sizeConstraints(buttons: alefbaButtons, kbLayout: alefbaLayout)
+        positionConstraints(buttons: alefbaButtons, kbLayout: alefbaLayout)
     }
     
+    /******************************************
+     *                                        *
+     *   initial Number Layout                *
+     *                                        *
+     *****************************************/
     
-    
-    
-    // initial Shift Portrait
-    func initShift(){
-
+    func initNumberLayout(){
         // TODO: background should be checked here
-        shiftViewPortrait.backgroundColor = viewBackground
+        numberLayout.backgroundColor = viewBackground
+    
+        numberButtons = [[GPButton]]()
         
-        // setup tap detection for background view
-        let tap = UITapGestureRecognizer(target: self, action: #selector(getCharacterFromNearestButton(_:)))
-        tap.numberOfTouchesRequired = 1
-        tap.numberOfTapsRequired = 1
-        shiftViewPortrait.addGestureRecognizer(tap)
-        
-        gapVertical = 6
-        gapHorizontal = 4
-        marginRight = 1.75  // in iPad screen it should be multiply by 2
-        marginTop = 1.5
-        // calculate values that need to put the buttons on the layer based different UIScreens sizes
-        alefbaButtonWidth = (keyboardWidth - ((10 * gapHorizontal) + (2 * marginRight))) / 11
-        
-        // read user setting if enabled emojis : default is ON
-        let prefs = UserDefaults(suiteName: "group.me.alirezak.gpkeys")
-        let emojiState = prefs?.integer(forKey: "emojiState")
-        var isSmileOn:CGFloat = 0
-        if emojiState == 1
+        // Add emojies
+        var rowButtons = [GPButton]()
+        for i in 0...10
         {
-            alefbaButtonHeight = (keyboardHeight - ((4 * gapVertical) + (2 * marginTop) + alefbaButtonWidth)) / 4
-            isSmileOn = 1
+            let btn = GPButton(with: .EMOJI)
+            btn.label?.text = smile[i+22]
+            rowButtons.append(btn)
+            btn.backLayerInsetX = 0
+            btn.backLayerInsetY = 0
+            btn.addTarget(self, action: #selector(self.emojiTouched(_:)), for: .touchUpInside)
+            numberLayout.addSubview(btn)
+            
         }
-        else
+        numberButtons.append(rowButtons)
+        
+        
+        
+        for i in 0..<characters[2].count
         {
-            gapVertical *= 2
-            marginTop *= 4
-            gapHorizontal *= 1.2
-            alefbaButtonHeight = (keyboardHeight - ((3 * gapVertical) + (2 * marginTop))) / 4
-            alefbaButtonWidth = (keyboardWidth - ((10 * gapHorizontal) + (2 * marginRight))) / 11
-            isSmileOn = 0
-        }
-        
-        
-        
-        
-        /*****************************************
-         *                                        *
-         *   initial Smily row                    *
-         *                                        *
-         *****************************************/
-        // if user want emojis, we show them! :)
-        if emojiState == 1
-        {
-            for i in 0...10
+            var rowButtons = [GPButton]()
+            for j in 0..<characters[2][i].count
             {
-                let r = CGRect(x: marginRight + (CGFloat(i) * (alefbaButtonWidth + gapHorizontal)) ,
-                               y: marginTop,
-                               width: alefbaButtonWidth,
-                               height: alefbaButtonWidth)
-                var b:UIButton!
-                let emojiInt = prefs?.integer(forKey: String(i + 11))
-                if emojiInt != 0
-                {
-                    b = createButton(rect: r, char: Character(UnicodeScalar(emojiInt!)!))
-                }
-                else
-                {
-                    b = createButton(rect: r, char: toChar(s: smile, i: i+11))
-                }
-                b.contentEdgeInsets = UIEdgeInsets(top: 0, left: 1, bottom: 0, right: 0)
-                b.addTarget(self, action: #selector(self.buttonTouched(_:)), for: .touchUpInside)
-                b.addTarget(self, action: #selector(self.makeButtonBigger(_:)), for: .touchDown)
-                b.addTarget(self, action: #selector(self.makeButtonNormal(_:)), for: .touchUpOutside)
+                let btn = GPButton(with: .CHAR)
                 
-                shiftViewPortrait.addSubview(b)
-                
+                btn.harf = characters[2][i][j]
+                rowButtons.append(btn)
+                btn.backLayerInsetX = gapHorizontal / 2
+                btn.backLayerInsetY = gapVertical / 2
+                btn.isExclusiveTouch = true
+                btn.addTarget(self, action: #selector(self.charTouched(_:)), for: .touchUpInside)
+                numberLayout.addSubview(btn)
             }
+            numberButtons.append(rowButtons)
         }
+        // add all util function
+        let deleteButton = GPButton(with: .DELETE)
+        deleteButton.addTarget(self, action: #selector(self.deleteTouchDown(sender:)), for: .touchDown)
+        deleteButton.addTarget(self, action: #selector(self.deleteTouchUp(_:)), for: .touchUpInside)
+        deleteButton.addTarget(self, action: #selector(self.deleteTouchUp(_:)), for: .touchUpOutside)
+        deleteButton.label?.text = ""
+        deleteButton.backLayerInsetX = gapHorizontal / 2
+        deleteButton.backLayerInsetY = gapVertical / 2
+        numberButtons[3].insert(deleteButton, at: numberButtons[3].count)
+        numberLayout.addSubview(deleteButton)
         
-        /*****************************************
-         *                                        *
-         *   initial first  row                   *
-         *                                        *
-         *****************************************/
-        // we need these buttons for further manipulation!
-        var buttons: [UIButton] = [UIButton]()
-        for i in 0...10
-        {
-            let r = CGRect(x: marginRight + (CGFloat(i) * (alefbaButtonWidth + gapHorizontal)) ,
-                           y: marginTop + (isSmileOn * (alefbaButtonWidth + gapVertical)),
-                           width: alefbaButtonWidth,
-                           height: alefbaButtonHeight)
-            let b: UIButton = createButton(rect: r, char: alphabets[1][0][i].value)
-
-            b.addTarget(self, action: #selector(self.shiftButtonTouched(_:)), for: .touchUpInside)
-            b.addTarget(self, action: #selector(self.makeButtonBigger(_:)), for: .touchDown)
-            b.addTarget(self, action: #selector(self.makeButtonNormal(_:)), for: .touchUpOutside)
-            
-            shiftViewPortrait.addSubview(b)
-            buttons.append(b)
-        }
+        let numberButton = GPButton(with: .NUMBER)
+        numberButton.addTarget(self, action: #selector(self.utilTouched(sender:)), for: .touchUpInside)
+        numberButton.label?.text = "الفبا"
+        numberButton.backLayerInsetX = gapHorizontal / 2
+        numberButton.backLayerInsetY = gapVertical / 2
+        numberButtons[4].insert(numberButton, at: 0)
+        numberLayout.addSubview(numberButton)
         
-        // now change the action in touchUpInside for () {} []
-        for i in 5...10
-        {
-            buttons[i].removeTarget(self, action: #selector(self.shiftButtonTouched(_:)), for: .touchUpInside)
-        }
-        for i in 5...10
-        {
-            buttons[i].addTarget(self, action: #selector(self.signButtonTouched(_:)), for: .touchUpInside)
-        }
-        // set text color a, o, e, sokun character like background
-        for i in 0...4
-        {
-            buttons[i].setTitleColor(buttonBackground, for: .normal)
-        }
-        let proxy = self.textDocumentProxy
-        if proxy.keyboardAppearance == UIKeyboardAppearance.dark {
-            buttons[0].setImage(UIImage(named: "sokunW"), for: UIControlState())
-            buttons[1].setImage(UIImage(named: "oW"), for: UIControlState())
-            buttons[2].setImage(UIImage(named: "aW"), for: UIControlState())
-            buttons[3].setImage(UIImage(named: "aW"), for: UIControlState())
-            buttons[4].setImage(UIImage(named: "anW"), for: UIControlState())
-        }
-        else {
-            buttons[0].setImage(UIImage(named: "sokun"), for: UIControlState())
-            buttons[1].setImage(UIImage(named: "oo"), for: UIControlState())
-            buttons[2].setImage(UIImage(named: "aa"), for: UIControlState())
-            buttons[3].setImage(UIImage(named: "aa"), for: UIControlState())
-            buttons[4].setImage(UIImage(named: "aan"), for: UIControlState())
-        }
+        let globeButton = GPButton(with: .GLOBE)
+        globeButton.backLayerInsetX = gapHorizontal / 2
+        globeButton.backLayerInsetY = gapVertical / 2
+        globeButton.label?.text = ""
+        numberButtons[4].insert(globeButton, at: 1)
+        numberLayout.addSubview(globeButton)
+        globeButton.addTarget(self, action: #selector(advanceToNextInputMode), for: .touchUpInside)
         
-        buttons[1].imageEdgeInsets = UIEdgeInsets.init(top: -10, left: 0, bottom: 0, right: 0)
-        buttons[2].imageEdgeInsets = UIEdgeInsets.init(top: 20, left: 0, bottom: 0, right: 0)
-        buttons[3].imageEdgeInsets = UIEdgeInsets.init(top: -10, left: 0, bottom: 0, right: 0)
-        buttons[4].imageEdgeInsets = UIEdgeInsets.init(top: -10, left: 0, bottom: 0, right: 0)
-        
-        
-        
-        
-        /*****************************************
-         *                                        *
-         *   initial second alfabet row           *
-         *                                        *
-         *****************************************/
-        // we need again to manipulate «» signs and tashdid
-        buttons.removeAll()
-        for i in 0...10
-        {
-            let r = CGRect(x: marginRight + (CGFloat(i) * (alefbaButtonWidth + gapHorizontal)) ,
-                           y: marginTop + (isSmileOn * (alefbaButtonWidth + gapVertical)) + gapVertical + alefbaButtonHeight,
-                           width: alefbaButtonWidth,
-                           height: alefbaButtonHeight)
-            
-            let b: UIButton = createButton(rect: r, char: alphabets[1][1][i].value)
-
-            b.addTarget(self, action: #selector(self.shiftButtonTouched(_:)), for: .touchUpInside)
-            b.addTarget(self, action: #selector(self.makeButtonBigger(_:)), for: .touchDown)
-            b.addTarget(self, action: #selector(self.makeButtonNormal(_:)), for: .touchUpOutside)
-            
-            shiftViewPortrait.addSubview(b)
-            buttons.append(b)
-        }
-        // now change the action in touchUpInside for «»
-        buttons[7].removeTarget(self, action: #selector(self.shiftButtonTouched(_:)), for: .touchUpInside)
-        buttons[7].addTarget(self, action: #selector(self.signButtonTouched(_:)), for: .touchUpInside)
-        buttons[8].removeTarget(self, action: #selector(self.shiftButtonTouched(_:)), for: .touchUpInside)
-        buttons[8].addTarget(self, action: #selector(self.signButtonTouched(_:)), for: .touchUpInside)
-        
-        // manipulate tashdid
-        if proxy.keyboardAppearance == UIKeyboardAppearance.dark {
-            buttons[3].setImage(UIImage(named: "tashdidW"), for: UIControlState())
-        }
-        else {
-            buttons[3].setImage(UIImage(named: "tashdid"), for: UIControlState())
-        }
-        /*****************************************
-         *                                        *
-         *   initial third alfabet row            *
-         *                                        *
-         *****************************************/
-        
-        // initial Shift button
-        var r = CGRect( x: marginRight ,
-                        y: marginTop + (2 * (gapVertical + alefbaButtonHeight)) + (isSmileOn * (alefbaButtonWidth + gapVertical)),
-                        width: alefbaButtonWidth * 1.5,
-                        height: alefbaButtonHeight)
-        
-        let shiftb = createUtilButton(rect: r, withTarget: true)
-        shiftb.tag = 1
-        shiftViewPortrait.addSubview(shiftb)
-        
-        
-        // initial alefba
-        for i in 0...7
-        {
-            let startX = shiftb.frame.maxX + ((gapHorizontal * 3) / 2)
-            r = CGRect( x: startX + (CGFloat(i) * (gapHorizontal + alefbaButtonWidth)),
-                        y: shiftb.layer.frame.minY,
-                        width: alefbaButtonWidth,
-                        height: alefbaButtonHeight)
-            
-            let b: UIButton = createButton(rect: r, char: alphabets[1][2][i].value)
-
-            b.addTarget(self, action: #selector(self.shiftButtonTouched(_:)), for: .touchUpInside)
-            b.addTarget(self, action: #selector(self.makeButtonBigger(_:)), for: .touchDown)
-            b.addTarget(self, action: #selector(self.makeButtonNormal(_:)), for: .touchUpOutside)
-            
-            shiftViewPortrait.addSubview(b)
-        }
-        
-        // initial delete button
-        r = CGRect( x: keyboardWidth - (marginRight + shiftb.frame.width),
-                    y: shiftb.layer.frame.minY,
-                    width: shiftb.frame.width ,
-                    height: alefbaButtonHeight)
-        let deleteButton = createUtilButton(rect: r, withTarget: false)
-        deleteButton.tag = 3
-        deleteButton.addTarget(self, action: #selector(self.utilTouched), for: .touchUpInside)
-        deleteButton.addTarget(self, action: #selector(self.deleteTouchDown), for: .touchDown)
-        deleteButton.addTarget(self, action: #selector(self.deleteTouchUpOutside), for: .touchUpOutside)
-        shiftViewPortrait.addSubview(deleteButton)
-        
-        /*****************************************
-         *                                        *
-         *   initial fourth alfabet row           *
-         *                                        *
-         *****************************************/
-        // initial 123 button
-        r = CGRect( x: marginRight,
-                    y: keyboardHeight - (alefbaButtonHeight + marginTop),
-                    width: alefbaButtonWidth * 1.25 ,
-                    height: alefbaButtonHeight)
-        let numberButton = createUtilButton(rect: r, withTarget: true)
-        numberButton.setTitle("۱۲۳", for: UIControlState())
-        numberButton.tag = 2
-        shiftViewPortrait.addSubview(numberButton)
-        
-        
-        // Initial next button layer
-        r = CGRect(x: marginRight + numberButton.frame.width + gapHorizontal ,
-                   y: numberButton.frame.minY,
-                   width: numberButton.frame.width ,
-                   height: alefbaButtonHeight)
-        let nextKeyboardButton = createUtilButton(rect: r, withTarget: true)
-        nextKeyboardButton.tag = 99
-        shiftViewPortrait.addSubview(nextKeyboardButton)
-        
-        // initial left  button
-        r = CGRect( x: nextKeyboardButton.frame.maxX + gapHorizontal,
-                    y: numberButton.layer.frame.minY,
-                    width: alefbaButtonWidth ,
-                    height: alefbaButtonHeight)
-        
-        let leftButton: UIButton = createButton(rect: r, char: alphabets[1][3][0].value)
-        
-        leftButton.isExclusiveTouch = true
-        leftButton.addTarget(self, action: #selector(self.shiftButtonTouched(_:)), for: .touchUpInside)
-        leftButton.addTarget(self, action: #selector(self.makeButtonBigger(_:)), for: .touchDown)
-        leftButton.addTarget(self, action: #selector(self.makeButtonNormal(_:)), for: .touchUpOutside)
-        shiftViewPortrait.addSubview(leftButton)
-        
-        // initial Space button
-        r = CGRect( x: leftButton.frame.maxX + gapHorizontal,
-                    y: numberButton.frame.minY,
-                    width: alefbaButtonWidth * 4.5 ,
-                    height: alefbaButtonHeight)
-        let spaceButton=createUtilButton(rect: r, withTarget: false)
-        spaceButton.setTitle("نیم فاصله", for: UIControlState())
-        spaceButton.tag = 8204
-        spaceButton.backgroundColor = buttonBackground
+        let spaceButton = GPButton(with: .SPACE)
+        spaceButton.label?.text = "فاصله"
+        spaceButton.backLayerInsetX = gapHorizontal / 2
+        spaceButton.backLayerInsetY = gapVertical / 2
         spaceButton.addTarget(self, action: #selector(self.utilTouched(sender:)), for: .touchUpInside)
-        shiftViewPortrait.addSubview(spaceButton)
+        numberButtons[4].insert(spaceButton, at: 3)
+        numberLayout.addSubview(spaceButton)
         
-        // initial Right button
-        r = CGRect( x: spaceButton.frame.maxX + gapHorizontal ,
-                    y: numberButton.frame.minY,
-                    width: alefbaButtonWidth ,
-                    height: alefbaButtonHeight  )
-        let rightButton: UIButton = createButton(rect: r, char: alphabets[1][3][1].value)
+        let enterButton = GPButton(with: .ENTER)
+        enterButton.addTarget(self, action: #selector(self.utilTouched(sender:)), for: .touchUpInside)
+        enterButton.label?.text = ""
+        enterButton.backLayerInsetX = gapHorizontal / 2
+        enterButton.backLayerInsetY = gapVertical / 2
+        numberButtons[4].insert(enterButton, at: 5)
+        numberLayout.addSubview(enterButton)
         
-        rightButton.isExclusiveTouch = true
-        rightButton.addTarget(self, action: #selector(self.shiftButtonTouched(_:)), for: .touchUpInside)
-        rightButton.addTarget(self, action: #selector(self.makeButtonBigger(_:)), for: .touchDown)
-        rightButton.addTarget(self, action: #selector(self.makeButtonNormal(_:)), for: .touchUpOutside)
-        shiftViewPortrait.addSubview(rightButton)
-        
-        // initial Enter Button
-        // calculate width for Enter to fill remined space
-        let w = keyboardWidth - ((9 * alefbaButtonWidth) + marginRight + (6 * gapHorizontal))
-        r = CGRect( x: keyboardWidth - (w + marginRight) ,
-                    y: numberButton.frame.minY,
-                    width: w ,
-                    height: alefbaButtonHeight)
-        
-        let EnterButton = createUtilButton(rect: r, withTarget: true)
-        EnterButton.tag = 13
-        shiftViewPortrait.addSubview(EnterButton)
-        
-        // change icons to white color if apperiance is dark
-        if proxy.keyboardAppearance == UIKeyboardAppearance.dark {
-            shiftb.setImage(UIImage(named: "shiftW"), for: UIControlState.normal)
-            deleteButton.setImage(UIImage(named: "deleteW"), for: UIControlState.normal)
-            nextKeyboardButton.setImage(UIImage(named: "langW"), for: UIControlState.normal)
-            EnterButton.setImage(UIImage(named: "enterW"), for: UIControlState.normal)
-            
-            shiftb.layer.shadowOpacity = 0
-            deleteButton.layer.shadowOpacity = 0
-            nextKeyboardButton.layer.shadowOpacity = 0
-            EnterButton.layer.shadowOpacity = 0
-            numberButton.layer.shadowOpacity = 0
-        }
-        else {
-            shiftb.setImage(UIImage(named: "shiftUp"), for: UIControlState.normal)
-            deleteButton.setImage(UIImage(named: "deleteUp"), for: UIControlState.normal)
-            nextKeyboardButton.setImage(UIImage(named: "lang"), for: UIControlState.normal)
-            EnterButton.setImage(UIImage(named: "enter"), for: UIControlState.normal)
-        }
-        
-        // make tag to 1: it means we initialized main layer
-        shiftViewPortrait.tag = 1
-        shiftViewPortrait.isMultipleTouchEnabled = false
-        // END OF ALEFBA LAYER
+        // Calculate constraint
+        sizeConstraints(buttons: numberButtons, kbLayout: numberLayout)
+        positionConstraints(buttons: numberButtons, kbLayout: numberLayout)
         
     }
-    // INITIAL ALEFBA LANDSCAPE VIEW
-    func initAlefbaLandscape() {
-        // TODO: background should be checked here
-        mainViewLandscape.backgroundColor = viewBackground
-        
-        // setup tap detection for background view
-        let tap = UITapGestureRecognizer(target: self, action: #selector(getCharacterFromNearestButton(_:)))
-        tap.numberOfTouchesRequired = 1
-        tap.numberOfTapsRequired = 1
-        mainViewLandscape.addGestureRecognizer(tap)
-
-        
-        marginRight = 1.75  // in iPad screen it should be multiply by 2
-        marginTop = 1.5
-        // calculate values that need to put the buttons on the layer!
-        gapVertical = 4
-        gapHorizontal = 6
-        alefbaButtonWidth = (keyboardWidthLandscape - ((10 * gapHorizontal) + (2 * marginRight))) / 11
-        alefbaButtonHeight = (keyboardHeightLandscape - ((3 * gapVertical) + (2 * marginTop))) / 4
-        
-        
-        /************************************************
-         *                                              *
-         *   initial Smily row                          *
-         *   we can't use smilies in Landscape mode :(  *
-         ***********************************************/
-       
-        
-        /*****************************************
-         *                                        *
-         *   initial first alfabet row            *
-         *                                        *
-         *****************************************/
-        
-        for i in 0...10
-        {
-            let r = CGRect(x: marginRight + (CGFloat(i) * (alefbaButtonWidth + gapHorizontal)) ,
-                           y: marginTop ,
-                           width: alefbaButtonWidth,
-                           height: alefbaButtonHeight)
-            let b: UIButton = createButton(rect: r, char: alphabets[0][0][i].value)
-            
-            b.addTarget(self, action: #selector(self.buttonTouched(_:)), for: .touchUpInside)
-            b.addTarget(self, action: #selector(self.makeButtonBigger(_:)), for: .touchDown)
-            b.addTarget(self, action: #selector(self.makeButtonNormal(_:)), for: .touchUpOutside)
-            
-            mainViewLandscape.addSubview(b)
-            
-        }
-        /*****************************************
-         *                                        *
-         *   initial second alfabet row           *
-         *                                        *
-         *****************************************/
-        for i in 0...10
-        {
-            let r = CGRect(x: marginRight + (CGFloat(i) * (alefbaButtonWidth + gapHorizontal)) ,
-                           y: marginTop + gapVertical + alefbaButtonHeight,
-                           width: alefbaButtonWidth,
-                           height: alefbaButtonHeight)
-            
-            let b: UIButton = createButton(rect: r, char: alphabets[0][1][i].value)
-            
-            b.addTarget(self, action: #selector(self.buttonTouched(_:)), for: .touchUpInside)
-            b.addTarget(self, action: #selector(self.makeButtonBigger(_:)), for: .touchDown)
-            b.addTarget(self, action: #selector(self.makeButtonNormal(_:)), for: .touchUpOutside)
-            
-            mainViewLandscape.addSubview(b)
-        }
-        
-        /*****************************************
-         *                                        *
-         *   initial third alfabet row            *
-         *                                        *
-         *****************************************/
-        
-        // initial Shift button
-        var r = CGRect( x: marginRight ,
-                        y: (2 * gapVertical) + (2 * alefbaButtonHeight) + marginTop,
-                        width: alefbaButtonWidth * 1.5,
-                        height: alefbaButtonHeight)
-        
-        let shiftb = createUtilButton(rect: r, withTarget: true)
-        shiftb.tag = 1
-        mainViewLandscape.addSubview(shiftb)
-        
-        
-        // initial alefba
-        let startX = marginRight + shiftb.frame.width + ((gapHorizontal * 3 )/2)
-        for i in 0...7
-        {
-            r = CGRect( x: startX + (CGFloat(i) * (gapHorizontal + alefbaButtonWidth)),
-                        y: shiftb.layer.frame.minY,
-                        width: alefbaButtonWidth,
-                        height: alefbaButtonHeight)
-            
-            let b: UIButton = createButton(rect: r, char: alphabets[0][2][i].value)
-
-            b.addTarget(self, action: #selector(self.buttonTouched(_:)), for: .touchUpInside)
-            b.addTarget(self, action: #selector(self.makeButtonBigger(_:)), for: .touchDown)
-            b.addTarget(self, action: #selector(self.makeButtonNormal(_:)), for: .touchUpOutside)
-            
-            mainViewLandscape.addSubview(b)
-        }
-        
-        // initial delete button
-        r = CGRect( x: keyboardWidthLandscape - (marginRight + shiftb.frame.width),
-                    y: shiftb.layer.frame.minY,
-                    width: alefbaButtonWidth * 1.5 ,
-                    height: alefbaButtonHeight)
-        let deleteButton = createUtilButton(rect: r, withTarget: false)
-        deleteButton.tag = 3
-        deleteButton.addTarget(self, action: #selector(self.utilTouched), for: .touchUpInside)
-        deleteButton.addTarget(self, action: #selector(self.deleteTouchDown), for: .touchDown)
-        deleteButton.addTarget(self, action: #selector(self.deleteTouchUpOutside), for: .touchUpOutside)
-        mainViewLandscape.addSubview(deleteButton)
-        
-        /*****************************************
-         *                                        *
-         *   initial fourth alfabet row           *
-         *                                        *
-         *****************************************/
-        // initial 123 button
-        r = CGRect( x: marginRight + gapHorizontal + alefbaButtonWidth,
-                    y: keyboardHeightLandscape - (alefbaButtonHeight + marginTop),
-                    width: alefbaButtonWidth,
-                    height: alefbaButtonHeight)
-        let numberButton = createUtilButton(rect: r, withTarget: true)
-        numberButton.setTitle("۱۲۳", for: UIControlState())
-        numberButton.tag = 2
-        mainViewLandscape.addSubview(numberButton)
-        
-        
-        // Initial next button layer
-        r = CGRect(x: numberButton.frame.maxX + gapHorizontal ,
-                   y: numberButton.frame.minY,
-                   width: alefbaButtonWidth ,
-                   height: alefbaButtonHeight)
-        let nextKeyboardButton = createUtilButton(rect: r, withTarget: true)
-        nextKeyboardButton.tag = 99
-        mainViewLandscape.addSubview(nextKeyboardButton)
-        
-        // initial left  button
-        r = CGRect( x: nextKeyboardButton.frame.maxX + gapHorizontal ,
-                    y: numberButton.frame.minY,
-                    width: alefbaButtonWidth ,
-                    height: alefbaButtonHeight)
-        
-        let leftButton: UIButton = createButton(rect: r, char: alphabets[0][3][0].value)
-
-        leftButton.isExclusiveTouch = true
-        leftButton.addTarget(self, action: #selector(self.buttonTouched(_:)), for: .touchUpInside)
-        leftButton.addTarget(self, action: #selector(self.makeButtonBigger(_:)), for: .touchDown)
-        leftButton.addTarget(self, action: #selector(self.makeButtonNormal(_:)), for: .touchUpOutside)
-        mainViewLandscape.addSubview(leftButton)
-        
-        // initial Space button
-        r = CGRect( x: leftButton.frame.maxX + gapHorizontal,
-                    y: numberButton.frame.minY,
-                    width: alefbaButtonWidth * 4,
-                    height: alefbaButtonHeight)
-        let spaceButton=createUtilButton(rect: r, withTarget: false)
-        spaceButton.setTitle("فاصله", for: UIControlState())
-        spaceButton.tag = 32
-        spaceButton.backgroundColor = buttonBackground
-        spaceButton.addTarget(self, action: #selector(self.utilTouched(sender:)), for: .touchUpInside)
-        mainViewLandscape.addSubview(spaceButton)
-        
-        // initial Right button
-        r = CGRect( x: spaceButton.frame.maxX + gapHorizontal ,
-                    y: numberButton.frame.minY,
-                    width: alefbaButtonWidth ,
-                    height: alefbaButtonHeight)
-        let rightButton: UIButton = createButton(rect: r, char: alphabets[0][3][1].value)
-
-        rightButton.isExclusiveTouch = true
-        rightButton.addTarget(self, action: #selector(self.buttonTouched(_:)), for: .touchUpInside)
-        rightButton.addTarget(self, action: #selector(self.makeButtonBigger(_:)), for: .touchDown)
-        rightButton.addTarget(self, action: #selector(self.makeButtonNormal(_:)), for: .touchUpOutside)
-        mainViewLandscape.addSubview(rightButton)
-        
-        // initial Enter Button
-        r = CGRect( x: rightButton.frame.maxX + gapHorizontal ,
-                                          y: numberButton.frame.minY,
-                                          width: alefbaButtonWidth * 1.5 ,
-                                          height: alefbaButtonHeight)
-        
-        let EnterButton = createUtilButton(rect: r, withTarget: true)
-        EnterButton.tag = 13
-        mainViewLandscape.addSubview(EnterButton)
-        
-        // change icons to white color if apperiance is dark
-        let proxy = self.textDocumentProxy
-        if proxy.keyboardAppearance == UIKeyboardAppearance.dark {
-            shiftb.setImage(UIImage(named: "shiftW"), for: UIControlState.normal)
-            deleteButton.setImage(UIImage(named: "deleteW"), for: UIControlState.normal)
-            nextKeyboardButton.setImage(UIImage(named: "langW"), for: UIControlState.normal)
-            EnterButton.setImage(UIImage(named: "enterW"), for: UIControlState.normal)
-        }
-        else {
-            shiftb.setImage(UIImage(named: "shiftUp"), for: UIControlState.normal)
-            deleteButton.setImage(UIImage(named: "deleteUp"), for: UIControlState.normal)
-            nextKeyboardButton.setImage(UIImage(named: "lang"), for: UIControlState.normal)
-            EnterButton.setImage(UIImage(named: "enter"), for: UIControlState.normal)
-        }
-        
-        // make tag to 1: it means we initialized main layer
-        mainViewLandscape.tag = 1
-        mainViewLandscape.isMultipleTouchEnabled = false
-        // END OF ALEFBA LAYER
-    }
-    
-    // Inital shift layer for Landscape 
-    // initial Shift Portrait
-    func initShiftLandscape(){
-        
-        // TODO: background should be checked here
-        shiftViewLandscape.backgroundColor = viewBackground
-        
-        // setup tap detection for background view
-        let tap = UITapGestureRecognizer(target: self, action: #selector(getCharacterFromNearestButton(_:)))
-        tap.numberOfTouchesRequired = 1
-        tap.numberOfTapsRequired = 1
-        shiftViewLandscape.addGestureRecognizer(tap)
-        
-        marginRight = 1.75  // in iPad screen it should be multiply by 2
-        marginTop = 1.5
-        gapVertical = 4
-        gapHorizontal = 6
-        alefbaButtonWidth = (keyboardWidthLandscape - ((10 * gapHorizontal) + (2 * marginRight))) / 11
-        alefbaButtonHeight = (keyboardHeightLandscape - ((3 * gapVertical) + (2 * marginTop))) / 4
-        let isSmileOn:CGFloat = 0
-        
-        
-        /************************************************
-         *                                              *
-         *   initial Smily row                          *
-         *   we can't use smilies in Landscape mode :(  *
-         ***********************************************/
-        
-        /*****************************************
-         *                                        *
-         *   initial first alfabet row            *
-         *                                        *
-         *****************************************/
-        // we need these buttons for further manipulation!
-        var buttons: [UIButton] = [UIButton]()
-        for i in 0...10
-        {
-            let r = CGRect(x: marginRight + (CGFloat(i) * (alefbaButtonWidth + gapHorizontal)) ,
-                           y: marginTop + (isSmileOn * (alefbaButtonWidth + gapVertical)),
-                           width: alefbaButtonWidth,
-                           height: alefbaButtonHeight)
-            let b: UIButton = createButton(rect: r, char: alphabets[1][0][i].value)
-            
-            b.addTarget(self, action: #selector(self.shiftButtonTouched(_:)), for: .touchUpInside)
-            b.addTarget(self, action: #selector(self.makeButtonBigger(_:)), for: .touchDown)
-            b.addTarget(self, action: #selector(self.makeButtonNormal(_:)), for: .touchUpOutside)
-            
-            shiftViewLandscape.addSubview(b)
-            buttons.append(b)
-        }
-        
-        // now change the action in touchUpInside for () {} []
-        for i in 5...10
-        {
-            buttons[i].removeTarget(self, action: #selector(self.shiftButtonTouched(_:)), for: .touchUpInside)
-        }
-        for i in 5...10
-        {
-            buttons[i].addTarget(self, action: #selector(self.signButtonTouched(_:)), for: .touchUpInside)
-        }
-        // set text color for  a, o, e, sokun character as same as background to hide them!
-        for i in 0...4
-        {
-            buttons[i].setTitleColor(buttonBackground, for: .normal)
-        }
-        let proxy = self.textDocumentProxy
-        if proxy.keyboardAppearance == UIKeyboardAppearance.dark {
-            buttons[0].setImage(UIImage(named: "sokunW"), for: UIControlState())
-            buttons[1].setImage(UIImage(named: "oW"), for: UIControlState())
-            buttons[2].setImage(UIImage(named: "aW"), for: UIControlState())
-            buttons[3].setImage(UIImage(named: "aW"), for: UIControlState())
-            buttons[4].setImage(UIImage(named: "anW"), for: UIControlState())
-        }
-        else {
-            buttons[0].setImage(UIImage(named: "sokun"), for: UIControlState())
-            buttons[1].setImage(UIImage(named: "oo"), for: UIControlState())
-            buttons[2].setImage(UIImage(named: "aa"), for: UIControlState())
-            buttons[3].setImage(UIImage(named: "aa"), for: UIControlState())
-            buttons[4].setImage(UIImage(named: "aan"), for: UIControlState())
-        }
-
-        buttons[1].imageEdgeInsets = UIEdgeInsets.init(top: -10, left: 0, bottom: 0, right: 0)
-        buttons[2].imageEdgeInsets = UIEdgeInsets.init(top: 20, left: 0, bottom: 0, right: 0)
-        buttons[3].imageEdgeInsets = UIEdgeInsets.init(top: -10, left: 0, bottom: 0, right: 0)
-        buttons[4].imageEdgeInsets = UIEdgeInsets.init(top: -10, left: 0, bottom: 0, right: 0)
-        
-        
-        
-        /*****************************************
-         *                                        *
-         *   initial second alfabet row           *
-         *                                        *
-         *****************************************/
-        // we need again to manipulate «» signs and tashdid
-        buttons.removeAll()
-        for i in 0...10
-        {
-            let r = CGRect(x: marginRight + (CGFloat(i) * (alefbaButtonWidth + gapHorizontal)) ,
-                           y: marginTop + (isSmileOn * (alefbaButtonWidth + gapVertical)) + gapVertical + alefbaButtonHeight,
-                           width: alefbaButtonWidth,
-                           height: alefbaButtonHeight)
-            
-            let b: UIButton = createButton(rect: r, char: alphabets[1][1][i].value)
-            
-            b.addTarget(self, action: #selector(self.shiftButtonTouched(_:)), for: .touchUpInside)
-            b.addTarget(self, action: #selector(self.makeButtonBigger(_:)), for: .touchDown)
-            b.addTarget(self, action: #selector(self.makeButtonNormal(_:)), for: .touchUpOutside)
-            
-            shiftViewLandscape.addSubview(b)
-            buttons.append(b)
-        }
-        // now change the action in touchUpInside for «»
-        buttons[7].removeTarget(self, action: #selector(self.shiftButtonTouched(_:)), for: .touchUpInside)
-        buttons[7].addTarget(self, action: #selector(self.signButtonTouched(_:)), for: .touchUpInside)
-        buttons[8].removeTarget(self, action: #selector(self.shiftButtonTouched(_:)), for: .touchUpInside)
-        buttons[8].addTarget(self, action: #selector(self.signButtonTouched(_:)), for: .touchUpInside)
-        
-        // manipulate tashdid
-        buttons[3].setImage(UIImage(named: "tashdid"), for: UIControlState())
-        /*****************************************
-         *                                        *
-         *   initial third alfabet row            *
-         *                                        *
-         *****************************************/
-        
-        // initial Shift button
-        var r = CGRect( x: marginRight ,
-                        y: marginTop + (2 * (gapVertical + alefbaButtonHeight)) + (isSmileOn * (alefbaButtonWidth + gapVertical)),
-                        width: alefbaButtonWidth * 1.5,
-                        height: alefbaButtonHeight)
-        
-        let shiftb = createUtilButton(rect: r, withTarget: true)
-        shiftb.tag = 1
-        shiftViewLandscape.addSubview(shiftb)
-        
-        
-        // initial alefba
-        for i in 0...7
-        {
-            let startX = shiftb.frame.maxX + ((gapHorizontal * 3) / 2)
-            r = CGRect( x: startX + (CGFloat(i) * (gapHorizontal + alefbaButtonWidth)),
-                        y: shiftb.layer.frame.minY,
-                        width: alefbaButtonWidth,
-                        height: alefbaButtonHeight)
-            
-            let b: UIButton = createButton(rect: r, char: alphabets[1][2][i].value)
-
-            b.addTarget(self, action: #selector(self.shiftButtonTouched(_:)), for: .touchUpInside)
-            b.addTarget(self, action: #selector(self.makeButtonBigger(_:)), for: .touchDown)
-            b.addTarget(self, action: #selector(self.makeButtonNormal(_:)), for: .touchUpOutside)
-            
-            shiftViewLandscape.addSubview(b)
-        }
-        
-        // initial delete button
-        r = CGRect( x: keyboardWidthLandscape - (marginRight + shiftb.frame.width),
-                    y: shiftb.layer.frame.minY,
-                    width: shiftb.frame.width ,
-                    height: alefbaButtonHeight)
-        let deleteButton = createUtilButton(rect: r, withTarget: false)
-        deleteButton.tag = 3
-        deleteButton.addTarget(self, action: #selector(self.utilTouched), for: .touchUpInside)
-        deleteButton.addTarget(self, action: #selector(self.deleteTouchDown), for: .touchDown)
-        deleteButton.addTarget(self, action: #selector(self.deleteTouchUpOutside), for: .touchUpOutside)
-        shiftViewLandscape.addSubview(deleteButton)
-        
-        /*****************************************
-         *                                        *
-         *   initial fourth alfabet row           *
-         *                                        *
-         *****************************************/
-        // initial 123 button
-        r = CGRect( x: marginRight + gapHorizontal + alefbaButtonWidth,
-                    y: keyboardHeightLandscape - (alefbaButtonHeight + marginTop),
-                    width: alefbaButtonWidth,
-                    height: alefbaButtonHeight)
-        let numberButton = createUtilButton(rect: r, withTarget: true)
-        numberButton.setTitle("۱۲۳", for: UIControlState())
-        numberButton.tag = 2
-        shiftViewLandscape.addSubview(numberButton)
-        
-        
-        // Initial next button layer
-        r = CGRect(x: numberButton.frame.maxX + gapHorizontal ,
-                   y: numberButton.frame.minY,
-                   width: alefbaButtonWidth ,
-                   height: alefbaButtonHeight)
-        let nextKeyboardButton = createUtilButton(rect: r, withTarget: true)
-        nextKeyboardButton.tag = 99
-        shiftViewLandscape.addSubview(nextKeyboardButton)
-        
-        // initial left  button
-        r = CGRect( x: nextKeyboardButton.frame.maxX + gapHorizontal ,
-                    y: numberButton.frame.minY,
-                    width: alefbaButtonWidth ,
-                    height: alefbaButtonHeight)
-        
-        let leftButton: UIButton = createButton(rect: r, char: alphabets[1][3][0].value)
-
-        leftButton.isExclusiveTouch = true
-        leftButton.addTarget(self, action: #selector(self.shiftButtonTouched(_:)), for: .touchUpInside)
-        leftButton.addTarget(self, action: #selector(self.makeButtonBigger(_:)), for: .touchDown)
-        leftButton.addTarget(self, action: #selector(self.makeButtonNormal(_:)), for: .touchUpOutside)
-        shiftViewLandscape.addSubview(leftButton)
-        
-        // initial Space button
-        r = CGRect( x: leftButton.frame.maxX + gapHorizontal,
-                    y: numberButton.frame.minY,
-                    width: alefbaButtonWidth * 4,
-                    height: alefbaButtonHeight)
-        let spaceButton=createUtilButton(rect: r, withTarget: false)
-        spaceButton.addTarget(self, action: #selector(self.utilTouched(sender:)), for: .touchUpInside)
-        spaceButton.setTitle("نیم فاصله", for: UIControlState())
-        spaceButton.tag = 8204
-        spaceButton.backgroundColor = buttonBackground
-        shiftViewLandscape.addSubview(spaceButton)
-        
-        // initial Right button
-        r = CGRect( x: spaceButton.frame.maxX + gapHorizontal ,
-                    y: numberButton.frame.minY,
-                    width: alefbaButtonWidth ,
-                    height: alefbaButtonHeight)
-        let rightButton: UIButton = createButton(rect: r, char: alphabets[1][3][1].value)
-
-        rightButton.isExclusiveTouch = true
-        rightButton.addTarget(self, action: #selector(self.shiftButtonTouched(_:)), for: .touchUpInside)
-        rightButton.addTarget(self, action: #selector(self.makeButtonBigger(_:)), for: .touchDown)
-        rightButton.addTarget(self, action: #selector(self.makeButtonNormal(_:)), for: .touchUpOutside)
-        shiftViewLandscape.addSubview(rightButton)
-        
-        // initial Enter Button
-        // calculate width for Enter to fill remined space
-        r = CGRect( x: rightButton.frame.maxX + gapHorizontal ,
-                                          y: numberButton.frame.minY,
-                                          width: alefbaButtonWidth * 1.5 ,
-                                          height: alefbaButtonHeight)
-        
-        let EnterButton = createUtilButton(rect: r, withTarget: true)
-        EnterButton.tag = 13
-        shiftViewLandscape.addSubview(EnterButton)
-        
-        // change icons to white color if apperiance is dark
-        if proxy.keyboardAppearance == UIKeyboardAppearance.dark {
-            shiftb.setImage(UIImage(named: "shiftW"), for: UIControlState.normal)
-            deleteButton.setImage(UIImage(named: "deleteW"), for: UIControlState.normal)
-            nextKeyboardButton.setImage(UIImage(named: "langW"), for: UIControlState.normal)
-            EnterButton.setImage(UIImage(named: "enterW"), for: UIControlState.normal)
-            
-            shiftb.layer.shadowOpacity = 0
-            deleteButton.layer.shadowOpacity = 0
-            nextKeyboardButton.layer.shadowOpacity = 0
-            EnterButton.layer.shadowOpacity = 0
-            numberButton.layer.shadowOpacity = 0
-        }
-        else {
-            shiftb.setImage(UIImage(named: "shiftUp"), for: UIControlState.normal)
-            deleteButton.setImage(UIImage(named: "deleteUp"), for: UIControlState.normal)
-            nextKeyboardButton.setImage(UIImage(named: "lang"), for: UIControlState.normal)
-            EnterButton.setImage(UIImage(named: "enter"), for: UIControlState.normal)
-        }
-        // make tag to 1: it means we initialized main layer
-        shiftViewLandscape.tag = 1
-        shiftViewLandscape.isMultipleTouchEnabled = false
-        // END OF ALEFBA LAYER
-        
-    }
-    
-    /************************************
-    *                                   *
-    *   Initial Number layer            *
-    *                                   *
-     
-    ************************************/
-    func initNumber(){
-        
-        // TODO: background should be checked here
-        numberViewPortrait.backgroundColor = viewBackground
-        
-        // setup tap detection for background view
-        let tap = UITapGestureRecognizer(target: self, action: #selector(getCharacterFromNearestButton(_:)))
-        tap.numberOfTouchesRequired = 1
-        tap.numberOfTapsRequired = 1
-        numberViewPortrait.addGestureRecognizer(tap)
-        
-        gapVertical = 10
-        gapHorizontal = 6
-        marginTop = 6
-        marginRight = 4
-        
-        // calculate values that need to put the buttons on the layer based different UIScreens sizes 
-        // in this layer we have only 10 buttons
-        alefbaButtonWidth = (keyboardWidth - ((9 * gapHorizontal) + (2 * marginRight))) / 10
-        alefbaButtonHeight = (keyboardHeight - ((2 * marginTop) + (3 * gapVertical))) / 4
-        
-        /*****************************************
-         *                                        *
-         *   initial first Numbers row            *
-         *                                        *
-         *****************************************/
-        
-        for i in 0...9
-        {
-            let r = CGRect(x: marginRight + (CGFloat(i) * (alefbaButtonWidth + gapHorizontal)),
-                           y: marginTop ,
-                           width: alefbaButtonWidth,
-                           height: alefbaButtonHeight)
-            let b: UIButton = createButton(rect: r, char: alphabets[2][0][i].value)
-
-            b.addTarget(self, action: #selector(self.buttonTouched(_:)), for: .touchUpInside)
-            b.addTarget(self, action: #selector(self.makeButtonBigger(_:)), for: .touchDown)
-            b.addTarget(self, action: #selector(self.makeButtonNormal(_:)), for: .touchUpOutside)
-            
-            numberViewPortrait.addSubview(b)
-            
-        }
-        /*****************************************
-         *                                        *
-         *   initial second Numbers row           *
-         *                                        *
-         *****************************************/
-        for i in 0...9
-        {
-            let r = CGRect(x: marginRight + (CGFloat(i) * (alefbaButtonWidth + gapHorizontal)) ,
-                           y: marginTop + gapVertical + alefbaButtonHeight,
-                           width: alefbaButtonWidth,
-                           height: alefbaButtonHeight)
-            
-            let b: UIButton = createButton(rect: r, char: alphabets[2][1][i].value)
-
-            b.addTarget(self, action: #selector(self.buttonTouched(_:)), for: .touchUpInside)
-            b.addTarget(self, action: #selector(self.makeButtonBigger(_:)), for: .touchDown)
-            b.addTarget(self, action: #selector(self.makeButtonNormal(_:)), for: .touchUpOutside)
-            
-            numberViewPortrait.addSubview(b)
-        }
-        
-        /*****************************************
-         *                                        *
-         *   initial third Numbers row            *
-         *                                        *
-         *****************************************/
-
-        let y = (2 * (alefbaButtonHeight + gapVertical)) + marginTop
-        for i in 0...7
-        {
-            let r = CGRect( x:marginRight + (CGFloat(i) * (gapHorizontal + alefbaButtonWidth)),
-                        y: y,
-                        width: alefbaButtonWidth,
-                        height: alefbaButtonHeight)
-            
-            let b: UIButton = createButton(rect: r, char: alphabets[2][2][i].value)
-
-            b.addTarget(self, action: #selector(self.buttonTouched(_:)), for: .touchUpInside)
-            b.addTarget(self, action: #selector(self.makeButtonBigger(_:)), for: .touchDown)
-            b.addTarget(self, action: #selector(self.makeButtonNormal(_:)), for: .touchUpOutside)
-            
-            numberViewPortrait.addSubview(b)
-        }
-        
-        // initial delete button
-        var r = CGRect( x: keyboardWidth - (marginRight + gapHorizontal + (2 * alefbaButtonWidth)),
-                    y: y,
-                    width: gapHorizontal + (2 * alefbaButtonWidth) ,
-                    height: alefbaButtonHeight)
-        let deleteButton = createUtilButton(rect: r, withTarget: false)
-        deleteButton.tag = 3
-        deleteButton.addTarget(self, action: #selector(self.utilTouched), for: .touchUpInside)
-        deleteButton.addTarget(self, action: #selector(self.deleteTouchDown), for: .touchDown)
-        deleteButton.addTarget(self, action: #selector(self.deleteTouchUpOutside), for: .touchUpOutside)
-        numberViewPortrait.addSubview(deleteButton)
-        
-        /*****************************************
-         *                                        *
-         *   initial fourth alfabet row           *
-         *                                        *
-         *****************************************/
-        // initial 123 button
-        r = CGRect( x: marginRight,
-                    y: keyboardHeight - (alefbaButtonHeight + marginTop),
-                    width: alefbaButtonWidth * 1.25 ,
-                    height: alefbaButtonHeight)
-        let numberButton = createUtilButton(rect: r, withTarget: true)
-        numberButton.setTitle("الفبا", for: UIControlState())
-        numberButton.tag = 2
-        numberViewPortrait.addSubview(numberButton)
-        
-        
-        // Initial next button layer
-        r = CGRect(x: marginRight + numberButton.frame.width + gapHorizontal ,
-                   y: numberButton.frame.minY,
-                   width: numberButton.frame.width ,
-                   height: alefbaButtonHeight)
-        let nextKeyboardButton = createUtilButton(rect: r, withTarget: true)
-        nextKeyboardButton.tag = 99
-        numberViewPortrait.addSubview(nextKeyboardButton)
-        
-        // initial left  button
-        r = CGRect( x: nextKeyboardButton.frame.maxX + gapHorizontal,
-                    y: numberButton.layer.frame.minY,
-                    width: alefbaButtonWidth ,
-                    height: alefbaButtonHeight)
-        
-        let leftButton: UIButton = createButton(rect: r, char: alphabets[2][3][0].value)
-
-        leftButton.addTarget(self, action: #selector(self.buttonTouched(_:)), for: .touchUpInside)
-        leftButton.addTarget(self, action: #selector(self.makeButtonBigger(_:)), for: .touchDown)
-        leftButton.addTarget(self, action: #selector(self.makeButtonNormal(_:)), for: .touchUpOutside)
-        numberViewPortrait.addSubview(leftButton)
-        
-        // initial Space button
-        r = CGRect( x: leftButton.frame.maxX + gapHorizontal,
-                    y: numberButton.frame.minY,
-                    width: alefbaButtonWidth * 3.5 ,
-                    height: alefbaButtonHeight)
-        let spaceButton=createUtilButton(rect: r, withTarget: false)
-        spaceButton.setTitle("فاصله", for: UIControlState())
-        spaceButton.tag = 32
-        spaceButton.backgroundColor = buttonBackground
-        spaceButton.addTarget(self, action: #selector(self.utilTouched(sender:)), for: .touchUpInside)
-        numberViewPortrait.addSubview(spaceButton)
-        
-        // initial Right button
-        r = CGRect( x: spaceButton.frame.maxX + gapHorizontal ,
-                    y: numberButton.frame.minY,
-                    width: alefbaButtonWidth ,
-                    height: alefbaButtonHeight  )
-        let rightButton: UIButton = createButton(rect: r, char: alphabets[2][3][1].value)
-
-        rightButton.addTarget(self, action: #selector(self.buttonTouched(_:)), for: .touchUpInside)
-        rightButton.addTarget(self, action: #selector(self.makeButtonBigger(_:)), for: .touchDown)
-        rightButton.addTarget(self, action: #selector(self.makeButtonNormal(_:)), for: .touchUpOutside)
-        numberViewPortrait.addSubview(rightButton)
-        
-        // add Enter button
-        let w = keyboardWidth - ((8 * alefbaButtonWidth) + (2 * marginRight) + (5 * gapHorizontal))
-        r = CGRect( x: keyboardWidth - (w + marginRight) ,
-                                          y: numberButton.frame.minY,
-                                          width: w ,
-                                          height: alefbaButtonHeight)
-        
-        let EnterButton = createUtilButton(rect: r, withTarget: true)
-        EnterButton.tag = 13
-        numberViewPortrait.addSubview(EnterButton)
-        
-        // change icons to white color if apperiance is dark
-        let proxy = self.textDocumentProxy
-        if proxy.keyboardAppearance == UIKeyboardAppearance.dark {
-            deleteButton.setImage(UIImage(named: "deleteW"), for: UIControlState.normal)
-            nextKeyboardButton.setImage(UIImage(named: "langW"), for: UIControlState.normal)
-            EnterButton.setImage(UIImage(named: "enterW"), for: UIControlState.normal)
-            
-            deleteButton.layer.shadowOpacity = 0
-            nextKeyboardButton.layer.shadowOpacity = 0
-            EnterButton.layer.shadowOpacity = 0
-            numberButton.layer.shadowOpacity = 0
-        }
-        else {
-            deleteButton.setImage(UIImage(named: "deleteUp"), for: UIControlState.normal)
-            nextKeyboardButton.setImage(UIImage(named: "lang"), for: UIControlState.normal)
-            EnterButton.setImage(UIImage(named: "enter"), for: UIControlState.normal)
-        }
-        
-        // make tag to 1: it means we initialized main layer
-        numberViewPortrait.tag = 1
-        numberViewPortrait.isMultipleTouchEnabled = false
-        // END OF ALEFBA LAYER
-        
-    }
-    
-    
-    // initail Number in Landscape layout
-    func initNumberLandscape(){
-        // TODO: background should be checked here
-        numberViewLandscape.backgroundColor = viewBackground
-        
-        // setup tap detection for background view
-        let tap = UITapGestureRecognizer(target: self, action: #selector(getCharacterFromNearestButton(_:)))
-        tap.numberOfTouchesRequired = 1
-        tap.numberOfTapsRequired = 1
-        numberViewLandscape.addGestureRecognizer(tap)
-        
-        gapVertical = 5
-        gapHorizontal = 5.5
-        marginTop = 4
-        marginRight = 5
-        
-        // calculate values that need to put the buttons on the layer based different UIScreens sizes
-        // in this layer we have only 10 buttons
-        alefbaButtonWidth = (keyboardWidthLandscape - ((9 * gapHorizontal) + (2 * marginRight))) / 10
-        alefbaButtonHeight = (keyboardHeightLandscape - ((2 * marginTop) + (3 * gapVertical))) / 4
-        
-        /*****************************************
-         *                                        *
-         *   initial first Numbers row            *
-         *                                        *
-         *****************************************/
-        
-        for i in 0...9
-        {
-            let r = CGRect(x: marginRight + (CGFloat(i) * (alefbaButtonWidth + gapHorizontal)),
-                           y: marginTop ,
-                           width: alefbaButtonWidth,
-                           height: alefbaButtonHeight)
-            let b: UIButton = createButton(rect: r, char: alphabets[2][0][i].value)
-
-            b.addTarget(self, action: #selector(self.buttonTouched(_:)), for: .touchUpInside)
-            b.addTarget(self, action: #selector(self.makeButtonBigger(_:)), for: .touchDown)
-            b.addTarget(self, action: #selector(self.makeButtonNormal(_:)), for: .touchUpOutside)
-            
-            numberViewLandscape.addSubview(b)
-            
-        }
-        /*****************************************
-         *                                        *
-         *   initial second Numbers row           *
-         *                                        *
-         *****************************************/
-        for i in 0...9
-        {
-            let r = CGRect(x: marginRight + (CGFloat(i) * (alefbaButtonWidth + gapHorizontal)) ,
-                           y: marginTop + gapVertical + alefbaButtonHeight,
-                           width: alefbaButtonWidth,
-                           height: alefbaButtonHeight)
-            
-            let b: UIButton = createButton(rect: r, char: alphabets[2][1][i].value)
-
-            b.addTarget(self, action: #selector(self.buttonTouched(_:)), for: .touchUpInside)
-            b.addTarget(self, action: #selector(self.makeButtonBigger(_:)), for: .touchDown)
-            b.addTarget(self, action: #selector(self.makeButtonNormal(_:)), for: .touchUpOutside)
-            
-            numberViewLandscape.addSubview(b)
-        }
-        
-        /*****************************************
-         *                                        *
-         *   initial third Numbers row            *
-         *                                        *
-         *****************************************/
-        
-        let y = (2 * (alefbaButtonHeight + gapVertical)) + marginTop
-        for i in 0...7
-        {
-            let r = CGRect( x:marginRight + (alefbaButtonWidth / 4) + (CGFloat(i) * (gapHorizontal + alefbaButtonWidth)),
-                            y: y,
-                            width: alefbaButtonWidth,
-                            height: alefbaButtonHeight)
-            
-            let b: UIButton = createButton(rect: r, char: alphabets[2][2][i].value)
-            b.addTarget(self, action: #selector(self.buttonTouched(_:)), for: .touchUpInside)
-            b.addTarget(self, action: #selector(self.makeButtonBigger(_:)), for: .touchDown)
-            b.addTarget(self, action: #selector(self.makeButtonNormal(_:)), for: .touchUpOutside)
-            
-            numberViewLandscape.addSubview(b)
-        }
-        
-        // initial delete button
-        var r = CGRect( x: keyboardWidthLandscape - (marginRight + gapHorizontal + (1.75 * alefbaButtonWidth)),
-                        y: y,
-                        width: gapHorizontal + (1.5 * alefbaButtonWidth) ,
-                        height: alefbaButtonHeight)
-        let deleteButton = createUtilButton(rect: r, withTarget: false)
-        deleteButton.tag = 3
-        deleteButton.addTarget(self, action: #selector(self.utilTouched), for: .touchUpInside)
-        deleteButton.addTarget(self, action: #selector(self.deleteTouchDown), for: .touchDown)
-        deleteButton.addTarget(self, action: #selector(self.deleteTouchUpOutside), for: .touchUpOutside)
-        numberViewLandscape.addSubview(deleteButton)
-        
-        /*****************************************
-         *                                        *
-         *   initial fourth alfabet row           *
-         *                                        *
-         *****************************************/
-        // initial 123 button
-        r = CGRect( x: marginRight + gapHorizontal + (alefbaButtonWidth / 2),
-                    y: keyboardHeightLandscape - (alefbaButtonHeight + marginTop),
-                    width: alefbaButtonWidth,
-                    height: alefbaButtonHeight)
-        let numberButton = createUtilButton(rect: r, withTarget: true)
-        numberButton.setTitle("الفبا", for: UIControlState())
-        numberButton.tag = 2
-        numberViewLandscape.addSubview(numberButton)
-        
-        
-        // Initial next button layer
-        let nextKeyboardButton: UIButton = UIButton(type: .custom)
-        nextKeyboardButton.sizeToFit()
-        nextKeyboardButton.layer.cornerRadius = 5
-        nextKeyboardButton.backgroundColor = utilBackgroundColor
-        nextKeyboardButton.translatesAutoresizingMaskIntoConstraints = false
-        nextKeyboardButton.layer.frame = CGRect(x: numberButton.frame.maxX + gapHorizontal ,
-                                                y: numberButton.frame.minY,
-                                                width: alefbaButtonWidth ,
-                                                height: alefbaButtonHeight)
-        
-        nextKeyboardButton.tag = 99
-        nextKeyboardButton.layer.shadowColor = buttonShadowColor
-        nextKeyboardButton.layer.shadowOpacity = 0.8
-        nextKeyboardButton.layer.shadowRadius = 0.5
-        nextKeyboardButton.layer.shadowOffset = CGSize(width: 0.0, height: 1.0)
-        nextKeyboardButton.layer.shadowPath = UIBezierPath(roundedRect: nextKeyboardButton.bounds, cornerRadius: 5).cgPath
-        
-        nextKeyboardButton.addTarget(self, action: #selector(self.utilTouched(sender:)), for: .touchUpInside)
-        nextKeyboardButton.addTarget(self, action: #selector(self.utilTouchDown), for: .touchDown)
-        nextKeyboardButton.addTarget(self, action: #selector(self.utilTouchUpOutside), for: .touchUpOutside)
-        nextKeyboardButton.addTarget(self, action: #selector(playTop), for: .touchDown)
-        numberViewLandscape.addSubview(nextKeyboardButton)
-        
-        // initial left  button
-        r = CGRect( x: nextKeyboardButton.frame.maxX + gapHorizontal,
-                    y: numberButton.layer.frame.minY,
-                    width: alefbaButtonWidth ,
-                    height: alefbaButtonHeight)
-        
-        let leftButton: UIButton = createButton(rect: r, char: alphabets[2][3][0].value)
-        
-        leftButton.addTarget(self, action: #selector(self.buttonTouched(_:)), for: .touchUpInside)
-        leftButton.addTarget(self, action: #selector(self.makeButtonBigger(_:)), for: .touchDown)
-        leftButton.addTarget(self, action: #selector(self.makeButtonNormal(_:)), for: .touchUpOutside)
-        numberViewLandscape.addSubview(leftButton)
-        
-        // initial Space button
-        r = CGRect( x: leftButton.frame.maxX + gapHorizontal,
-                    y: numberButton.frame.minY,
-                    width: (alefbaButtonWidth * 3.5) + (2 * gapHorizontal),
-                    height: alefbaButtonHeight)
-        let spaceButton = createUtilButton(rect: r, withTarget: false)
-        spaceButton.setTitle("فاصله", for: UIControlState())
-        spaceButton.tag = 32
-        spaceButton.backgroundColor = buttonBackground
-        spaceButton.addTarget(self, action: #selector(self.utilTouched(sender:)), for: .touchUpInside)
-        numberViewLandscape.addSubview(spaceButton)
-        
-        // initial Right button
-        r = CGRect( x: spaceButton.frame.maxX + gapHorizontal ,
-                    y: numberButton.frame.minY,
-                    width: alefbaButtonWidth ,
-                    height: alefbaButtonHeight  )
-        let rightButton: UIButton = createButton(rect: r, char: alphabets[2][3][1].value)
-        
-        rightButton.addTarget(self, action: #selector(self.buttonTouched(_:)), for: .touchUpInside)
-        rightButton.addTarget(self, action: #selector(self.makeButtonBigger(_:)), for: .touchDown)
-        rightButton.addTarget(self, action: #selector(self.makeButtonNormal(_:)), for: .touchUpOutside)
-        numberViewLandscape.addSubview(rightButton)
-        
-        // initial Enter Button
-        r = CGRect( x: rightButton.frame.maxX + gapHorizontal ,
-                    y: numberButton.frame.minY,
-                    width: alefbaButtonWidth * 1.5 ,
-                    height: alefbaButtonHeight)
-        let EnterButton = createUtilButton(rect: r, withTarget: true)
-        EnterButton.tag = 13
-        numberViewLandscape.addSubview(EnterButton)
-        
-        // change icons to white color if apperiance is dark
-        let proxy = self.textDocumentProxy
-        if proxy.keyboardAppearance == UIKeyboardAppearance.dark {
-            deleteButton.setImage(UIImage(named: "deleteW"), for: UIControlState.normal)
-            nextKeyboardButton.setImage(UIImage(named: "langW"), for: UIControlState.normal)
-            EnterButton.setImage(UIImage(named: "enterW"), for: UIControlState.normal)
-
-            deleteButton.layer.shadowOpacity = 0
-            nextKeyboardButton.layer.shadowOpacity = 0
-            EnterButton.layer.shadowOpacity = 0
-            numberButton.layer.shadowOpacity = 0
-        }
-        else {
-            deleteButton.setImage(UIImage(named: "deleteUp"), for: UIControlState.normal)
-            nextKeyboardButton.setImage(UIImage(named: "lang"), for: UIControlState.normal)
-            EnterButton.setImage(UIImage(named: "enter"), for: UIControlState.normal)
-        }
-        
-        // make tag to 1: it means we initialized main layer
-        numberViewLandscape.tag = 1
-        numberViewLandscape.isMultipleTouchEnabled = false
-        // END OF ALEFBA LAYER
-        
-    }
-    
-    
-    
-    /********************************
-    *                               *
-    *   Buttons Events              *
-    *                               *
-    ********************************/
-    
     /************************************
     *       DELETE FUNCTION             *
     ************************************/
     // delete touching
-    func deleteTouchDown(sender: UIButton)
+    func deleteTouchDown(sender: GPButton)
     {
-        sender.backgroundColor = utilButtonTouchDownColor
+        playSound(for: delSound)
         let proxy = textDocumentProxy as UITextDocumentProxy
         proxy.deleteBackward()
         deleting = true
@@ -1718,19 +467,22 @@ class KeyboardViewController: UIInputViewController {
             {
                 deleteTimer -= 0.08
             }
-            if (proxy.hasText && proxy.documentContextBeforeInput != nil)
-                {
+            if proxy.documentContextBeforeInput != nil
+            {
                 timer = Timer.scheduledTimer(timeInterval: deleteTimer, target: self, selector: #selector(doDeleting), userInfo: nil, repeats: false)
-                if soundID == 2
-                {
-                    // user activated tap sound
-                    AudioServicesPlaySystemSound(tapSound)
-                }
+                playSound(for: delSound)
             }
+            else
+            {
+                proxy.deleteBackward()
+                timer = Timer.scheduledTimer(timeInterval: deleteTimer, target: self, selector: #selector(doDeleting), userInfo: nil, repeats: false)
+                
+            }
+            
         }
     }
     // set deleting boolean value to false with this event
-    func deleteTouchUpOutside(_ sender: UIButton)
+    func deleteTouchUp(_ sender: GPButton)
     {
         deleting = false
         deleteTimer = 0.3
@@ -1740,102 +492,58 @@ class KeyboardViewController: UIInputViewController {
     /************************************
      *       UTIL  FUNCTION             *
      ************************************/
-    func toChar(s:String, i:Int) -> Character
+    
+    func utilTouched(sender: GPButton)
     {
-        let arr = Array(s.characters)
-        return arr[i]
-    }
-    func utilTouchUpOutside(sender: UIButton)
-    {
-        sender.backgroundColor = utilBackgroundColor
-    }
-    // util touched down
-    func utilTouchDown(sender: UIButton)
-    {
-        sender.backgroundColor = utilButtonTouchDownColor
-
-    }
-    // utility touched
-    // 0: default value for all buttons = nothing
-    // 1: shift
-    // 2: numbers
-    // 3: delete
-    // 13: Enter (cariage return)
-    // 32: space
-    // 99: advanceToNextInputMode
-    // 8204: nim fasele (half space!)
-    func utilTouched(sender: UIButton)
-    {
-        
         
         let proxy = textDocumentProxy as UITextDocumentProxy
-        switch sender.tag {
-        case 0:
-            print("nothing happened")
-            break
-        case 1:
-            shift = !shift
-            sender.backgroundColor = utilBackgroundColor
-            if shift
-            {
-                currentLayout = 1
-                layerManager(layer: 1)
-            }
-            else
-            {
-                currentLayout = 0
-                layerManager(layer: 0)
-            }
-            break
-        case 2:
-            shift = false
-            sender.backgroundColor = utilBackgroundColor
-            if currentLayout == 2    // it means already we are in Number Layer
-            {
-                currentLayout = 0   // so we shoulf change to Alefba layer
-                layerManager(layer: currentLayout)
-            }
-            else
-            {
-                currentLayout = 2
-                layerManager(layer: currentLayout)
-            }
-            break
-        case 3:
-            sender.backgroundColor = utilBackgroundColor
-            // reset deleting parameters to default
-            deleting = false
-            deleteTimer = 0.5
-            timer.invalidate()
-            break
-        case 13:
-            proxy.insertText("\n")
-            sender.backgroundColor = utilBackgroundColor
-            if currentLayout == 2 || currentLayout == 1
-            {
-                currentLayout = 0
-                layerManager(layer: 0)
-            }
-        case 32:
+        let type = sender.type!
+        switch type
+        {
+        case .SPACE:
+            playSound(for: utilSound)
             proxy.insertText(" ")
-            
-            sender.backgroundColor = buttonBackground
-            if currentLayout == 2
+            if shift == true
             {
-                currentLayout = 0
-                layerManager(layer: 0)
+                if returnAfterSpace == true
+                {
+                    shift = false
+                    returnAfterSpace = false
+                }
             }
             break
-        case 99:
+        case .GLOBE:
             self.advanceToNextInputMode()
-            sender.backgroundColor = utilBackgroundColor
             break
-        case 8204:
+        case .SHIFT:
+            playSound(for: utilSound)
+            shift = !shift
+            break
+        case .NUMBER:
+            playSound(for: utilSound)
+            if alefbaLayout.layer.opacity == 0
+            {
+                numberLayout.layer.opacity = 0
+                alefbaLayout.layer.opacity = 1
+            }
+            else
+            {
+                alefbaLayout.layer.opacity = 0
+                numberLayout.layer.opacity = 1
+            }
+            if shift == true
+            {
+                shift = false
+            }
+            break
+        case .ENTER:
+            playSound(for: utilSound)
+            proxy.insertText("\n")
+            break
+        case .HALBSPACE:
+            playSound(for: utilSound)
             proxy.insertText("\u{200C}")
-            sender.backgroundColor = buttonBackground
             shift = false
-            currentLayout = 0
-            layerManager(layer: currentLayout)
             break
         default:
             break
@@ -1843,357 +551,229 @@ class KeyboardViewController: UIInputViewController {
     }
     
     /************************************
-     *       ALEFBA FUNCTION            *
+     *       SHIFT FUNCTION             *
      ************************************/
-    // add character into textfield
-    func buttonTouched(_ sender: UIButton)
+    func doShift(shifting:Bool)
     {
-        let proxy = textDocumentProxy as UITextDocumentProxy
-        proxy.insertText(sender.currentTitle!)
-        makeButtonNormal(sender)
-    }
-    
-    // a button in shift layer touched
-    func shiftButtonTouched(_ sender: UIButton)
-    {
-        let proxy = textDocumentProxy as UITextDocumentProxy
-        proxy.insertText(sender.currentTitle!)
-        
-        makeButtonNormal(sender)
-        
-        // return layout to main view
-        shift = false
-        currentLayout = 0
-        layerManager(layer: currentLayout)
-        
-    }
-    
-    // special shift function for (){}[] «»
-    func signButtonTouched(_ sender: UIButton)
-    {
-        let proxy = textDocumentProxy as UITextDocumentProxy
-        let char = sender.currentTitle!
-        switch char {
-        case ")":
-            proxy.insertText("(")
-            break
-        case "(":
-            proxy.insertText(")")
-            break
-        case "{":
-            proxy.insertText("}")
-            break
-        case "}":
-            proxy.insertText("{")
-            break
-        case "[":
-            proxy.insertText("]")
-            break
-        case "]":
-            proxy.insertText("[")
-            break
-        case "«":
-            proxy.insertText("»")
-            break
-        case "»":
-            proxy.insertText("«")
-            break
-        default:
-            print("invalid sign character")
+        if shifting
+        {
+            for i in 0...10
+            {
+                alefbaButtons[0][i].label?.text = smile[i+11]
+                
+            }
+            // first two row in characters array
+            for i in 0...1
+            {
+                for j in 0...10
+                {
+                    // i+1 because buttons have one more row for emojies
+                    alefbaButtons[i+1][j].harf = characters[1][i][j]
+                }
+            }
+            
+            // row 3 is include shift and delete button
+            for j in 1...8
+            {
+                alefbaButtons[3][j].harf = characters[1][2][j-1]
+            }
+            // 4th row, the buttons beside the space
+            alefbaButtons[4][2].harf = characters[1][3][0]
+            alefbaButtons[4][4].harf = characters[1][3][1]
+            // half space
+            alefbaButtons[4][3].label?.text = "نیم‌فاصله"
+            alefbaButtons[4][3].type = .HALBSPACE
         }
-        makeButtonNormal(sender)
+        else
+        {
+            for i in 0...10
+            {
+                alefbaButtons[0][i].label?.text = smile[i]
+                
+            }
 
-        // return layout to main view
-        shift = false
-        currentLayout = 0
-        layerManager(layer: currentLayout)
-        
-    }
-    
-    func makeButtonBigger(_ sender: UIButton) {
-        aButtonTouched = true
-        let button = sender
-        let ltb = button.frame
-        lastTouchedButton = sender
-        if ltb.width != ltb.height {
-            button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 26.0)
+            // row 1 and 2
+            for i in 0...1
+            {
+                for j in 0...10
+                {
+                    alefbaButtons[i+1][j].harf = characters[0][i][j]
+                }
+            }
+            
+            // row 3 is include shift and delete button
+            for j in 1...8
+            {
+                alefbaButtons[3][j].harf = characters[0][2][j-1]
+            }
+            // 4th row, the buttons beside the space
+            alefbaButtons[4][2].harf = characters[0][3][0]
+            alefbaButtons[4][4].harf = characters[0][3][1]
+            // half space
+            alefbaButtons[4][3].label?.text = "فاصله"
+            alefbaButtons[4][3].type = .SPACE
+
         }
-        button.titleLabel?.textColor = makeButtonBiggerTextColor
-        button.layer.borderColor = buttonBorderColor
-        button.layer.borderWidth = 1
-        button.backgroundColor = makeButtonBiggerBackground
-        button.frame = CGRect(x: ltb.minX ,y:ltb.minY - self.gapVertical, width: ltb.width, height: button.frame.height + self.gapVertical)
     }
-    
-    func makeButtonNormal(_ sender: UIButton) {
-        let button = sender
-        let ltb = button.frame
-        button.frame = CGRect(x: ltb.minX ,
-                              y:ltb.minY + self.gapVertical,
-                              width: ltb.width,
-                              height: button.frame.height - self.gapVertical)
-        button.layer.borderWidth = 0
-        button.titleLabel?.font = UIFont.systemFont(ofSize: 18.0)
-        button.backgroundColor = buttonBackground
-        
-        aButtonTouched = false
+    func shiftManager(sender: GPButton)
+    {
+        if shift == true {
+            let type = sender.type!
+            if type == .CHAR
+            {
+                if let h = sender.harf
+                {
+                    if h.returnable == true
+                    {
+                        sender.Highlighting(state: false)
+                        shift = false
+                        return
+                    }
+                    if h.spaceReturnable == true
+                    {
+                        returnAfterSpace = true
+                    }
+                }
+            }
+        }
     }
     /************************************
      *       OTHER  FUNCTION            *
      ************************************/
-
-    func getDistance(a1:CGFloat, b1:CGFloat, a2:CGFloat, b2:CGFloat) -> CGFloat
+    // add character into textfield
+    func charTouched(_ sender: GPButton)
     {
-        let deltaA:CGFloat = a1 - a2
-        let deltaB:CGFloat = b1 - b2
-        return CGFloat(sqrtf(Float((deltaA * deltaA)) + Float((deltaB * deltaB))))
+        playSound(for: charSound)
+        let proxy = textDocumentProxy as UITextDocumentProxy
+        guard let char = sender.harf?.output else {return}
+        proxy.insertText(char)
+        shiftManager(sender: sender)
     }
-    // and the number of Layer: 0 = Main Layer , 1= Shift Layer, 2= numbers layer
-    func layerManager(layer: Int)
+    
+    func emojiTouched(_ sender: GPButton)
     {
-        print("func layerManager(layer: Int)")
-        if UIScreen.main.bounds.size.height > UIScreen.main.bounds.size.width
+        playSound(for: charSound)
+        let proxy = textDocumentProxy as UITextDocumentProxy
+        guard let char = sender.label?.text else {return}
+        proxy.insertText(char)
+        if shift == true
         {
-            switch layer {
-            case 0:
-                if mainViewPortrait.tag == 0
-                {
-                    initAlefba()
-                }
-                self.view = mainViewPortrait
-                break
-            case 1:
-                if shiftViewPortrait.tag == 0
-                {
-                    initShift()
-                }
-                self.view = shiftViewPortrait
-                break
-            case 2:
-                if numberViewPortrait.tag == 0
-                {
-                    initNumber()
-                }
-                self.view = numberViewPortrait
-                break
-            default:
-                print("strange sitation in layer landscape \"mode\" manager")
-                break
-            }
-        }
-        else
-        {
-            switch layer {
-            case 0:
-                if mainViewLandscape.tag == 0
-                {
-                    initAlefbaLandscape()
-                }
-                self.view = mainViewLandscape
-                break
-            case 1:
-                if shiftViewLandscape.tag == 0
-                {
-                    initShiftLandscape()
-                }
-                self.view = shiftViewLandscape
-                break
-            case 2:
-                if numberViewLandscape.tag == 0
-                {
-                    initNumberLandscape()
-                    
-                }
-                self.view = numberViewLandscape
-                break
-            default:
-                print("strange sitation in layer manager")
-                break
-            }
+            returnAfterSpace = true
         }
     }
 
-    
-    func createButton( rect: CGRect, char: Character = "x") -> UIButton
-    {
-        
-        let btn: UIButton = UIButton(type: .custom)
-        if char != "x" {
-            btn.setTitle(String(char), for: UIControlState())
-        }
-        // I set Tag to -1 for detecting button when background touched!
-        btn.tag = -1
-        btn.sizeToFit()
-        
-        if #available(iOSApplicationExtension 10.0, *) {
-            btn.titleLabel?.adjustsFontForContentSizeCategory = true
-        } else {
-            // fallback....
-        }
-        
-        btn.backgroundColor = buttonBackground
-        btn.translatesAutoresizingMaskIntoConstraints = false
-        btn.setTitleColor(textColorNormal, for: UIControlState())
-        btn.setTitleColor(textColorHighlighted, for: UIControlState.highlighted)
-        btn.layer.cornerRadius = 5
-        btn.frame = rect
-        btn.layer.shadowColor = buttonShadowColor
-        btn.layer.shadowOpacity = 0.8
-        btn.layer.shadowRadius = 0.5
-        btn.layer.shadowOffset = CGSize(width: 0.0, height: 1.0)
-        btn.layer.shadowPath = UIBezierPath(roundedRect: btn.bounds, cornerRadius: 5).cgPath
-        btn.isExclusiveTouch = true
-        
-        // set user default sound on tap
-        switch soundID {
-        case 0:
-            // user selected mute, we don't need to do anything
-            break
-        case 1:
-            // user vibration selceted
-            btn.addTarget(self, action: #selector(playVib), for: .touchDown)
-            break
-        case 2:
-            // user activated tap sound
-            btn.addTarget(self, action: #selector(playTap), for: .touchDown)
-            break
-        default:
-            print("invalid value happen in sound switch-case")
-            break
-        }
-        return btn
-    }
-    
-    // create buttons for utils buttons such Enter, space, delete....
-    func createUtilButton(rect: CGRect, withTarget: Bool) -> UIButton
-    {
-        let b: UIButton = UIButton(type: .custom)
-        b.sizeToFit()
-        b.translatesAutoresizingMaskIntoConstraints = false
-        b.setTitleColor(textColorNormal, for: UIControlState())
-        b.layer.cornerRadius = 5
-        b.layer.frame = rect
-        b.backgroundColor = utilBackgroundColor
-        b.layer.shadowColor = buttonShadowColor
-        b.layer.shadowOpacity = 0.8
-        b.layer.shadowRadius = 0.5
-        b.layer.shadowOffset = CGSize(width: 0.0, height: 1.0)
-        b.isExclusiveTouch = true
-        b.layer.shadowPath = UIBezierPath(roundedRect: b.bounds, cornerRadius: 5).cgPath
-        if withTarget
-        {
-            b.addTarget(self, action: #selector(self.utilTouched(sender:)), for: .touchUpInside)
-            b.addTarget(self, action: #selector(self.utilTouchDown), for: .touchDown)
-            b.addTarget(self, action: #selector(self.utilTouchUpOutside), for: .touchUpOutside)
-        }
-        // set user default sound on tap
-        switch soundID {
-        case 0:
-            // user selected mute, we don't need to do anything
-            break
-        case 1:
-            // user vibration selceted
-            b.addTarget(self, action: #selector(playVib), for: .touchDown)
-            break
-        case 2:
-            // user activated tap sound
-            b.addTarget(self, action: #selector(playTop), for: .touchDown)
-            break
-        default:
-            print("invalid value happen in sound switch-case")
-            break
-            
-        }
 
-        return b
-    }
-    func playTap()
+    func playSound(for type:UInt32)
     {
-        AudioServicesPlaySystemSound(tapSound)
-    }
-    
-    func playTop()  // :D
-    {
-        AudioServicesPlaySystemSound(topSound)
-    }
-    
-    func playVib()  // :D
-    {
-        AudioServicesPlaySystemSound(vibSound)
-    }
-    
-    func getCharacterFromNearestButton(_ sender: UITapGestureRecognizer)
-    {
-        if let v = sender.view
+        // mute mode
+        if soundState == 1
         {
-            var distanceToClosestButton:CGFloat = 9999
-            let touchLocation = sender.location(in: v)
-            var button: UIButton = UIButton()
-            for case let b as UIButton in v.subviews
+            return  // hisssss! >:/
+        }
+        
+        // vibrate mode
+        if soundState == 2
+        {
+            AudioServicesPlaySystemSound(vibSound)
+            return
+        }
+        
+        AudioServicesPlaySystemSound(type)
+    }
+    
+    
+    
+    
+    //////////// constraints functions:    ///////////
+    func positionConstraints(buttons: [[GPButton]], kbLayout: UIView)
+    {
+        // chaining all first column to top and botton of each other vertically.
+        for row in 0..<buttons.count-1
+        {
+            NSLayoutConstraint(item: buttons[row][0], attribute: .bottom, relatedBy: .equal, toItem: buttons[row+1][0], attribute: .top, multiplier: 1, constant: 0).isActive = true
+        }
+        // chain first button to top of the keyboard layer
+        NSLayoutConstraint(item: buttons[0][0], attribute: .top, relatedBy: .equal, toItem: kbLayout, attribute: .top, multiplier: 1, constant: 0).isActive = true
+        // chain the last button to top of the keyboard layer
+        NSLayoutConstraint(item: buttons[buttons.count-1][0], attribute: .bottom, relatedBy: .equal, toItem: kbLayout, attribute: .bottom, multiplier: 1, constant: 0).isActive = true
+        
+        // chaining all buttons in a row from left to right of each other horizontally.
+        for row in 0..<buttons.count
+        {
+            for col in 1..<buttons[row].count
             {
-                let currentButtonDistance = getDistance(a1: b.frame.midX, b1: b.frame.midY, a2: touchLocation.x, b2: touchLocation.y)
-                if currentButtonDistance < distanceToClosestButton
-                {
-                    button = b
-                    distanceToClosestButton = currentButtonDistance
-                }
+                NSLayoutConstraint(item: buttons[row][col-1], attribute: .right, relatedBy: .equal, toItem: buttons[row][col], attribute: .left, multiplier: 1, constant: 0).isActive = true
+                NSLayoutConstraint(item: buttons[row][col-1], attribute: .centerY, relatedBy: .equal, toItem: buttons[row][col], attribute: .centerY, multiplier: 1, constant: 0).isActive = true
             }
-            
-            // utility touched
-            // 0: default value for all buttons = nothing
-            // 1: shift
-            // 2: numbers
-            // 3: delete
-            // 13: Enter (cariage return)
-            // 32: space
-            // 99: advanceToNextInputMode
-            // 8204: nim fasele (half space!)
-            switch button.tag {
-            case -1:
-                // set user default sound on tap
-                switch soundID {
-                case 0:
-                    // user selected mute, we don't need to do anything
-                    break
-                case 1:
-                    // user vibration selceted
-                    playVib()
-                    break
-                case 2:
-                    // user activated tap sound
-                    playTap()
-                    break
-                default:
-                    print("invalid value happen in sound switch-case")
+        }
+        for row in 0..<buttons.count
+        {
+            NSLayoutConstraint(item: buttons[row][0], attribute: .left, relatedBy: .equal, toItem: kbLayout, attribute: .left, multiplier: 1, constant: 0).isActive = true
+            NSLayoutConstraint(item: buttons[row][buttons[row].count-1], attribute: .right, relatedBy: .equal, toItem: kbLayout, attribute: .right, multiplier: 1, constant: 0).isActive = true
+
+        }
+    }
+    
+    func sizeConstraints(buttons: [[GPButton]], kbLayout: UIView)
+    {
+        let muster = buttons[1][1]
+        let np = NSLayoutConstraint(item: muster, attribute: .height, relatedBy: .equal, toItem: nil, attribute: .height, multiplier: 1, constant: buttonHeight)
+        np.priority = 999
+        portraitConstraints.append(np)
+        
+        let nl = NSLayoutConstraint(item: muster, attribute: .height, relatedBy: .equal, toItem: nil, attribute: .height, multiplier: 1, constant: buttonHeight * 0.8)
+        nl.priority = 999
+        landscapeConstraints.append(nl)
+        
+        for row in 0..<buttons.count
+        {
+            for col in 0..<buttons[row].count
+            {
+                let type = buttons[row][col].type!
+                
+                // all buttons should have same height (except emoji buttons)
+                if type != .EMOJI
+                {
+                    NSLayoutConstraint(item: buttons[row][col], attribute: .height, relatedBy: .equal, toItem: muster, attribute: .height, multiplier: 1, constant: 0).isActive = true
+                }
+                
+                // assign width constraint to buttons according to its characteristic
+                switch type
+                {
+                case .CHAR:
+                    NSLayoutConstraint(item: buttons[row][col], attribute: .width, relatedBy: .equal, toItem: muster, attribute: .width, multiplier: 1, constant: 0).isActive = true
                     break
                     
+                case .EMOJI:
+                    // the width is always equal to muster
+                    // Portrait
+                    portraitConstraints.append(NSLayoutConstraint(item: buttons[row][col], attribute: .height, relatedBy: .equal, toItem: muster, attribute: .width, multiplier: 1.3, constant: 0))
+                    // Landscape
+                    landscapeConstraints.append(NSLayoutConstraint(item: buttons[row][col], attribute: .height, relatedBy: .equal, toItem: muster, attribute: .height, multiplier: 0.8, constant: 0))
+                    
+                    NSLayoutConstraint(item: buttons[row][col], attribute: .width, relatedBy: .equal, toItem: muster, attribute: .width, multiplier: 1, constant: 0).isActive = true
+                    break
+                    
+                case .SHIFT, .DELETE:
+                    NSLayoutConstraint(item: buttons[row][col], attribute: .width, relatedBy: .greaterThanOrEqual, toItem: muster, attribute: .width, multiplier: 1.5, constant: 0).isActive = true
+                    break
+                    
+                case .ENTER:
+                    NSLayoutConstraint(item: buttons[row][col], attribute: .width, relatedBy: .equal, toItem: muster, attribute: .width, multiplier: 1.75, constant: 0).isActive = true
+                    break
+                    
+                case .SPACE, .HALBSPACE:
+                    NSLayoutConstraint(item: buttons[row][col], attribute: .width, relatedBy: .greaterThanOrEqual, toItem: muster, attribute: .width, multiplier: 3.5, constant: 0).isActive = true
+                    break
+                    
+                case .GLOBE, .NUMBER:
+                    NSLayoutConstraint(item: buttons[row][col], attribute: .width, relatedBy: .equal, toItem: muster, attribute: .width, multiplier: 1.25, constant: 0).isActive = true
+                    break
                 }
-                let proxy = textDocumentProxy as UITextDocumentProxy
-                proxy.insertText(button.currentTitle!)
-                button.backgroundColor = makeButtonBiggerBackground
-                UIView.animate(withDuration: 0.4, animations: {
-                    button.backgroundColor = self.buttonBackground
-                })
-                // check if we are in shift layer
-                if currentLayout == 1
-                {
-                    // return layout to main view
-                    shift = false
-                    currentLayout = 0
-                    layerManager(layer: currentLayout)
-                }
-                break
-            case 1,2,3,13,32,99,8204:
-                utilTouched(sender: button)
-                break
-            case 0:
-                print("something strange in getCharacterFromNearestButton happened")
-                return
-            default:
-                print("something strange in getCharacterFromNearestButton happened, in default case")
             }
         }
     }
+    
     
 
     /****************************************
@@ -2204,112 +784,165 @@ class KeyboardViewController: UIInputViewController {
     override func updateViewConstraints()
     {
         super.updateViewConstraints()
-        
-    }
-    
-    override func willRotate(to toInterfaceOrientation: UIInterfaceOrientation, duration: TimeInterval) {
-        if aButtonTouched
+        // Activate constraints according device orientation
+        if UIScreen.main.bounds.size.height > UIScreen.main.bounds.size.width
         {
-            makeButtonNormal(lastTouchedButton)
-        }
-        
-    }
-    override func didRotate(from fromInterfaceOrientation: UIInterfaceOrientation) {
-        print("override func didRotate(from fromInterfaceOrientation: UIInterfaceOrientation)")
-        layerManager(layer: currentLayout)
-
-    }
-    
-    /*override func viewWillAppear(_ animated: Bool) {
-        print("override func viewWillAppear(_ animated: Bool)")
-        super.viewWillAppear(animated)
-        let proxy = self.textDocumentProxy
-        if proxy.keyboardAppearance == UIKeyboardAppearance.dark {
-            viewBackground = UIColor(red:0.08, green:0.08, blue:0.08, alpha:1.0)
-            utilBackgroundColor = UIColor(red:0.21, green:0.21, blue:0.21, alpha:1.0)
-            buttonBackground = UIColor(red:0.35, green:0.35, blue:0.35, alpha:1.0)
-            textColorNormal = UIColor.white
-            textColorHighlighted = UIColor.lightGray
-            makeButtonBiggerTextColor = UIColor.white
-            makeButtonBiggerBackground = UIColor.gray
-        }
-    }*/
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        // setup colors
-        
-        
-        // detect keyboardwidth and height
-        var screenWidth: CGFloat = 0
-        var screenHeight: CGFloat = 0
-        if UIScreen.main.bounds.size.width > UIScreen.main.bounds.size.height
-        {
-            screenHeight = UIScreen.main.bounds.size.width
-            screenWidth = UIScreen.main.bounds.size.height
+            NSLayoutConstraint.deactivate(landscapeConstraints)
+            NSLayoutConstraint.activate(portraitConstraints)
         }
         else
         {
-            screenWidth = UIScreen.main.bounds.size.width
-            screenHeight = UIScreen.main.bounds.size.height
-            
+            NSLayoutConstraint.deactivate(portraitConstraints)
+            NSLayoutConstraint.activate(landscapeConstraints)
         }
+        self.view.layoutSubviews()
+    }
+    
+    override func didRotate(from fromInterfaceOrientation: UIInterfaceOrientation) {
+        updateViewConstraints()
+    }
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
         
-        // get user Sound settings
         let prefs = UserDefaults(suiteName: "group.me.alirezak.gpkeys")
-        soundID = (prefs?.integer(forKey: "sound"))!
-        
-        // always keyboard width in portrait is equal to screen width
-        keyboardWidth = screenWidth
-        
-        // and keyboard width in Landscape is equal to screen height
-        keyboardWidthLandscape = screenHeight
-        
-        switch screenWidth {
-        case CGFloat(320):  // iphone 5/5s
-            keyboardHeight = 216.0
-            keyboardHeightLandscape = 162.0
-            break
-        case CGFloat(375):  // iphone 6/6s
-            keyboardHeight = 216.0
-            keyboardHeightLandscape = 162.0
-            break
-        case CGFloat(414): // iphone 6+/6s+
-            keyboardHeight = 226
-            keyboardHeightLandscape = 162
-            break
-        default:
-            // TODO: I should impliment keyboard for iPads too!...
-            print("someting else detected!", UIScreen.main.bounds.size)
-            break
+        // retreive user Sound settings
+        if let s = prefs?.integer(forKey: "sound") {
+            if s != 0
+            {
+                soundState = s
+            }
+            else
+            {
+                soundState = 3 // default sound is On
+            }
         }
-        currentLayout = 0
-        layerManager(layer: currentLayout)
+        
+        for i in 0..<33
+        {
+            if let  emojiInt = prefs?.integer(forKey: String(i)){
+                if emojiInt != 0
+                {
+                    smile [i] = String(Character(UnicodeScalar(emojiInt)!))
+                }
+            }
+
+        }
+        
+        // get all variable according current device state
+        calculateVariables()
+        
+    }
+    override func viewWillAppear(_ animated: Bool) {
+        print("viewWillAppear")
+        super.viewWillAppear(animated)
+        
+        setTheme()
+        
+        // initial landscape and portrait constraints
+        landscapeConstraints = [NSLayoutConstraint]()
+        portraitConstraints = [NSLayoutConstraint]()
+        /**** initial Alefba layer    ****/
+        alefbaLayout = UIView()
+        alefbaLayout.translatesAutoresizingMaskIntoConstraints = false
+        self.view.addSubview(alefbaLayout)
+        alefbaLayout.topAnchor.constraint(equalTo: self.view.topAnchor).isActive = true
+        alefbaLayout.rightAnchor.constraint(equalTo: self.view.rightAnchor).isActive = true
+        alefbaLayout.bottomAnchor.constraint(equalTo: self.view.bottomAnchor).isActive = true
+        alefbaLayout.leftAnchor.constraint(equalTo: self.view.leftAnchor).isActive = true
+        initAlefbaLayout()
+        alefbaLayout.layer.opacity = 0
+        
+        /*** Initial Number Layer  ***/
+        numberLayout = UIView()
+        numberLayout.translatesAutoresizingMaskIntoConstraints = false
+        self.view.addSubview(numberLayout)
+        numberLayout.topAnchor.constraint(equalTo: self.view.topAnchor).isActive = true
+        numberLayout.rightAnchor.constraint(equalTo: self.view.rightAnchor).isActive = true
+        numberLayout.bottomAnchor.constraint(equalTo: self.view.bottomAnchor).isActive = true
+        numberLayout.leftAnchor.constraint(equalTo: self.view.leftAnchor).isActive = true
+        initNumberLayout()
+        numberLayout.layer.opacity = 0
     }
     
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated
+    override func viewDidAppear(_ animated: Bool) {
+        UIView.animate(withDuration: 0.4) {
+            self.alefbaLayout.layer.opacity = 1
+        }
+        
     }
-    
+
+    func calculateVariables()
+    {
+        // define a default multiplier based iphone 6/6s/7 (width = 375) screen size.
+        if UIScreen.main.bounds.size.height > UIScreen.main.bounds.size.width
+        {
+            dmpPatriot = UIScreen.main.bounds.size.width / 375
+        }
+        else
+        {
+            dmpPatriot = UIScreen.main.bounds.size.width / 667
+        }
+        
+        gapHorizontal = gapHorizontal * dmpPatriot
+        
+        if dmpPatriot < 1
+        {
+            gapVertical = gapVertical / dmpPatriot
+        }
+        else
+        {
+            gapVertical = gapVertical * dmpPatriot
+            buttonHeight = buttonHeight * dmpPatriot
+        }
+        
+    }
     override func textDidChange(_ textInput: UITextInput?) {
-        print("override func textDidChange(_ textInput: UITextInput?)")
-        // The app has just changed the document's contents, the document context has been updated.
-        /*let proxy = self.textDocumentProxy
+        //The app has just changed the document's contents, the document context has been updated.
+        setTheme()
+        
+        // check if user "SEND" the message!
+        let proxy = self.textDocumentProxy
+        if proxy.documentContextAfterInput == nil && proxy.documentContextBeforeInput == nil
+        {
+            guard (alefbaLayout != nil) else {
+                return
+            }
+            shift = false
+        }
+        
+    }
+    
+    // GPButtonEventsDelegate
+    func moveCursor(numberOfMovement: Int) {
+        let proxy = textDocumentProxy as UITextDocumentProxy
+        proxy.adjustTextPosition(byCharacterOffset: numberOfMovement)
+    }
+    
+    func setTheme()
+    {
+        let proxy = self.textDocumentProxy
         if proxy.keyboardAppearance == UIKeyboardAppearance.dark {
+            
             viewBackground = UIColor(red:0.08, green:0.08, blue:0.08, alpha:1.0)
-            utilBackgroundColor = UIColor(red:0.21, green:0.21, blue:0.21, alpha:1.0)
-            buttonBackground = UIColor(red:0.35, green:0.35, blue:0.35, alpha:1.0)
-            textColorNormal = UIColor.white
-            textColorHighlighted = UIColor.lightGray
+            
+            GPButton.buttonColor = UIColor(red:0.35, green:0.35, blue:0.35, alpha:1.0)
+            GPButton.buttonHighlighted = UIColor(red:0.35, green:0.35, blue:0.35, alpha:1.0)
+            GPButton.utilBackgroundColor = UIColor(red:0.22, green:0.22, blue:0.22, alpha:1.0)
+            GPButton.charColor = UIColor.white
+            GPButton.shadowColor = UIColor(red:0.08, green:0.08, blue:0.08, alpha:1.0)
+            GPButton.layoutColor = UIColor(red:0.08, green:0.08, blue:0.08, alpha:1.0)
+            
         } else {
-            buttonBackground = UIColor.white
-            viewBackground = UIColor(red:0.82, green:0.84, blue:0.86, alpha:1.0)
-            utilBackgroundColor = UIColor(red:0.67, green:0.70, blue:0.73, alpha:1.0)
-            textColorNormal = UIColor.darkGray
-            textColorHighlighted = UIColor.black
-            makeButtonBiggerTextColor = UIColor.black
-            makeButtonBiggerBackground = UIColor(red:0.90, green:0.89, blue:0.89, alpha:1.0)
-        }*/
+            viewBackground = UIColor(red:0.84, green:0.84, blue:0.84, alpha:1.0)
+            
+            GPButton.buttonColor = UIColor.white
+            GPButton.buttonHighlighted = UIColor.white
+            GPButton.utilBackgroundColor = UIColor(red:0.67, green:0.70, blue:0.73, alpha:1.0)
+            GPButton.charColor = UIColor.black
+            GPButton.shadowColor = UIColor(red:0.54, green:0.55, blue:0.56, alpha:1.0)
+            GPButton.layoutColor = UIColor(red:0.84, green:0.84, blue:0.84, alpha:1.0)
+        }
     }
     
 }

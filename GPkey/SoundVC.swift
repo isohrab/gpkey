@@ -37,7 +37,7 @@ class SoundVC: UIViewController {
             let b: UIButton = UIButton()
             b.layer.borderWidth = 2
             b.layer.cornerRadius = 15
-            b.tag = i
+            b.tag = i+1
             b.layer.borderColor = UIColor(colorLiteralRed: 50, green: 150, blue: 250, alpha: 1.0).cgColor
             b.frame = CGRect(x: buttonPadding + (CGFloat(i) * (100 + buttonPadding)) , y: 100, width: 100, height: 100)
             b.addTarget(self, action: #selector(soundChange(_:_:)), for: .touchUpInside)
@@ -52,12 +52,10 @@ class SoundVC: UIViewController {
         let button:UIButton = UIButton()
         if let sound = prefs?.integer(forKey: "sound")
         {
-            button.tag = sound
-        }
-        else
-        {
-            // default keyboard set with sound
-            button.tag = 2
+            if sound != 0 {
+                button.tag = sound
+            }
+            button.tag = 3
         }
         soundChange(button, true)
     }
@@ -74,12 +72,12 @@ class SoundVC: UIViewController {
             b.layer.borderColor = UIColor.darkGray.cgColor
         }
         switch sender.tag {
-        case 0:
+        case 1:
             // user tapped button mute
             self.soundButtons[0].layer.borderColor = UIColor.green.cgColor
             self.soundButtons[0].layer.borderWidth = 4
             break
-        case 1:
+        case 2:
             // user tapped button vibration
             self.soundButtons[1].layer.borderColor = UIColor.green.cgColor
             self.soundButtons[1].layer.borderWidth = 4
@@ -88,7 +86,7 @@ class SoundVC: UIViewController {
             }
             
             break
-        case 2:
+        case 3:
             // user tapped button Sound ON
             self.soundButtons[2].layer.borderColor = UIColor.green.cgColor
             self.soundButtons[2].layer.borderWidth = 4
