@@ -19,7 +19,7 @@ class SoundVC: UIViewController {
     
     var defaultSize: CGSize!
     
-    let prefs = UserDefaults(suiteName: "group.me.alirezak.gpkeys")
+    let prefs = UserDefaults(suiteName: "group.me.alirezak.gachpazh")
     
     
     override func viewDidLoad() {

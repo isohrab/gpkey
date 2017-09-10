@@ -61,10 +61,10 @@ class ViewController: UIViewController{
     var restoreButton: UIButton?
     var buyLabel: UILabel?
 
-    let prefs = UserDefaults(suiteName: "group.me.alirezak.gpkeys")
+    let prefs = UserDefaults(suiteName: "group.me.alirezak.gachpazh")
     
     // store variables
-    let productIdentifiers = Set(["me.alirezak.gpkeyboard.emojiplusfa"])
+    let productIdentifiers = Set(["me.alirezak.gachpazh.keyboard.emoji"])
     var product: SKProduct?
     var productsArray:[SKProduct]?
     /*****************************************
